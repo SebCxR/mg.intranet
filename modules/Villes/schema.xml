@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_villes</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_villes` (
+  `villesid` int(11) NOT NULL DEFAULT '0',
+    `villenum` INT(11) DEFAULT NULL,
+    `codepostal` VARCHAR(128) DEFAULT NULL,
+    `nom` VARCHAR(128) DEFAULT NULL,
+    `pays` VARCHAR(128) DEFAULT NULL,
+    `zone` VARCHAR(128) DEFAULT NULL,
+    PRIMARY KEY (`villesid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_villescf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_villescf` (
+  `villesid` int(11) NOT NULL,
+  PRIMARY KEY (`villesid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

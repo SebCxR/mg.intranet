@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_vehicule</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_vehicule` (
+  `vehiculeid` int(11) NOT NULL DEFAULT '0',
+    `immatriculation` VARCHAR(128) DEFAULT NULL,
+    `nom` VARCHAR(128) DEFAULT NULL,
+    `n_existe_plus` VARCHAR(5) DEFAULT NULL,
+    `proprietaire` INT(11) DEFAULT NULL,
+    `contact` INT(11) DEFAULT NULL,
+    `prochaine_maintenance` TIMESTAMP NULL DEFAULT NULL,
+    `marque` VARCHAR(128) DEFAULT NULL,
+    `couleur2` VARCHAR(128) DEFAULT NULL,
+    `loueur` INT(19) DEFAULT NULL,
+    PRIMARY KEY (`vehiculeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_vehiculecf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_vehiculecf` (
+  `vehiculeid` int(11) NOT NULL,
+  PRIMARY KEY (`vehiculeid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>
