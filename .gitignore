@@ -26,7 +26,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -41,3 +42,26 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# =========================
+# ED141024
+# vTiger
+# =========================
+
+test/
+storage/
+soap/
+settings/
+pkg/
+packages/
+migrate/
+logs/
+license/
+kcfinder/
+cron/
+cache/
+backup/
+
+config.*
+log4php.properties
+*.komodoproject
