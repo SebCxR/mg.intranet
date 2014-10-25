@@ -13,7 +13,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Vtiger login page</title>
+		<title>{$PAGETITLE}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<!-- for Login page we are added -->
 		<link href="libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -41,14 +41,14 @@
 		<div class="container-fluid login-container">
 			<div class="row-fluid">
 				<div class="span3">
-					<div class="logo"><img src="layouts/vlayout/skins/images/logo.png">
+					<div class="logo"><img src="test/logo/macon.granulats.png">
 					<br />
 					<a target="_blank" href="http://{$COMPANY_DETAILSCOMPANY_DETAILS.website}">{$COMPANY_DETAILS.name}</a>
 					</div>
 				</div>
 				<div class="span9">
 					<div class="helpLinks">
-						<a href="https://www.vtiger.com">Vtiger Website</a> | 
+						<a href="https://www.macongranulats.com">Macon.Granulats.com</a> | 
 						<a href="https://wiki.vtiger.com/vtiger6/">Vtiger Wiki</a> | 
 						<a href="https://www.vtiger.com/crm/videos/">Vtiger videos </a> | 
 						<a href="https://discussions.vtiger.com/">Vtiger Forums</a> 
@@ -62,36 +62,24 @@
 							<div class="row-fluid">
 								<div class="span6">
 									<div class="carousal-container">
-										<div><h2> Get more out of Vtiger </h2></div>
+										<div><h2>&nbsp;</h2></div>
 										<ul class="bxslider">
 											<li>
 												<div id="slide01" class="slide">
-													<img class="pull-left" src="{vimage_path('android_text.png')}">
-													<img class="pull-right" src="{vimage_path('android.png')}"/>
+													<img class="pull-left" src="http://www.carrieres-poitou-charentes.com/criblage-poitou-charentes/images/granulants/photo3_t.jpg"/>
+													<img class="pull-right" src="http://www.carrieres-poitou-charentes.com/criblage-poitou-charentes/images/granulants/photo2_t.jpg"/>
 												</div>
 											</li>
 											<li>
 												<div id="slide02" class="slide">
-													<img class="pull-left" src="{vimage_path('iphone_text.png')}"/>
-													<img class="pull-right" src="{vimage_path('iphone.png')}"/>
+													<img class="pull-left" src="http://www.carrieres-poitou-charentes.com/criblage-poitou-charentes/images/granulants/photo4_t.jpg"/>
+													<img class="pull-right" src="http://www.carrieres-poitou-charentes.com/criblage-poitou-charentes/images/granulants/photo1_t.jpg"/>
 												</div>
 											</li>
 											<li>
 												<div id="slide03" class="slide">
-													<img class="pull-left" src="{vimage_path('ipad_text.png')}"/>
-													<img class="pull-right" src="{vimage_path('ipad.png')}"/>
-												</div>
-											</li>
-											<li>
-												<div id="slide04" class="slide">
-													<img class="pull-left" src="{vimage_path('exchange_conn_text.png')}"/>
-													<img class="pull-right" src="{vimage_path('exchange_conn.png')}"/>
-												</div>
-											</li>
-											<li>
-												<div id="slide05" class="slide">
-													<img class="pull-left" src="{vimage_path('outlook_text.png')}"/>
-													<img class="pull-right" src="{vimage_path('outlook.png')}"/>
+													<img class="pull-left" src="http://www.carrieres-poitou-charentes.com/criblage-poitou-charentes/images/granulants/photo6_t.jpg"/>
+													<img class="pull-right" src="test/logo/macon.granulats.png"/>
 												</div>
 											</li>
 										</ul>
@@ -101,65 +89,66 @@
 									<div class="login-area">
 										<div class="login-box" id="loginDiv">
 											<div class="">
-												<h3 class="login-header">Login to Vtiger CRM</h3>
+												<h3 class="login-header">Connexion &agrave; l'intranet</h3>
 											</div>
 											<form class="form-horizontal login-form" style="margin:0;" action="index.php?module=Users&action=Login" method="POST">
 												{if isset($smarty.request.error)}
 													<div class="alert alert-error">
-														<p>Invalid username or password.</p>
+														<p>Nom ou mot de passe incorrect.</p>
 													</div>
 												{/if}
 												{if isset($smarty.request.fpError)}
 													<div class="alert alert-error">
-														<p>Invalid Username or Email address.</p>
+														<p>Nom ou adresse email incorrect.</p>
 													</div>
 												{/if}
 												{if isset($smarty.request.status)}
 													<div class="alert alert-success">
-														<p>Mail was send to your inbox, please check your e-mail.</p>
+														<p>Un message vous a &eacute;t&eacute; envoy&eacute;, veuillez consulter votre bo&icirc;te mails.</p>
 													</div>
 												{/if}
 												{if isset($smarty.request.statusError)}
 													<div class="alert alert-error">
-														<p>Outgoing mail server was not configured.</p>
+														<p>La configuration SMTP du serveur de mails est insuffisante.</p>
 													</div>
 												{/if}
 												<div class="control-group">
-													<label class="control-label" for="username"><b>User name</b></label>
+													<label class="control-label" for="username"><b>Utilisateur</b></label>
 													<div class="controls">
-														<input type="text" id="username" name="username" placeholder="Username">
+														<input type="text" id="username" name="username" placeholder="Utilisateur">
 													</div>
 												</div>
 
 												<div class="control-group">
-													<label class="control-label" for="password"><b>Password</b></label>
+													<label class="control-label" for="password"><b>Mot de passe</b></label>
 													<div class="controls">
-														<input type="password" id="password" name="password" placeholder="Password">
+														<input type="password" id="password" name="password" placeholder="Mot de passe">
 													</div>
 												</div>
 												<div class="control-group signin-button">
 													<div class="controls" id="forgotPassword">
-														<button type="submit" class="btn btn-primary sbutton">Sign in</button>
-														&nbsp;&nbsp;&nbsp;<a>Forgot Password ?</a>
+														<button type="submit" class="btn btn-primary sbutton">Valider</button>
+														&nbsp;&nbsp;&nbsp;
+														<br/><br/><small><a>j'ai encore oubli&eacute; mon mot de passe...</a></small>
 													</div>
 												</div>
 												{* Retain this tracker to help us get usage details *}
-												<img src='//stats.vtiger.com/stats.php?uid={$APPUNIQUEKEY}&v={$CURRENT_VERSION}&type=U' alt='' title='' border=0 width='1px' height='1px'>
+												{*<img src='//stats.vtiger.com/stats.php?uid={$APPUNIQUEKEY}&v={$CURRENT_VERSION}&type=U' alt='' title='' border=0 width='1px' height='1px'>*}
 											</form>
 											<div class="login-subscript">
-												<small> Powered by vtiger CRM {$CURRENT_VERSION}</small>
+												<small> Bas&eacute; sur vtiger CRM {$CURRENT_VERSION}</small>
 											</div>
 										</div>
 										
 										<div class="login-box hide" id="forgotPasswordDiv">
 											<form class="form-horizontal login-form" style="margin:0;" action="forgotPassword.php" method="POST">
 												<div class="">
-													<h3 class="login-header">Forgot Password</h3>
+													<h3 class="login-header">Mot de passe perdu</h3>
 												</div>
 												<div class="control-group">
-													<label class="control-label" for="username"><b>User name</b></label>
+													<label class="control-label" for="username"><b>Utilisateur</b></label>
 													<div class="controls">
-														<input type="text" id="username" name="username" placeholder="Username">
+														<input type="text" id="username" name="username" placeholder="Utilisateur">
 													</div>
 												</div>
 												<div class="control-group">
@@ -170,8 +159,8 @@
 												</div>
 												<div class="control-group signin-button">
 													<div class="controls" id="backButton">
-														<input type="submit" class="btn btn-primary sbutton" value="Submit" name="retrievePassword">
-														&nbsp;&nbsp;&nbsp;<a>Back</a>
+														<input type="submit" class="btn btn-primary sbutton" value="Valider" name="retrievePassword">
+														&nbsp;&nbsp;&nbsp;<a>Retour</a>
 													</div>
 												</div>
 											</form>
@@ -193,17 +182,11 @@
 							<div class="footer-content">
 								<small>&#169 2004-{date('Y')}&nbsp;
 									<a href="https://www.vtiger.com"> vtiger.com</a> | 
-									<a href="javascript:mypopup();">Read License</a> | 
-									<a href="https://www.vtiger.com/products/crm/privacy_policy.html">Privacy Policy</a> </small>
+									<a href="javascript:mypopup();">License</a> </small>
 							</div>
 						</div>
 						<div class="span6 pull-right" >
 							<div class="pull-right footer-icons">
-								<small>{vtranslate('LBL_CONNECT_WITH_US', $MODULE)}&nbsp;</small>
-								<a href="https://www.facebook.com/vtiger"><img src="layouts/vlayout/skins/images/facebook.png"></a>
-								&nbsp;<a href="https://twitter.com/vtigercrm"><img src="layouts/vlayout/skins/images/twitter.png"></a>
-								&nbsp;<a href="#"><img src="layouts/vlayout/skins/images/linkedin.png"></a>
-								&nbsp;<a href="http://www.youtube.com/user/vtigercrm"><img src="layouts/vlayout/skins/images/youtube.png"></a> 
 							</div>
 						</div>
 					</div>   
@@ -232,13 +215,13 @@
 				var illegalChars= /[\(\)\<\>\,\;\:\\\"\[\]]/ ;
 				
 				if(username == ''){
-					alert('Please enter valid username');
+					alert('Merci de saisir un nom d\'utilisateur valide');
 					return false;
 				} else if(!emailFilter.test(email1) || email == ''){
-					alert('Please enater valid email address');
+					alert('Merci de saisir une adresse email valide');
 					return false;
 				} else if(email.match(illegalChars)){
-					alert( "The email address contains illegal characters.");
+					alert( "L'adresse email contient des caract&egrave;res interdits.");
 					return false;
 				} else {
 					return true;
