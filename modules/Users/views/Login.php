@@ -20,7 +20,7 @@ class Users_Login_View extends Vtiger_View_Controller {
 	
 	function preProcess(Vtiger_Request $request, $display = true) {
 		$viewer = $this->getViewer($request);
-		$viewer->assign('PAGETITLE', $this->getPageTitle($request));
+		$viewer->assign('PAGETITLE', "Intranet - Connexion"); //ED141025 TODO source Settings
 		$viewer->assign('SCRIPTS',$this->getHeaderScripts($request));
 		$viewer->assign('STYLES',$this->getHeaderCss($request));
 		$viewer->assign('CURRENT_VERSION', vglobal('vtiger_current_version'));
