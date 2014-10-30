@@ -1849,24 +1849,16 @@ function lower_array(&$string){
  * ED141004
  */
 function echo_callstack($skip = 1, $max = INF){
-	function get_callstack($skip = 0, $max = INF) {
-		$dt = debug_backtrace();
-		$cs = '';
-		foreach ($dt as $t)
-			if($skip-- > 0)
-				continue;
-			elseif ($max-- < 1)
-				break;
-			else {
-				$cs .= $t['file'] . ' line ' . $t['line'] . ' function ' . $t['function'] . "()\n";
-			}
-	
-		return $cs;
-	}
-	$skip = isset($arguments) && isset($arguments['skip']) ? $arguments['skip'] : 1;
-	$max = isset($arguments) && isset($arguments['max']) ? $arguments['max'] : INF;
 	echo('<pre>');
-	print_r( get_callstack( $skip, $max ) );
+	$dt = debug_backtrace();
+	foreach ($dt as $t)
+		if($skip-- > 0)
+			continue;
+		elseif ($max-- < 1)
+			break;
+		else {
+			echo $t['file'] . ' line ' . $t['line'] . ' function ' . $t['function'] . "()\n";
+		}
 	echo('</pre>');
 }
 ?>

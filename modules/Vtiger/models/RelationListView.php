@@ -278,6 +278,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$relationModel = $this->getRelationModel();
 		$recordModel = $this->getParentRecordModel();
 		$query = $relationModel->getQuery($recordModel);
+		//print_r($query);
 		return $query;
 	}
 

@@ -306,7 +306,7 @@ function isPermitted($module,$actionname,$record_id='')
 		if($is_admin)
 		{
 			$permission ="yes";
-			$log->debug("Exiting isPermitted method ...");
+			$log->debug("Exiting isPermitted method yes ...");
 			return $permission;
 		}
 
@@ -315,8 +315,8 @@ function isPermitted($module,$actionname,$record_id='')
 		{
 			if($profileTabsPermission[$tabid] ==0)
 				{
-						$permission = "yes";
-				$log->debug("Exiting isPermitted method ...");
+				$permission = "yes";
+				$log->debug("Exiting isPermitted method yes ...");
 				}
 			else
 			{

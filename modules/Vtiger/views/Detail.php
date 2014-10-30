@@ -23,6 +23,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('showAllComments');
 		$this->exposeMethod('getActivities');
+		$this->exposeMethod('showRelatedRecords');//ED141025
 	}
 
 	function checkPermission(Vtiger_Request $request) {
@@ -33,6 +34,7 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		if(!$recordPermission) {
 			throw new AppException('LBL_PERMISSION_DENIED');
 		}
+	
 		return true;
 	}
 
@@ -243,10 +245,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$recordModel = $this->record->getRecord();
 		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_SUMMARY);
 
-        $moduleModel = $recordModel->getModule();
+		$moduleModel = $recordModel->getModule();
 		$viewer = $this->getViewer($request);
 		$viewer->assign('RECORD', $recordModel);
-        $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
+		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 
 		$viewer->assign('MODULE_NAME', $moduleName);
@@ -286,10 +288,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$recordStrucure = Vtiger_RecordStructure_Model::getInstanceFromRecordModel($recordModel, Vtiger_RecordStructure_Model::RECORD_STRUCTURE_MODE_DETAIL);
 		$structuredValues = $recordStrucure->getStructure();
 
-        $moduleModel = $recordModel->getModule();
+		$moduleModel = $recordModel->getModule();
 
 		$viewer->assign('RECORD_STRUCTURE', $structuredValues);
-        $viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
+		$viewer->assign('BLOCK_LIST', $moduleModel->getBlocks());
 
 		echo $viewer->view('DetailViewSummaryContents.tpl', $moduleName, true);
 	}
@@ -459,7 +461,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$limit = $request->get('limit');
 		$relatedModuleName = $request->get('relatedModule');
 		$moduleName = $request->getModule();
-
 		if(empty($pageNumber)) {
 			$pageNumber = 1;
 		}
@@ -481,7 +482,6 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$viewer->assign('RELATED_HEADERS', $header);
 		$viewer->assign('RELATED_MODULE' , $relatedModuleName);
 		$viewer->assign('PAGING_MODEL', $pagingModel);
-
 		return $viewer->view('SummaryWidgets.tpl', $moduleName, 'true');
 	}
 }

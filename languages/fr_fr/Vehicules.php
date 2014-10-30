@@ -25,6 +25,7 @@ $languageStrings = array(
 	'LBL_VEHICULE_OWNER_INFO' => 'Propriétaire du véhicule autre que MG',
 	'LBL_VEHICULE_TYPE' => 'Type de véhicule',
 	'LBL_VEHIC_MAINTAIN_ACTIVITIES_LINK' => 'Maintenance',
+        'mgTypesTransport' => 'Types de transport',
 );
 
 ?>

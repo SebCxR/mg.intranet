@@ -1,0 +1,44 @@
+
+ED 141025
+- login.tpl : traduction
+- login.tpl : images pompées sur le site : TODO images dans l'arborescence
+- Users_Login_View : page title
+
+- Nouveau module MGTransports
+    - import du zip
+    - INSERT INTO `mg_vtigercrm`.`vtiger_entityname` (`tabid`, `modulename`, `tablename`, `fieldname`, `entityidfield`, `entityidcolumn`)
+	VALUES ('56', 'MGTransports', 'vtiger_mgtransports', 'subject,datetransport,accountid', 'mgtransportsid', 'mgtransportsid');
+    - INSERT INTO `mg_vtigercrm`.`vtiger_ws_entity` (`id`, `name`, `handler_path`, `handler_class`, `ismodule`) VALUES (NULL, 'MGTransports', 'include/Webservices/VtigerModuleOperation.php', 'VtigerModuleOperation', '1');
+ 
+- Module Véhicules : ajout du champ mgTypesTransport
+- Traduction fr/Véhicules pour "mgTypesTransport"
+- Ajout du champ
+    ALTER TABLE `vtiger_vehiculescf` ADD `typestransport` TEXT NULL DEFAULT NULL ;
+- Référencement du champ
+    INSERT INTO `mg_vtigercrm`.`vtiger_field` (`tabid`, `fieldid`, `columnname`, `tablename`, `generatedtype`, `uitype`, `fieldname`, `fieldlabel`, `readonly`, `presence`, `defaultvalue`, `maximumlength`, `sequence`, `block`, `displaytype`, `typeofdata`, `quickcreate`, `quickcreatesequence`, `info_type`, `masseditable`, `helpinfo`, `summaryfield`)
+    VALUES ('55', NULL, 'typestransport', 'vtiger_vehiculescf', '2', '33', 'mgtypetransport', 'mgTypesTransport', '1', '2', '', '100', '6', '125', '1', 'V~O', '1', NULL, 'BAS', '1', '', '0');
+    
+    UPDATE vtiger_field_seq SET id = id + 1;
+    
+- renommer le champ cf_766xxx
+    ALTER TABLE `vtiger_vehiculescf` CHANGE `cf_766xxx` `typestransport` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+- modifier la table field
+    UPDATE `mg_vtigercrm`.`vtiger_field` SET `columnname` = 'typestransport' WHERE `vtiger_field`.`fieldid` = 767xxx;
+- supprimer les tables cf766xxx
+    DROP TABLE vtiger_cf_766xxx
+    DROP TABLE vtiger_cf_766xxx_seq
+    
+- Ajout du module RsnTODO depuis le zip
+    - INSERT INTO `mg_vtigercrm`.`vtiger_entityname` (`tabid`, `modulename`, `tablename`, `fieldname`, `entityidfield`, `entityidcolumn`) VALUES ('57', 'RsnTODO', 'vtiger_rsntodo', 'sujet', 'rsntodoid', 'rsntodoid');
+    
+
+- Transport_DetailView Résumé Widgets
+    - D:\Wamp\www\mg.intranet\modules\MGTransports\models\DetailView.php
+	public function getWidgets() {
+
+- Module Véhicules : ajout du champ tare
+
+- Nouveau module MGChauffeurs
+    - INSERT INTO `mg_vtigercrm`.`vtiger_entityname` (`tabid`, `modulename`, `tablename`, `fieldname`, `entityidfield`, `entityidcolumn`) VALUES ('58', 'MGChauffeurs', 'vtiger_mgchauffeurs', 'name', 'mgchauffeursid', 'mgchauffeursid');
+    - INSERT INTO `mg_vtigercrm`.`vtiger_ws_entity` (`id`, `name`, `handler_path`, `handler_class`, `ismodule`) VALUES (NULL, 'MGChauffeurs', 'include/Webservices/VtigerModuleOperation.php', 'VtigerModuleOperation', '1');
+    - UPDATE `vtiger_ws_entity_seq` SET `id`=40

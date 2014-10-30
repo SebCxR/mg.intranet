@@ -641,6 +641,16 @@ $languageStrings = array(
 	'LBL_NO_DUPLICATED_FOUND' => 'Aucun doublon trouvé',
 	'LBL_MERGE_SELECT' => 'Fusionner la sélection',
 	
+	//ED141025 MGTransports
+	'CONTACTS' => 'Contacts',
+	'VEHICULES' => 'Véhicules',
+	'CHAUFFEURS' => 'Chauffeurs',
+	'PRODUCTS' => 'Articles',
+	'MGChauffeurs' => 'Chauffeurs',
+	'TRANSPORTS' => 'Transports',
+	'EVENTS' => 'Evénements',
+	'TASKS' => 'Tâches',
+	
 );
 $jsLanguageStrings = array(
 	'JS_EMAIL_SERVER_CONFIGURATION' => 'Veuillez configurer le serveur de messagerie sortant (SMTP)', 

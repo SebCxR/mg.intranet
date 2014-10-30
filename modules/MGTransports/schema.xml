@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<schema>
+	<tables>
+		<table>
+			<name>vtiger_mgtransports</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_mgtransports` (
+  `mgtransportsid` int(11) NOT NULL DEFAULT '0',
+    `description` TEXT DEFAULT NULL,
+    `datefin` TIMESTAMP NULL DEFAULT NULL,
+    `contact` INT(11) DEFAULT NULL,
+    `datetransport` DATE DEFAULT NULL,
+    `montant` DECIMAL(25,8) DEFAULT NULL,
+    `retour` TEXT DEFAULT NULL,
+    `account` INT(11) DEFAULT NULL,
+    `manager` INT(11) DEFAULT NULL,
+    `potential` INT(19) DEFAULT NULL,
+    `mgtransportstatus` VARCHAR(128) DEFAULT NULL,
+    `subject` VARCHAR(128) DEFAULT NULL,
+    `mgtypetransport` VARCHAR(64) DEFAULT NULL,
+    PRIMARY KEY (`mgtransportsid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+		<table>
+			<name>vtiger_mgtransportscf</name>
+			<sql><![CDATA[CREATE TABLE `vtiger_mgtransportscf` (
+  `mgtransportsid` int(11) NOT NULL,
+  PRIMARY KEY (`mgtransportsid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8]]></sql>
+		</table>
+	</tables>
+</schema>

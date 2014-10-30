@@ -2,7 +2,7 @@
 
 
 //This is the sharing access privilege file
-$defaultOrgSharingPermission=array('2'=>2,'4'=>2,'6'=>2,'7'=>2,'9'=>3,'13'=>2,'16'=>3,'20'=>2,'21'=>2,'22'=>2,'23'=>2,'26'=>2,'8'=>2,'14'=>2,'34'=>2,'35'=>2,'37'=>2,'41'=>2,'42'=>2,'43'=>2,'44'=>2,'46'=>2,'18'=>2,'50'=>2,);
+$defaultOrgSharingPermission=array('2'=>2,'4'=>2,'6'=>2,'7'=>2,'9'=>3,'13'=>2,'16'=>3,'20'=>2,'21'=>2,'22'=>2,'23'=>2,'26'=>2,'8'=>2,'14'=>2,'34'=>2,'35'=>2,'37'=>2,'41'=>2,'42'=>2,'43'=>2,'44'=>2,'46'=>2,'18'=>2,'50'=>2,'56'=>2,'57'=>2,);
 
 $related_module_share=array(2=>array(6,),13=>array(6,),20=>array(6,2,),22=>array(6,2,20,),23=>array(6,22,),);
 
@@ -141,5 +141,13 @@ $Villes_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
 $Vehicules_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
 
 $Vehicules_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$MGTransports_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$MGTransports_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$RsnTODO_share_read_permission=array('ROLE'=>array(),'GROUP'=>array());
+
+$RsnTODO_share_write_permission=array('ROLE'=>array(),'GROUP'=>array());
 
 ?>

@@ -1670,6 +1670,8 @@ if($fileid == '') {
 	 * Default (generic) function to handle the related list for the module.
 	 * NOTE: Vtiger_Module::setRelatedList sets reference to this function in vtiger_relatedlists table
 	 * if function name is not explicitly specified.
+	 *
+	 * Incompatible with Users module : does not inherits of crmentity
 	 */
 	function get_related_list($id, $cur_tab_id, $rel_tab_id, $actions = false) {
 
@@ -1712,9 +1714,9 @@ if($fileid == '') {
 
 		$query = "SELECT vtiger_crmentity.*, $other->table_name.*";
 
-		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name',
-														'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query .= ", CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'cur_user.first_name',
+								'last_name' => 'cur_user.last_name'), 'Users');
+		$query .= ", CASE WHEN (cur_user.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
 
 		$more_relation = '';
 		if (!empty($other->related_tables)) {
@@ -1729,12 +1731,12 @@ if($fileid == '') {
 				$more_relation .= " LEFT JOIN $tname ON $tname.$relmap[0] = $relmap[1].$relmap[2]";
 			}
 		}
-
+		
 		$query .= " FROM $other->table_name";
 		$query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
 		$query .= " INNER JOIN vtiger_crmentityrel ON (vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid OR vtiger_crmentityrel.crmid = vtiger_crmentity.crmid)";
 		$query .= $more_relation;
-		$query .= " LEFT  JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid";
+		$query .= " LEFT  JOIN vtiger_users cur_user ON cur_user.id = vtiger_crmentity.smownerid";
 		$query .= " LEFT  JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
 		$query .= " WHERE vtiger_crmentity.deleted = 0 AND (vtiger_crmentityrel.crmid = $id OR vtiger_crmentityrel.relcrmid = $id)";
 		$return_value = GetRelatedList($currentModule, $related_module, $other, $query, $button, $returnset);
@@ -1752,6 +1754,9 @@ if($fileid == '') {
 	 * These dependent records can be retrieved through this function.
 	 * For eg: A trouble ticket can be related to an Account or a Contact.
 	 * From a given Contact/Account if we need to fetch all such dependent trouble tickets, get_dependents_list function can be used.
+	 *
+	 * ED141025
+	 * Incompatible with Users module : does not inherits of crmentity
 	 */
 	function get_dependents_list($id, $cur_tab_id, $rel_tab_id, $actions = false) {
 
@@ -1801,9 +1806,9 @@ if($fileid == '') {
 
 			$query = "SELECT vtiger_crmentity.*, $other->table_name.*";
 
-			$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name',
-														'last_name' => 'vtiger_users.last_name'), 'Users');
-			$query .= ", CASE WHEN (vtiger_users.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
+			$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'cur_user.first_name',
+									'last_name' => 'cur_user.last_name'), 'Users');
+			$query .= ", CASE WHEN (cur_user.user_name NOT LIKE '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name";
 
 			$more_relation = '';
 			if (!empty($other->related_tables)) {
@@ -1823,7 +1828,7 @@ if($fileid == '') {
 			$query .= " INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = $other->table_name.$other->table_index";
 			$query .= " INNER  JOIN $this->table_name   ON $this->table_name.$this->table_index = $other->table_name.$dependentColumn";
 			$query .= $more_relation;
-			$query .= " LEFT  JOIN vtiger_users        ON vtiger_users.id = vtiger_crmentity.smownerid";
+			$query .= " LEFT  JOIN vtiger_users cur_user ON cur_user.id = vtiger_crmentity.smownerid";
 			$query .= " LEFT  JOIN vtiger_groups       ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
 
 			$query .= " WHERE vtiger_crmentity.deleted = 0 AND $this->table_name.$this->table_index = $id";
@@ -1833,7 +1838,7 @@ if($fileid == '') {
 		if ($return_value == null)
 			$return_value = Array();
 		$return_value['CUSTOM_BUTTON'] = $button;
-
+		
 		return $return_value;
 	}
 

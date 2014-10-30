@@ -22,7 +22,6 @@ class Accounts_DetailView_Model extends Vtiger_DetailView_Model {
 		$recordModel = $this->getRecord();
 
 		$linkModelList = parent::getDetailViewLinks($linkParams);
-
 		if($currentUserModel->hasModulePermission($emailModuleModel->getId())) {
 			$basicActionLink = array(
 				'linktype' => 'DETAILVIEWBASIC',

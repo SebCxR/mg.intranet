@@ -220,7 +220,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$textColor = $colorComponents[1];
 			$vehiculeEvents = array();
 			
-			$this->pullEventsByVehiculeId($start, $end, &$vehiculeEvents,$vehicid,$backgroundColor,$textColor);
+			$this->pullEventsByVehiculeId($start, $end, $vehiculeEvents,$vehicid,$backgroundColor,$textColor);
 								
 			$result[$vehicid] = $vehiculeEvents;
 		}
@@ -361,7 +361,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$textColor = $colorComponents[1];
 			$invitedEvents = array();
 			
-			$this->pullEventsByInvitedId($start, $end, &$invitedEvents,$inviteeid,$backgroundColor,$textColor);
+			$this->pullEventsByInvitedId($start, $end, $invitedEvents,$inviteeid,$backgroundColor,$textColor);
 								
 			$result[$inviteeid] = $invitedEvents;
 		}

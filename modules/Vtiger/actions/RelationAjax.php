@@ -72,8 +72,10 @@ class Vtiger_RelationAjax_Action extends Vtiger_Action_Controller {
 		$sourceRecordId = $request->get('src_record');
 
 		$relatedModule = $request->get('related_module');
+		if(!$relatedModule)/* ED141025 */
+			throw new Exception('RelationAjax.php->deleteRelation() : Parameter "related_module" is missing or empty');
 		$relatedRecordIdList = $request->get('related_record_list');
-
+		
 		//Setting related module as current module to delete the relation
 		vglobal('currentModule', $relatedModule);
 
