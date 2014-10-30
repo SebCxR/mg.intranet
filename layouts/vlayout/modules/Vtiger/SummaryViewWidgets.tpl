@@ -23,6 +23,23 @@
 						<div class="widgetContainer_{$smarty.foreach.count.index}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}">
 							<div class="widget_header row-fluid">
 								<span class="span8 margin0px"><h4>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</h4></span>
+								
+								{assign var=RECORD_ACTIONS value=$DETAIL_VIEW_WIDGET->get('action')}
+								{if is_array($RECORD_ACTIONS)}
+									{foreach item=RECORD_ACTION from=$RECORD_ACTIONS name=RECORD_ACTION_IDX}
+	
+										{assign var=IS_SELECT_BUTTON value={$RECORD_ACTION eq "Select"}}
+										<button type="button" class="btn addButton
+										    {if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
+										    {if $IS_SELECT_BUTTON eq true} data-moduleName={$DETAIL_VIEW_WIDGET->get('linkName')} {/if}
+										    data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}"
+										    {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
+											    {if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}
+											    &nbsp;<strong>{vtranslate('LBL_'|cat:strtoupper($RECORD_ACTION),$MODULE_NAME)}</strong>
+										</button>
+									{/foreach}
+									<input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
+								{/if}
 							</div>
 							<div class="widget_contents">
 							</div>
@@ -41,6 +58,23 @@
 						<div class="widgetContainer_{$smarty.foreach.count.index}" data-url="{$DETAIL_VIEW_WIDGET->getUrl()}" data-name="{$DETAIL_VIEW_WIDGET->getLabel()}">
 							<div class="widget_header row-fluid">
 								<span class="span8 margin0px"><h4>{vtranslate($DETAIL_VIEW_WIDGET->getLabel(),$MODULE_NAME)}</h4></span>
+								
+								{assign var=RECORD_ACTIONS value=$DETAIL_VIEW_WIDGET->get('action')}
+								{if is_array($RECORD_ACTIONS)}
+									{foreach item=RECORD_ACTION from=$RECORD_ACTIONS name=RECORD_ACTION_IDX}
+	
+										{assign var=IS_SELECT_BUTTON value={$RECORD_ACTION eq "Select"}}
+										<button type="button" class="btn addButton
+										    {if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
+										    {if $IS_SELECT_BUTTON eq true} data-moduleName={$DETAIL_VIEW_WIDGET->get('linkName')} {/if}
+										    data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}"
+										    {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
+											    {if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}
+											    &nbsp;<strong>{vtranslate('LBL_'|cat:strtoupper($RECORD_ACTION),$MODULE_NAME)}</strong>
+										</button>
+									{/foreach}
+									<input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
+								{/if}
 							</div>
 							<div class="widget_contents">
 							</div>

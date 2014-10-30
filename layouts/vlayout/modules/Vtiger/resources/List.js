@@ -319,14 +319,14 @@ jQuery.Class("Vtiger_List_Js",{
 			"excluded_ids" : excludedIds
 		};
 
-        var listViewInstance = Vtiger_List_Js.getInstance();
-        var searchValue = listViewInstance.getAlphabetSearchValue();
+	     var listViewInstance = Vtiger_List_Js.getInstance();
+	     var searchValue = listViewInstance.getAlphabetSearchValue();
 
-		if((typeof searchValue != "undefined") && (searchValue.length > 0)) {
-            postData['search_key'] = listViewInstance.getAlphabetSearchField();
-            postData['search_value'] = searchValue;
-            postData['operator'] = "s";
-        }
+	     if((typeof searchValue != "undefined") && (searchValue.length > 0)) {
+			  postData['search_key'] = listViewInstance.getAlphabetSearchField();
+			  postData['search_value'] = searchValue;
+			  postData['operator'] = "s";
+	     }
 
 		var actionParams = {
 			"type":"POST",

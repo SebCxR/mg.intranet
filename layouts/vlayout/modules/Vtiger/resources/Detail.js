@@ -843,11 +843,11 @@ jQuery.Class("Vtiger_Detail_Js",{
 			var element = jQuery(e.currentTarget);
 			var selectedTabElement = thisInstance.getSelectedTab();
 			var relatedModuleName = thisInstance.getRelatedModuleName();
-            var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ relatedModuleName +'"]');
-            if(quickCreateNode.length <= 0) {
-                window.location.href = element.data('url');
-                return;
-            }
+			var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ relatedModuleName +'"]');
+			if(quickCreateNode.length <= 0) {
+			    window.location.href = element.data('url');
+			    return;
+			}
 
 			var relatedController = new Vtiger_RelatedList_Js(thisInstance.getRecordId(), app.getModuleName(), selectedTabElement, relatedModuleName);
 			relatedController.addRelatedRecord(element);

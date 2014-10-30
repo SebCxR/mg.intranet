@@ -26,58 +26,54 @@ class MGTransports_DetailView_Model extends Vtiger_DetailView_Model {
 
 		$documentsInstance = Vtiger_Module_Model::getInstance('Vehicules');
 		if($userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($documentsInstance->getId(), 'EditView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Véhicules',
 					'linkName'	=> $documentsInstance->getName(),
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Vehicules&mode=showRelatedRecords&page=1&limit=25',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$documentsInstance->getQuickCreateUrl()
+					'action'	=>	array('Select'),
+					'actionURL' =>	$documentsInstance->getListViewUrl()
 			);
 		}
 
 		$contactsInstance = Vtiger_Module_Model::getInstance('Contacts');
 		if($userPrivilegesModel->hasModuleActionPermission($contactsInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($contactsInstance->getId(), 'EditView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Contacts',
 					'linkName'	=> $contactsInstance->getName(),
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Contacts&mode=showRelatedRecords&page=1&limit=15',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$contactsInstance->getQuickCreateUrl()
+					'action'	=> array('Select'),
+					'actionURL' =>	$contactsInstance->getListViewUrl()
 			);
 		}
 		
 		$productsInstance = Vtiger_Module_Model::getInstance('Products');
 		if($userPrivilegesModel->hasModuleActionPermission($productsInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($productsInstance->getId(), 'EditView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Articles',
 					'linkName'	=> $productsInstance->getName(),
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Products&mode=showRelatedRecords&page=1&limit=15',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$productsInstance->getQuickCreateUrl()
+					'action'	=>array('Select'),
+					'actionURL' =>	$productsInstance->getListViewUrl()
 			);
 		}
 		
 		//TODO showRelatedRecords ne cherche pas au bon endroit pour Users
 		$usersInstance = Vtiger_Module_Model::getInstance('MGChauffeurs');
 		if($userPrivilegesModel->hasModuleActionPermission($usersInstance->getId(), 'DetailView')) {
-			$createPermission = $userPrivilegesModel->hasModuleActionPermission($usersInstance->getId(), 'EditView');
 			$widgets[] = array(
 					'linktype' => 'DETAILVIEWWIDGET',
 					'linklabel' => 'Chauffeurs',
 					'linkName'	=> $usersInstance->getName(),
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=MGChauffeurs&mode=showRelatedRecords&page=1&limit=15',
-					'action'	=>	($createPermission == true) ? array('Add') : array(),
-					'actionURL' =>	$usersInstance->getQuickCreateUrl()
+					'action'	=> array('Select'),
+					'actionURL' =>	$usersInstance->getListViewUrl()
 			);
 		}
 
