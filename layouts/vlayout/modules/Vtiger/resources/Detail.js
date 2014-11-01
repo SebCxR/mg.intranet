@@ -384,8 +384,14 @@ jQuery.Class("Vtiger_Detail_Js",{
 		return jQuery('#recordId').val();
 	},
 
-	getRelatedModuleName : function() {
-		return jQuery('.relatedModuleName',this.getContentHolder()).val();
+	/* ED141101
+	 * added $contentHolder
+	 */
+	getRelatedModuleName : function($contentHolder) {
+	    if (!$contentHolder) {
+		$contentHolder = this.getContentHolder();
+	    }
+	    return jQuery('.relatedModuleName',$contentHolder).val();
 	},
 
 
@@ -743,9 +749,18 @@ jQuery.Class("Vtiger_Detail_Js",{
 			relatedController.sortHandler(element);
 		});
 		
+		/* ED141101
+		 * ici, le on_click sur le bouton "Sélectionner" en en-tête de summary widget
+		 */
 		detailContentsHolder.on('click', 'button.selectRelation', function(e){
 			var selectedTabElement = thisInstance.getSelectedTab();
-			var relatedModuleName = thisInstance.getRelatedModuleName();
+			/* ED141101
+			 * Bug in case of summary widget header button : get last RelatedModule name
+			 */
+			var widgetHolder = $(this).parents('.summaryWidgetContainer:first');
+			if (widgetHolder.length === 0) 
+			    widgetHolder = false;
+			var relatedModuleName = thisInstance.getRelatedModuleName(widgetHolder);
 			var relatedController = new Vtiger_RelatedList_Js(thisInstance.getRecordId(), app.getModuleName(), selectedTabElement, relatedModuleName);
 			relatedController.showSelectRelationPopup().then(function(data){
 				var emailEnabledModule = jQuery(data).find('[name="emailEnabledModules"]').val();
@@ -761,15 +776,35 @@ jQuery.Class("Vtiger_Detail_Js",{
 			var instance = Vtiger_Detail_Js.getInstance();
 			var key = instance.getDeleteMessageKey();
 			var message = app.vtranslate(key);
+					
+			/* ED141101
+			* Bug in case of summary widget header button : get last RelatedModule name
+			*/
+		       var widgetHolder = $(this).parents('.summaryWidgetContainer:first');
+		       if (widgetHolder.length === 0) 
+			   widgetHolder = false;
+			   
 			Vtiger_Helper_Js.showConfirmationBox({'message' : message}).then(
 				function(e) {
 					var row = element.closest('tr');
 					var relatedRecordid = row.data('id');
 					var selectedTabElement = thisInstance.getSelectedTab();
-					var relatedModuleName = thisInstance.getRelatedModuleName();
+					
+					/* ED141101
+					* Bug in case of summary widget header button : get last RelatedModule name
+					*/
+				       var relatedModuleName = thisInstance.getRelatedModuleName(widgetHolder);
+				       //var relatedModuleName = thisInstance.getRelatedModuleName();
+					
 					var relatedController = new Vtiger_RelatedList_Js(thisInstance.getRecordId(), app.getModuleName(), selectedTabElement, relatedModuleName);
 					relatedController.deleteRelation([relatedRecordid]).then(function(response){
-						relatedController.loadRelatedList();
+						/* ED141101
+						 */
+						if (widgetHolder) {
+						    selectedTabElement.click(); //TODO reload widget only ?
+						}
+						else
+						    relatedController.loadRelatedList();
 					});
 				},
 				function(error, err){

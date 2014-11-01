@@ -33,6 +33,7 @@ class MGTransports_DetailView_Model extends Vtiger_DetailView_Model {
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Vehicules&mode=showRelatedRecords&page=1&limit=25',
 					'action'	=>	array('Select'),
+					'actionlabel'	=>	array('Compléter la liste'),
 					'actionURL' =>	$documentsInstance->getListViewUrl()
 			);
 		}
@@ -46,6 +47,7 @@ class MGTransports_DetailView_Model extends Vtiger_DetailView_Model {
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Contacts&mode=showRelatedRecords&page=1&limit=15',
 					'action'	=> array('Select'),
+					'actionlabel'	=>	array('Compléter la liste'),
 					'actionURL' =>	$contactsInstance->getListViewUrl()
 			);
 		}
@@ -59,6 +61,7 @@ class MGTransports_DetailView_Model extends Vtiger_DetailView_Model {
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=Products&mode=showRelatedRecords&page=1&limit=15',
 					'action'	=>array('Select'),
+					'actionlabel'	=>	array('Compléter la liste'),
 					'actionURL' =>	$productsInstance->getListViewUrl()
 			);
 		}
@@ -73,6 +76,7 @@ class MGTransports_DetailView_Model extends Vtiger_DetailView_Model {
 					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
 							'&relatedModule=MGChauffeurs&mode=showRelatedRecords&page=1&limit=15',
 					'action'	=> array('Select'),
+					'actionlabel'	=>	array('Compléter la liste'),
 					'actionURL' =>	$usersInstance->getListViewUrl()
 			);
 		}

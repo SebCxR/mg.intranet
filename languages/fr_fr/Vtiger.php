@@ -644,10 +644,12 @@ $languageStrings = array(
 	//ED141025 MGTransports
 	'CONTACTS' => 'Contacts',
 	'VEHICULES' => 'Véhicules',
+	'LBL_VEHICULES' => 'Véhicules',
 	'CHAUFFEURS' => 'Chauffeurs',
 	'PRODUCTS' => 'Articles',
 	'MGChauffeurs' => 'Chauffeurs',
 	'TRANSPORTS' => 'Transports',
+	'LBL_TRANSPORTS' => 'Transports',
 	'EVENTS' => 'Evénements',
 	'TASKS' => 'Tâches',
 	

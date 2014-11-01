@@ -34,14 +34,19 @@
 					</span>
 					{foreach item=LISTVIEW_BASICACTION from=$LISTVIEW_LINKS['LISTVIEWBASIC']}
 						<span class="btn-group">
-							<button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}" class="btn addButton" {if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0} onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'{else} onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'{/if}><i class="icon-plus icon-white"></i>&nbsp;<strong>{vtranslate($LISTVIEW_BASICACTION->getLabel(), $MODULE)}</strong></button>
+							<button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}"
+								class="btn addButton"
+								{if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0}
+								onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'
+								{else} onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'{/if}>
+								<i class="icon-plus icon-white"></i>&nbsp;<strong>{vtranslate($LISTVIEW_BASICACTION->getLabel(), $MODULE)}</strong>
+							</button>
 						</span>
 					{/foreach}
 				</span>
 			<span class="btn-toolbar span4">
 				<span class="customFilterMainSpan btn-group">
 					{if $CUSTOM_VIEWS|@count gt 0}
-
 						<select id="customFilter" style="width:350px;">
 							{foreach key=GROUP_LABEL item=GROUP_CUSTOM_VIEWS from=$CUSTOM_VIEWS}
 							<optgroup label=' {if $GROUP_LABEL eq 'Mine'} &nbsp; {else if} {vtranslate($GROUP_LABEL)} {/if}' >

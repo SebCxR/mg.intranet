@@ -10,23 +10,42 @@
 ********************************************************************************/
 -->*}
 {strip}
-	{*foreach item=HEADER from=$RELATED_HEADERS}
-		{if $HEADER->get('label') eq "Product Name"}
-			{assign var=PRODUCT_NAME_HEADER value={vtranslate($HEADER->get('label'),$MODULE)}}
-		{elseif $HEADER->get('label') eq "Unit Price"}
-			{assign var=PRODUCT_UNITPRICE_HEADER value={vtranslate($HEADER->get('label'),$MODULE)}}
-		{/if}
+<div class="relatedContainer">
+    <input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE}" />
+</div>
+<table class="table table-bordered listViewEntriesTable unstyled">
+	{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
+		<tr class="listViewEntries row-fluid" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
+			<td class="span9 textOverflowEllipsis" nowrap>
+				<a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('productname')}">
+					{$RELATED_RECORD->getDisplayValue('productname')}
+				</a>
+			</td>
+			<td class="span1" style="border: none !important"-->
+				<span class="pull-right">{$RELATED_RECORD->getDisplayValue('qty')}</span>
+			</td>
+			<td class="span1" style="border: none !important"-->
+			<div class="pull-right actions">
+			    <span class="actionImages">
+				<span class="pull-right"><a class="relationDelete"><i title="{vtranslate('LBL_DELETE', $MODULE)}" class="icon-trash alignMiddle"></i></a></span>
+			    </span>
+			</div>
+			</td>
+		</tr>
 	{/foreach}
-	<div class="row-fluid">		
-		<span class="span7">
-			<strong>{$PRODUCT_NAME_HEADER}</strong>
-		</span>
-		<span class="span4">
-			<span class="pull-right">
-				<strong>{$PRODUCT_UNITPRICE_HEADER}</strong>
-			</span>
-		</span>
-	</div>*}
+	{assign var=NUMBER_OF_RECORDS value=count($RELATED_RECORDS)}
+	{if $NUMBER_OF_RECORDS eq 5}
+		<tr>
+			<div class="row-fluid">
+				<div class="pull-right">
+					<a class="moreRecentProducts cursorPointer">{vtranslate('LBL_MORE',$MODULE_NAME)}</a>
+				</div>
+			</div>
+		</tr>
+	{/if}
+</table>
+{/strip}
+{*
 	{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 		<div class="recentActivitiesContainer">
 			<ul class="unstyled">
@@ -53,4 +72,4 @@
 			</div>
 		</div>
 	{/if}
-{/strip}
+*}

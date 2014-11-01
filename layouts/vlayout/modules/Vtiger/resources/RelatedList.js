@@ -76,6 +76,13 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 		}
 	},
 	
+	/*
+	 * Affichage de la fenêtre de sélection d'un enregistrement à lier
+	 *
+	 * Appelé par
+	 * 	Detail.js detailContentsHolder.on('click', 'button.selectRelation', function(e){
+	 * ED141101
+	 */
 	showSelectRelationPopup : function(){
 		var aDeferred = jQuery.Deferred();
 		var thisInstance = this;
@@ -87,9 +94,16 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 					function(data){
 						var relatedCurrentPage = thisInstance.getCurrentPageNum();
 						var params = {'page':relatedCurrentPage};
-						thisInstance.loadRelatedList(params).then(function(data){
+						/* loadRelatedList : recharge l'onglet de la relation
+						 * bug pour les summary widgets
+						 * */
+						/*thisInstance.loadRelatedList(params).then(function(data){
 							aDeferred.resolve(data);
-						});
+						});*/
+						//TODO reload widget only ?
+						thisInstance.getSelectedTab().click().then(function(data){
+							aDeferred.resolve(data);
+						}); 
 					}
 				);
 			}
