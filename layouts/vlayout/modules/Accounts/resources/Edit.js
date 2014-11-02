@@ -10,8 +10,9 @@
 Vtiger_Edit_Js("Accounts_Edit_Js",{
    
 },{
-   
-    //Stored history of account name and duplicate check result
+	
+	
+	//Stored history of account name and duplicate check result
 	duplicateCheckCache : {},
 	
 	//This will store the editview form
@@ -19,13 +20,13 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
    
 	//Address field mapping within module
 	addressFieldsMappingInModule : {
-										'bill_street':'ship_street',
-										'bill_pobox':'ship_pobox',
-										'bill_city'	:'ship_city',
-										'bill_state':'ship_state',
-										'bill_code'	:'ship_code',
-										'bill_country':'ship_country'
-								},
+		'bill_street':'ship_street',
+		'bill_pobox':'ship_pobox',
+		'bill_city'	:'ship_city',
+		'bill_state':'ship_state',
+		'bill_code'	:'ship_code',
+		'bill_country':'ship_country'
+	},
 								
 	/**
 	 * This function will return the current form
@@ -221,6 +222,20 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 		}
 	},
 	
+	
+	/* ED141016
+	 * */
+	initAccountName : function(container) {
+		var thisInstance = this;
+		var name_src = (jQuery('#EditView input[name="lastname"]').val() + ' ' + jQuery('#EditView input[name="firstname"]').val()).trim();
+		if (!name_src)
+			return;
+		var $name_dest = $('input[name="accountname"]:first');
+		
+		if ($name_dest.length && !$name_dest.val())
+			$name_dest.val(name_src);
+	},
+
 	/**
 	 * Function which will register basic events which will be used in quick create as well
 	 *
@@ -231,5 +246,6 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 		this.registerEventForCopyingAddress(container);
 		this.registerReferenceSelectionEvent(container);
 			//container.trigger(Vtiger_Edit_Js.recordPreSave, {'value': 'edit'});
+		this.initAccountName(container);
 	}
 });

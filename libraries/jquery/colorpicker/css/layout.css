@@ -7,7 +7,7 @@
 	background-color: transparent;
 }
 .colorpicker { /* over dialog */
-	z-index: 9999;
+	z-index: 99999;
 }
 .q-fields label ~ .colorpicker-holder{
 	background-color: transparent;

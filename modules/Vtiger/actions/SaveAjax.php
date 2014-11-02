@@ -16,13 +16,20 @@ class Vtiger_SaveAjax_Action extends Vtiger_Save_Action {
 		$fieldModelList = $recordModel->getModule()->getFields();
 		$result = array();
 		foreach ($fieldModelList as $fieldName => $fieldModel) {
-            $recordFieldValue = $recordModel->get($fieldName);
-            if(is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
-                $recordFieldValue = implode(' |##| ', $recordFieldValue);
-            }
+			$recordFieldValue = $recordModel->get($fieldName);
+			if(is_array($recordFieldValue) && $fieldModel->getFieldDataType() == 'multipicklist') {
+				$recordFieldValue = implode(' |##| ', $recordFieldValue);
+			}
 			$fieldValue = $displayValue = Vtiger_Util_Helper::toSafeHTML($recordFieldValue);
 			if ($fieldModel->getFieldDataType() !== 'currency' && $fieldModel->getFieldDataType() !== 'datetime' && $fieldModel->getFieldDataType() !== 'date') { 
-				$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId()); 
+				/* ED141005
+				 * les types 56, 15, 16 et 33 ont une chance de voir leur valeur d'affichage adaptée par le Record_Model
+				 */
+				if(in_array( $fieldModel->get('uitype'), array(56,15,16,33)))
+					$displayValue = $recordModel->getDisplayValue($fieldName, $recordModel->getId());
+				else
+					$displayValue = $fieldModel->getDisplayValue($fieldValue, $recordModel->getId()); 
+				
 			}
 			
 			$result[$fieldName] = array('value' => $fieldValue, 'display_value' => $displayValue);

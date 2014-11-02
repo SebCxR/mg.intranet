@@ -53,6 +53,11 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 		$viewer->assign('RELATED_MODULE', $relatedModuleModel);
 		$viewer->assign('RELATED_ENTIRES_COUNT', $noOfEntries);
 		$viewer->assign('RELATION_FIELD', $relationField);
+		
+		/*ED140926*/
+		$viewer->assign('FROM_TAB_LABEL', $label);
+		
+		$viewer->assign('UNKNOWN_FIELD_RETURNS_VALUE', $unknown_field_returns_value); /*ED140907*/
 
 		if (PerformancePrefs::getBoolean('LISTVIEW_COMPUTE_PAGE_COUNT', false)) {
 			$totalCount = $relationListView->getRelatedEntriesCount();

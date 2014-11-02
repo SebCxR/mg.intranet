@@ -174,7 +174,7 @@ $languageStrings = array (
 		'LBL_MY_VARIABLE' => 'My variable',
 		'LBL_MY_VALUE' => 'My value',
 		'LBL_CUSTOM_VALUES_DESCRIPTION' => 'You can set your own fields and variables. To do this modify these files: <ul><li>/vlayouts/layout/Settings/ModuleDesigner/Custom.tpl</li>'.
-											'<li>/vlayouts/layout/Settings/ModuleDesigner/resources/CustomScript.js</li>'.
+											'<li>/layouts/vlayout/Settings/ModuleDesigner/resources/CustomScript.js</li>'.
 											'<li>/modules/ModuleDesigner/CustomManifestStructure.php</li></ul>'.
 											'You can also create plugins to handle your variables, in the directory /modules/ModuleDesigner/plugins'
 );
@@ -190,7 +190,9 @@ $jsLanguageStrings = array(
 	'LBL_FILE' => 'The file',
 	'LBL_DOES_NOT_EXIST' => 'does not exist',
 	'LBL_MODULE_FOLDER' => 'Module\'s directory',
-	'LBL_NOT_ALLOWED_TO_EDIT_THE_FIELD' => 'You are not allowed to edit this system field'
+	'LBL_NOT_ALLOWED_TO_EDIT_THE_FIELD' => 'You are not allowed to edit this system field',
+	'LBL_EMPTY_FIELD_FILTER' => 'Error, Filters cannot have empty fields.',
+	'LBL_CANNOT_EDIT_REMOVE_FIELD' => 'You cannot edit/remove a non-editable field',
 );
 
 ?>

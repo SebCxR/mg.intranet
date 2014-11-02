@@ -232,4 +232,17 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 			return $overRideQuery;
 		}
 	}
+	
+	
+
+	/**
+	 * Function to save a given record model of the current module
+	 * @param Vtiger_Record_Model $recordModel
+	 */
+	public function saveRecord(Vtiger_Record_Model $recordModel) {
+		// ED141016 : majuscules obligatoires
+		$recordModel->set('lastname', mb_strtoupper(remove_accent($recordModel->get('lastname'))));
+		
+		return parent::saveRecord($recordModel);
+	}
 }

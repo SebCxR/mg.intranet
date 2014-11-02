@@ -17,6 +17,54 @@
 	<script type="text/javascript" src="libraries/jquery/jquery.blockUI.js"></script>
 	<script type="text/javascript" src="libraries/jquery/chosen/chosen.jquery.min.js"></script>
 	<script type="text/javascript" src="libraries/jquery/select2/select2.min.js"></script>
+        <script>/* ED141011 - configuration du jquery/select2
+                 * transpose la couleur des options de base dans le plugin
+                 */
+        $.fn.select2.defaults.__formatResult_original = $.fn.select2.defaults.formatResult;
+        $.fn.select2.defaults.formatResult = function(result, container, query) {
+            if (result && result.element.length && result.element[0].style.backgroundColor) {
+                container.css('background-color', result.element[0].style.backgroundColor);
+            }
+            return this.__formatResult_original(result, container, query);
+        }{* not called (overrided)
+        $.fn.select2.defaults.__formatSelection_original = $.fn.select2.defaults.formatSelection;
+        $.fn.select2.defaults.formatSelection = function(data, container) {
+            var $select = $(this).parents(".select2-container:first").nextAll("select:first");
+                var uicolor = $select.find('option[selected]').attr('uicolor');
+                if ($uicolor) {
+                    $(this).children('span:first').css('background-color', $uicolor);
+                }
+            return this.__formatSelection_original(data, container);
+        }*}
+        
+        /** ED141011
+         * when select2 is created, manage colors
+         * Called on first load and when filter is selected
+         * Pblm : $.select2 does not manage selected attribute
+         */
+        $('body').on('DOMNodeInserted', 'a.select2-choice', function () {
+                var $select = $(this).parents(".select2-container:first").nextAll("select:first");
+                var $this = $(this)
+                , text = $this.text().trim()
+                , $option;
+                //search option with same text
+                $select.find('option').each(function(){
+                    if (text == $(this).text().trim()) {
+                        $option = $(this);
+                        return false;//break
+                    }
+                });
+                if ($option){
+                    var uicolor = $option[0].style.backgroundColor;
+                    if (uicolor)
+                        //$this.children('span:first').css('background-color', uicolor);
+                        $this.css({ 'background-image': 'none', 'background-color': uicolor });
+                    else
+                        //$this.children('span:first').css('background-color', 'inherit');
+                        $this.css({ 'background-image': 'inherit', 'background-color': 'inherit' });
+                }
+          });
+        </script>
 	<script type="text/javascript" src="libraries/jquery/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
 	<script type="text/javascript" src="libraries/jquery/jquery.class.min.js"></script>
 	<script type="text/javascript" src="libraries/jquery/defunkt-jquery-pjax/jquery.pjax.js"></script>

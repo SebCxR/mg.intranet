@@ -20,7 +20,21 @@ class Inventory_ListView_Model extends Vtiger_ListView_Model {
 	public function getAdvancedLinks(){
 		return parent::getAdvancedLinks();
 	}
-
+	
+	/**
+	 * Function to get the list view header
+	 * @return <Array> - List of Vtiger_Field_Model instances
+	 *
+	 * ED140926
+	 */
+	public function getListViewHeaders() {
+		$headerFieldModels = parent::getListViewHeaders();
+		if(isset($headerFieldModels['productid']))
+			$headerFieldModels['productid']->label = 'LBL_PRODUCT_NAME';
+		//var_dump($headerFieldModels);
+		return $headerFieldModels;
+	}
+	
 	/**
 	 * Function to get the list of listview links for the module
 	 * @param <Array> $linkParams

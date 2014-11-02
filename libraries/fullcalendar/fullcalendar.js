@@ -4545,6 +4545,7 @@ function DayEventRenderer() {
 	var renderDayOverlay = t.renderDayOverlay;
 	var clearOverlays = t.clearOverlays;
 	var clearSelection = t.clearSelection;
+	var viewName = t.name; //ED141023
 	
 	
 	
@@ -4658,8 +4659,27 @@ function DayEventRenderer() {
 				if (seg.isEnd) {
 					classes.push('fc-corner-left');
 				}
-				leftCol = dayOfWeekCol(seg.end.getDay()-1);
-				rightCol = dayOfWeekCol(seg.start.getDay());
+				/* ED 141023
+				 *
+				 */
+				if (viewName == 'year') {
+					leftCol = dateCell(seg.start).col;
+					var dateEnd;
+					// 7 days mini
+					if (dayDiff(seg.end, seg.start) < 7) {
+						dateEnd = cloneDate(seg.start);
+						dateEnd.addDays(7 -1);
+					}
+					else {
+						dateEnd = cloneDate(seg.end);
+						dateEnd.addDays(-1);
+					}
+					rightCol = dateCell(dateEnd).col;
+				}
+				else {
+					leftCol = dayOfWeekCol(seg.end.getDay()-1);
+					rightCol = dayOfWeekCol(seg.start.getDay());
+				}
 				left = seg.isEnd ? colContentLeft(leftCol) : minLeft;
 				right = seg.isStart ? colContentRight(rightCol) : maxLeft;
 			}else{
@@ -4669,8 +4689,27 @@ function DayEventRenderer() {
 				if (seg.isEnd) {
 					classes.push('fc-corner-right');
 				}
-				leftCol = dayOfWeekCol(seg.start.getDay());
-				rightCol = dayOfWeekCol(seg.end.getDay()-1);
+				/* ED 141023
+				 *
+				 */
+				if (viewName == 'year') {
+					leftCol = dateCell(seg.start).col;
+					var dateEnd;
+					// 7 days mini
+					if (dayDiff(seg.end, seg.start) < 7) {
+						dateEnd = cloneDate(seg.start);
+						dateEnd.addDays(7 -1);
+					}
+					else {
+						dateEnd = cloneDate(seg.end);
+						dateEnd.addDays(-1);
+					}
+					rightCol = dateCell(dateEnd).col;
+				}
+				else {
+					leftCol = dayOfWeekCol(seg.start.getDay());
+					rightCol = dayOfWeekCol(seg.end.getDay()-1);
+				}
 				left = seg.isStart ? colContentLeft(leftCol) : minLeft;
 				right = seg.isEnd ? colContentRight(rightCol) : maxLeft;
 			}

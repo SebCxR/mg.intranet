@@ -72,8 +72,13 @@
 			</tr>
 		</thead>
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
-		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
-            <td  width="5%" class="{$WIDTHTYPE}">
+		{assign var=UICOLOR value=$LISTVIEW_ENTRY->get('uicolor')}
+		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}'
+			data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
+			id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}"
+		>
+			<td  width="5%" class="{$WIDTHTYPE}"
+			{if $UICOLOR neq null} style="background-color: {$UICOLOR};"{/if}>
 				<input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
 			</td>
 			{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
@@ -88,6 +93,8 @@
 					{else}
 						{$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 					{/if}
+				{elseif	$LISTVIEW_HEADER->get('uitype') eq '402'}
+				
 				{else}
 					{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 				{/if}

@@ -72,6 +72,16 @@ Class Inventory_Edit_View extends Vtiger_Edit_View {
 						|| $sourceModule === 'Potentials'
 						|| ($sourceModule === 'Vendors' && $moduleName === 'PurchaseOrder'))) {
 				$parentRecordModel = Vtiger_Record_Model::getInstanceById($sourceRecord, $sourceModule);
+				//
+				if($sourceModule === 'Contacts'){
+					/* ED141016 génération du compte du contact si manquant */
+					$accountRecordModel = $parentRecordModel->getAccountRecordModel();
+					$sourceModule = $accountRecordModel->getModuleName();
+					$sourceRecord = $accountRecordModel->getId();
+					//echo('<pre>');var_dump($sourceRecord);echo('</pre>');
+					//$parentRecordModel = $accountRecordModel; pas nécessaire et en plus, ça ne fonctionne pas
+				}
+				
 				$recordModel->setParentRecordData($parentRecordModel);
 			}
 		}

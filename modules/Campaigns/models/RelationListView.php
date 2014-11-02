@@ -10,6 +10,38 @@
 
 class Campaigns_RelationListView_Model extends Vtiger_RelationListView_Model {
 
+	
+	/* Retourne les en-têtes des colonnes des contacts
+	 * Ajoute les champs de la relation
+	 * */
+	public function getHeaders() {
+		$headerFields = array();
+		
+		$relationModel = $this->getRelationModel();
+		$relatedModuleModel = $relationModel->getRelationModuleModel();
+		
+		//var_dump($relatedModuleModel->name);
+		
+		switch($relatedModuleModel->name){
+		  case "Contacts": //TODO regrouper avec Contacts/models/RelationListView.php
+		    
+		      $headerFieldNames = array(
+			  'isgroup', 'firstname', 'lastname', 'accounttype', 'mailingzip', 'mailingcity', 'mailingcountry'
+		      );
+		      foreach($headerFieldNames as $fieldName) {
+			  $headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
+		      }
+		      
+		    break;
+		  
+		  default:
+		    return parent::getHeaders();
+		}
+
+		return $headerFields;
+	}
+	
+	
 	/**
 	 * Function to get the links for related list
 	 * @return <Array> List of action models <Vtiger_Link_Model>
@@ -56,8 +88,8 @@ class Campaigns_RelationListView_Model extends Vtiger_RelationListView_Model {
 			$relatedRecordIdsList = array_keys($relatedRecordModelsList);
 
 			$query = "SELECT campaignrelstatus, $fieldName FROM $tableName
-						INNER JOIN vtiger_campaignrelstatus ON vtiger_campaignrelstatus.campaignrelstatusid = $tableName.campaignrelstatusid
-						WHERE $fieldName IN (". generateQuestionMarks($relatedRecordIdsList).") AND campaignid = ?";
+				INNER JOIN vtiger_campaignrelstatus ON vtiger_campaignrelstatus.campaignrelstatusid = $tableName.campaignrelstatusid
+				WHERE $fieldName IN (". generateQuestionMarks($relatedRecordIdsList).") AND campaignid = ?";
 			array_push($relatedRecordIdsList, $parentRecordModel->getId());
 
 			$result = $db->pquery($query, $relatedRecordIdsList);

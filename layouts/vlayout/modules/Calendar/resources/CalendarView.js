@@ -231,6 +231,9 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			userDefaultActivityView ='agendaDay';
 		}else if(userDefaultActivityView == 'This Week'){
 			userDefaultActivityView ='agendaWeek';
+
+		}else if(userDefaultActivityView == 'This Year'){
+			userDefaultActivityView ='year';
 		}else{
 			userDefaultActivityView ='month';
 		}
@@ -312,7 +315,7 @@ jQuery.Class("Calendar_CalendarView_Js",{
 		
 		var config = {
 			header: {
-				left: 'month,agendaWeek,agendaDay',
+				left: 'month,agendaWeek,agendaDay',//'year,month,agendaWeek,agendaDay'
 				center: 'title today',
 				right: 'prev,next'
 			},
@@ -344,7 +347,8 @@ jQuery.Class("Calendar_CalendarView_Js",{
 				today: app.vtranslate('LBL_TODAY'),
 				month: app.vtranslate('LBL_MONTH'),
 				week: app.vtranslate('LBL_WEEK'),
-				day: app.vtranslate('LBL_DAY')
+				day: app.vtranslate('LBL_DAY'),
+				year: '8 mois'//app.vtranslate('LBL_YEAR')
 			},
 			allDayText : app.vtranslate('LBL_ALL_DAY'),
 			
@@ -355,12 +359,14 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			titleFormat: {
 				month: 'MMMM yyyy',
 				week: "d [MMMM] [yyyy]{ '&#8212;'d MMMM yyyy}",
-				day: 'dddd d MMMM yyyy'
+				day: 'dddd d MMMM yyyy',
+				year: "MMMM yyyy - '" + app.vtranslate('LBL_WEEK') + "' W" //TODO Translate
 			},
 			columnFormat: {
 				month: 'ddd',
 				week: 'ddd d/M',
-				day: 'dddd d/M'
+				day: 'dddd d/M',
+				year: 'W\'<br>\'d\'&nbsp;\'MMM'
 			},
 			timeFormat: {
 				agenda: 'H:mm{ - H:mm}'
@@ -369,8 +375,6 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			editable : true,
 			eventResize : updateInDB,	
 			eventDrop : updateInDB
-			
-			
 		}
 		if(typeof customConfig != 'undefined'){
 			config = jQuery.extend(config,customConfig);

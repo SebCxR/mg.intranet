@@ -32,7 +32,9 @@
                         {if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
                         data-url="{$RELATED_LINK->getUrl()}"
                     {/if}
-            {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>{if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}&nbsp;<strong>{$RELATED_LINK->getLabel()}</strong></button>
+            {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
+		{if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}
+		&nbsp;<strong>{$RELATED_LINK->getLabel()}</strong></button>
     </div>
 {/foreach}
 &nbsp;
@@ -41,7 +43,14 @@
     <span class="row-fluid">
         <span class="span7 pushDown">
             <span class="pull-right pageNumbers alignTop" data-placement="bottom" data-original-title="" style="margin-top: -5px">
-            {if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if}
+            {*ED140907 if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if*}
+	    {if !empty($RELATED_RECORDS)}
+		{assign var=START_RANGE value=$PAGING->getRecordStartRange()}
+		{if $START_RANGE gt 1}
+		    {$START_RANGE}&nbsp;{vtranslate('LBL_to', $RELATED_MODULE->get('name'))}&nbsp;
+		{/if}
+		{$PAGING->getRecordEndRange()}
+	    {/if}
         </span>
     </span>
     <span class="span5 pull-right">
@@ -83,7 +92,7 @@
             <thead>
                 <tr class="listViewHeaders">
                     {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
-							<th {if $HEADER_FIELD@last} colspan="2" {/if} nowrap class="{$WIDTHTYPE}">
+			<th {if $HEADER_FIELD@last} colspan="2" {/if} nowrap class="{$WIDTHTYPE}">
                             {if $HEADER_FIELD->get('column') eq 'access_count' or $HEADER_FIELD->get('column') eq 'idlists' }
                                 <a href="javascript:void(0);" class="noSorting">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}</a>
                             {elseif $HEADER_FIELD->get('column') eq 'time_start'}
@@ -97,20 +106,26 @@
                 </tr>
             </thead>
             {foreach item=RELATED_RECORD from=$RELATED_RECORDS}
+		{assign var=UICOLOR value=$RELATED_RECORD->get('uicolor')}
                 <tr class="listViewEntries" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
                     {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
                         {assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
-			<td class="{$WIDTHTYPE}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap>
+			    <td class="{$WIDTHTYPE}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap
+			    {if ($RELATED_HEADERNAME eq 'folderid') && ($UICOLOR neq null) && ($UICOLOR neq '')}/* ED141018 TODO elargir 'folderid' */
+				style="background-color: {$UICOLOR};"
+			    {/if}>
                             {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
                                 <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
                             {elseif $RELATED_HEADERNAME eq 'access_count'}
                                 {$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
                             {elseif $RELATED_HEADERNAME eq 'time_start'}
-                            {else}
+                            {elseif empty($UNKNOWN_FIELD_RETURNS_VALUE)}{*ED140907*}
                                 {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
+                            {else}{*ED140907*}
+                                {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME, false, $UNKNOWN_FIELD_RETURNS_VALUE)}
                             {/if}
                             {if $HEADER_FIELD@last}
-								</td><td nowrap class="{$WIDTHTYPE}">
+			    </td><td nowrap class="{$WIDTHTYPE}">
                                 <div class="pull-right actions">
                                     <span class="actionImages">
                                         <a href="{$RELATED_RECORD->getFullDetailViewUrl()}"><i title="{vtranslate('LBL_SHOW_COMPLETE_DETAILS', $MODULE)}" class="icon-th-list alignMiddle"></i></a>&nbsp;

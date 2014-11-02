@@ -205,8 +205,15 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 	 */
 	public function getWidgets() {
 		$moduleModel = $this->getModule();
-		$widgets = array();
-
+		/* ED140921 see /utils/Widget.php*/
+			//$widgets = array();
+			$tabid = getTabid($this->getModuleName());
+	
+			include_once("include/utils/Widget.php");
+			$widget_loader = new cWidget();                
+			$widgets = $widget_loader->GetDetailViewWidget($tabid, "&widget=1&record=".$this->getRecord()->getId());
+		/**/
+		
 		$modCommentsModel = Vtiger_Module_Model::getInstance('ModComments');
 		if($moduleModel->isCommentEnabled() && $modCommentsModel->isPermitted('EditView')) {
 			$widgets[] = array(

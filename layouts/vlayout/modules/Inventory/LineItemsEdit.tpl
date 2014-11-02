@@ -17,12 +17,13 @@
     -->
     {assign var="FINAL" value=$RELATED_PRODUCTS.1.final_details}
 
-    {assign var="IS_INDIVIDUAL_TAX_TYPE" value=false}
-    {assign var="IS_GROUP_TAX_TYPE" value=true}
+    {*ED141021 inversion de la valeur par defaut*}
+    {assign var="IS_INDIVIDUAL_TAX_TYPE" value=true}
+    {assign var="IS_GROUP_TAX_TYPE" value=false}
 
-    {if $FINAL.taxtype eq 'individual'}
-        {assign var="IS_GROUP_TAX_TYPE" value=false}
-        {assign var="IS_INDIVIDUAL_TAX_TYPE" value=true}
+    {if $FINAL.taxtype eq 'group'}
+        {assign var="IS_GROUP_TAX_TYPE" value=true}
+        {assign var="IS_INDIVIDUAL_TAX_TYPE" value=false}
     {/if}
 
     <table class="table table-bordered blockContainer lineItemTable" id="lineItemTab">

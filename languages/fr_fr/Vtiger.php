@@ -77,7 +77,7 @@ $languageStrings = array(
 	'LBL_ON_DEMAND_ADMIN'          => 'Ajouter / Supprimer Utilisateurs'          ,
 	'LBL_ANNOUNCEMENT'             => 'Annonce'                , 
 	'LBL_CALENDAR'                 => 'Agenda'                      , 
-	'LBL_POST'                     => 'Post'                        , 
+	'LBL_POST'                     => 'Enregistrer'                        , 
 	'LBL_GUIDER'                   => 'Guide'                      , 
 	'LBL_DISPLAY_TYPE'             => 'Type d\'affichage'                , 
 	'LBL_DISPLAY_WIDETYPE'         => 'Large'                        , 
@@ -117,6 +117,7 @@ $languageStrings = array(
 	'LBL_FULL_FORM'                => 'Formulaire complet'                   , 
 	'LBL_SIMPLE_FORM'              => 'Formulaire simple'                 , 
 	'LBL_ADD_YOUR_COMMENT_HERE'    => 'Ajouter un commentaire ici...'    , 
+	'LBL_REASON_FOR_CHANGING_COMMENT' => 'Motif de la modification de commentaire',
 	'LBL_REPLY'                    => 'Répondre'                       , 
 	'LBL_VIEW_THREAD'              => 'Afficher le fil de commentaires'                 , 
 	'LBL_NO_COMMENTS'              => 'Aucun Commentaire'                 , 
@@ -198,7 +199,7 @@ $languageStrings = array(
 	'LBL_ITEM_DETAILS'             => 'Détails'                    , 
 	'LBL_CURRENCY'                 => 'Monnaie'                     , 
 	'LBL_TAX_MODE'                 => 'Mode d\'application des taxes', 
-	'LBL_INDIVIDUAL'               => 'Individuel'                  , 
+	'LBL_INDIVIDUAL'               => 'Ligne à ligne'                  , 
 	'LBL_TOOLS'                    => 'Outils'                      , 
 	'LBL_ITEM_NAME'                => 'Nom'                         , 
 	'LBL_QTY_IN_STOCK'             => 'Qté en stock'               , 
@@ -496,8 +497,8 @@ $languageStrings = array(
 	'LBL_FOLDER_SAVED'             => 'Dossier sauvé'                , 
 	'LBL_FOLDER_EXISTS'            => 'Dossier déjà existant'       , 
 	'LBL_FOLDER_DELETED'           => 'Dossier supprimé'              , 
-	'Lead Source'                  => 'Source prospect'             , 
-	'Mobile'                       => 'Mobile'                      , 
+	'Lead Source'                  => 'Origine'             , 
+	'Mobile'                       => 'Portable'                      , 
 	'Notify Owner'                 => 'Notifier le proprétaire'    , 
 	'Other Phone'                  => 'Tél autre'                  , 
 	'Phone'                        => 'Téléphone'                 , 
@@ -627,6 +628,16 @@ $languageStrings = array(
 	'LBL_TRANSFER_OWNERSHIP' => 'Modifier l\'assignation',
 	'LBL_ASSIGNED_TO' 		=> 'Assigné à',
 	'LBL_VIEW_DETAILS' 		=> 'Afficher les détails',
+    
+	'LBL_to' => 'à' ,
+	'LBL_IS_EMPTY'=> 'is empty',
+        
+        
+	'LBL_NOTEPAD' => 'Post-it',
+	'LBL_NOTEPAD_NAME' => 'Titre',
+	'LBL_NOTEPAD_CONTENT' => 'Contenu',
+	'LBL_LAST_SAVED_ON' => 'Dernier enregistrement',
+	'Notebook' => 'Post-it',
 	
 	
 	'LBL_OPERATION_NOT_PERMITTED' => 'Operation non permise',

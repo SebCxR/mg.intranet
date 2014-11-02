@@ -12,7 +12,9 @@
 {strip}
 	<span class="span2">
 		{foreach key=ITER item=IMAGE_INFO from=$RECORD->getImageDetails()}
-			{if !empty($IMAGE_INFO.path)}
+			{if !empty($IMAGE_INFO.rsnClass)}{* ED140927 *}
+				<span class="summaryImg rsn-summaryImg"><span class="icon-rsn-large-{$IMAGE_INFO.rsnClass}"></span></span>
+			{else if !empty($IMAGE_INFO.path)}
 				<img src="{$IMAGE_INFO.path}_{$IMAGE_INFO.orgname}" alt="{$IMAGE_INFO.orgname}" title="{$IMAGE_INFO.orgname}" width="65" height="80" align="left"><br>
 			{else}
 				<img src="{vimage_path('summary_Contact.png')}" class="summaryImg"/>

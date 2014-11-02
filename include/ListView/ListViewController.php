@@ -312,6 +312,11 @@ class ListViewController {
 							} else {
 								$currencyInfo = getInventoryCurrencyInfo($module, $recordId);
 								$currencySymbol = $currencyInfo['currency_symbol'];
+								/*ED140922*/
+								if($currencyInfo)
+									$currencySymbol = $currencyInfo['currency_symbol'];
+								else
+									$currencySymbol = "€";/*TODO*/
 							}
 							$value = CurrencyField::convertToUserFormat($value, null, true);
 							$row['currencySymbol'] = $currencySymbol;

@@ -755,12 +755,7 @@ class Users extends CRMEntity {
 
         $this->db->println("TRANS saveentity starts $module");
         $this->db->startTransaction();
-		
-		$counter = 0;
-		
         foreach($this->tab_name as $table_name) {
-		    var_dump($counter++, $table_name);
-
             if($table_name == 'vtiger_attachments') {
                 $this->insertIntoAttachment($this->id,$module);
             }
@@ -768,7 +763,7 @@ class Users extends CRMEntity {
                 $this->insertIntoEntityTable($table_name, $module);
             }
         }
-		require_once('modules/Users/CreateUserPrivilegeFile.php');
+        require_once('modules/Users/CreateUserPrivilegeFile.php');
         createUserPrivilegesfile($this->id);
         unset($_SESSION['next_reminder_interval']);
         unset($_SESSION['next_reminder_time']);
@@ -841,6 +836,7 @@ class Users extends CRMEntity {
             $columname=$this->db->query_result($result,$i,"columnname");
             $uitype=$this->db->query_result($result,$i,"uitype");
             $typeofdata=$adb->query_result($result,$i,"typeofdata");
+
             $typeofdata_array = explode("~",$typeofdata);
             $datatype = $typeofdata_array[0];
 
@@ -907,10 +903,7 @@ class Users extends CRMEntity {
                     $_SESSION['vtiger_authenticated_user_theme'] = $fldvalue;
                 }
             } elseif($uitype == 32) {
-
-		
                 $languageList = Vtiger_Language::getAll();
-				var_dump($languageList);
                 $languageList = array_keys($languageList);
                 if(!in_array($fldvalue, $languageList) || $fldvalue == '') {
                     global $default_language;

@@ -40,7 +40,14 @@
     <span class="row-fluid">
         <span class="span7 pushDown">
             <span class="pull-right pageNumbers alignTop" data-placement="bottom" data-original-title="" style="margin-top: -5px">
-            {if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if}
+            {*ED140907 if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if*}
+	    {if !empty($RELATED_RECORDS)}
+		{assign var=START_RANGE value=$PAGING->getRecordStartRange()}
+		{if $START_RANGE gt 1}
+		    {$START_RANGE}&nbsp;{vtranslate('LBL_to', $RELATED_MODULE->get('name'))}&nbsp;
+		{/if}
+		{$PAGING->getRecordEndRange()}
+	    {/if}
         </span>
     </span>
     <span class="span5 pull-right">

@@ -49,6 +49,7 @@ class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
             $query .= ' GROUP BY picklistvalueid';
         }
 		$result = $db->pquery($query, $roleIdList);
+	
         $pickListValues = array();
         $num_rows = $db->num_rows($result);
         for($i=0; $i<$num_rows; $i++) {

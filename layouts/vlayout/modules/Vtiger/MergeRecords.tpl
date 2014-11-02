@@ -54,7 +54,7 @@
 		</table>
 	</div>
 	<div class='row-fluid'>
-		<div class="offset4">{$MODULE}
+		<div class="offset4">
 			<button type=submit class='btn btn-success'>{vtranslate('LBL_MERGE', $MODULE)}</button>
 		</div>
 	</div>

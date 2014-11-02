@@ -91,4 +91,135 @@ class Contacts_Record_Model extends Vtiger_Record_Model {
 		}
 		return $imageDetails;
 	}
+	
+	/**
+	 * Function to retieve display value for a field
+	 * @param <String> $fieldName - field name for which values need to get
+	 * @param <Integer> $recordId - record
+	 * @param <Boolean> if field is unknown, returns the value otherwise FALSE value ED140907
+	 *	in .tpl : {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME, false, true)}
+	 * @return <String>
+	 */
+	public function getDisplayValue($fieldName, $recordId = false, $unknown_field_returns_value = false) {
+		switch($fieldName){
+			case 'isgroup':
+				if(empty($recordId)) {
+					$recordId = $this->getId();
+				}
+				$values = $this::getPicklistValuesDetails($fieldName);
+				return $values[$this->get($fieldName)]['label'];
+			default:
+				return parent::getDisplayValue($fieldName, $recordId, $unknown_field_returns_value);
+		}
+	}
+	
+	/**
+	 * ED141005
+	 * getPicklistValuesDetails
+	 */
+	public function getPicklistValuesDetails($fieldname){
+		switch($fieldname){
+			case 'isgroup':
+				return array(
+					'0' => array( 'label' => 'Particulier', 'icon' => 'icon-rsn-small-contact' ),
+					'1' => array( 'label' => 'Structure', 'icon' => 'icon-rsn-small-collectif' )
+				);
+			case 'reference':
+				return array(
+					'0' => array( 'label' => 'Non', 'icon' => 'ui-icon ui-icon-close' ),
+					'1' => array( 'label' => 'Référent du compte', 'icon' => 'ui-icon ui-icon-check' )
+				);
+			case 'donotprospect':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => 'ui-icon ui-icon-unlocked' ),
+					'1' => array( 'label' => 'Ne pas prospecter', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			case 'emailoptout':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => 'ui-icon ui-icon-unlocked' ),
+					'1' => array( 'label' => 'Pas d\'email', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			case 'donotcall':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => 'ui-icon ui-icon-unlocked' ),
+					'1' => array( 'label' => 'Ne pas appeler', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			case 'donotrelanceabo':
+			case 'donotrelanceadh':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => 'ui-icon ui-icon-unlocked' ),
+					'1' => array( 'label' => 'Ne pas relancer', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			case 'donotappeldonweb':
+			case 'donotappeldoncourrier':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => 'ui-icon ui-icon-unlocked' ),
+					'1' => array( 'label' => 'Pas d\'appel à don', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			case 'contreltype':
+				return array(
+					'REF' => array( 'label' => 'Référence', 'icon' => 'ui-icon ui-icon-locked' ),
+					'MBR' => array( 'label' => 'Membre', 'icon' => '' ),
+					'FOYER' => array( 'label' => 'Membre', 'icon' => '' )
+				);
+			case 'rsnnpai':
+				return array(
+					'0' => array( 'label' => 'Ok', 'icon' => 'ui-icon ui-icon-check' ),
+					'1' => array( 'label' => 'Supposée', 'icon' => 'ui-icon ui-icon-check' ),
+					'2' => array( 'label' => 'A confirmer', 'icon' => 'ui-icon ui-icon-close' ),
+					'3' => array( 'label' => 'Définitive', 'icon' => 'ui-icon ui-icon-close' ),
+				);
+			default:
+				//die($fieldname);
+				return array();
+		}
+	}
+	
+	/**
+	 * ED141005
+	 * getListViewPicklistValues
+	 */
+	public function getListViewPicklistValues($fieldname){
+		switch($fieldname){
+			case 'isgroup':
+				return array(
+					'0' => array( 'label' => '', 'icon' => 'icon-rsn-small-contact' ),
+					'1' => array( 'label' => '', 'icon' => 'icon-rsn-small-collectif' )
+				);
+			case 'donotcall':
+				return array(
+					'0' => array( 'label' => 'si, on peut', 'icon' => ' ' ),
+					'1' => array( 'label' => 'Ne pas appeler', 'icon' => 'ui-icon ui-icon-locked' )
+				);
+			default:
+				return $this->getPicklistValuesDetails($fieldname);
+		}
+	}
+	
+	/**
+	 *
+	 */
+	public function getAccountRecordModel($createIfNone = true){
+		//echo '<pre>'; var_dump($this);echo '</pre>'; 
+		$account_id = $this->get('account_id');
+		// creation d'un compte par défaut                                      
+		if(($account_id == null || $account_id == '0') ){
+			if(!$createIfNone) return false;
+			//var_dump("getCleanInstance");
+			$account = Vtiger_Record_Model::getCleanInstance('Accounts');    
+			//var_dump("set('accountname'," .  trim($this->get('lastname') . ' ' . $this->get('firstname')));
+			$account->set('accountname', decode_html(trim($this->get('lastname') . ' ' . $this->get('firstname'))));
+			$account->set('mode', 'create');
+			$account->save();
+			$account_id = $account->getId();
+			//var_dump($account_id);
+			$this->set('account_id', $account_id);
+			$this->set('reference', 1);// contact referent du compte
+			//var_dump($this->get('account_id'));
+			$this->set('mode', 'edit');
+			$this->save();
+			return $account;
+		}	
+		return Vtiger_Record_Model::getInstanceById($account_id, 'Accounts');
+	}
 }

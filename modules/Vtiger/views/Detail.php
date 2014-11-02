@@ -20,10 +20,10 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$this->exposeMethod('showRecentActivities');
 		$this->exposeMethod('showRecentComments');
 		$this->exposeMethod('showRelatedList');
+		$this->exposeMethod('showRelatedRecords');//ED141025
 		$this->exposeMethod('showChildComments');
 		$this->exposeMethod('showAllComments');
 		$this->exposeMethod('getActivities');
-		$this->exposeMethod('showRelatedRecords');//ED141025
 	}
 
 	function checkPermission(Vtiger_Request $request) {

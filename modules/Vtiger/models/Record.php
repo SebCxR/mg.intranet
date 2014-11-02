@@ -171,16 +171,23 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 	/**
 	 * Function to retieve display value for a field
 	 * @param <String> $fieldName - field name for which values need to get
+	 * @param <Integer> $recordId - record
+	 * @param <Boolean> if field is unknown, returns the value otherwise FALSE value ED140907
+	 *	in .tpl : {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME, false, true)}
 	 * @return <String>
 	 */
-	public function getDisplayValue($fieldName,$recordId = false) {
+	public function getDisplayValue($fieldName, $recordId = false, $unknown_field_returns_value = false) {
 		if(empty($recordId)) {
 			$recordId = $this->getId();
 		}
+		
 		$fieldModel = $this->getModule()->getField($fieldName);
 		if($fieldModel) {
 			return $fieldModel->getDisplayValue($this->get($fieldName), $recordId, $this);
 		}
+			
+		if($unknown_field_returns_value)
+			return $this->get($fieldName);
 		return false;
 	}
 
@@ -211,7 +218,6 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 	 * Function to save the current Record Model
 	 */
 	public function save() {
-		
 		$this->getModule()->saveRecord($this);
 	}
 

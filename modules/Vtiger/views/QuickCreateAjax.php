@@ -48,7 +48,9 @@ class Vtiger_QuickCreateAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		
 		$viewer->assign('SCRIPTS', $this->getHeaderScripts($request));
-
+		// ED141010
+		$viewer->assign('RECORD_MODEL', $recordModel);
+		
 		echo $viewer->view('QuickCreate.tpl',$moduleName,true);
 
 	}

@@ -9,7 +9,13 @@
  * ************************************************************************************/
 
 class Accounts_Module_Model extends Vtiger_Module_Model {
-
+	/**
+	 * Function to check whether the module is an entity type module or not
+	 * @return <Boolean> true/false
+	 */
+	public function isQuickCreateSupported($menubar_quickCreate = false) {
+		return $menubar_quickCreate ? false : true ;
+	}
 	/**
 	 * Function to get the Quick Links for the module
 	 * @param <Array> $linkParams
@@ -119,5 +125,20 @@ class Accounts_Module_Model extends Vtiger_Module_Model {
 		}
 
 		return $query;
+	}
+
+
+	
+	
+
+	/**
+	 * Function to save a given record model of the current module
+	 * @param Vtiger_Record_Model $recordModel
+	 */
+	public function saveRecord(Vtiger_Record_Model $recordModel) {
+		// ED141016 : majuscules obligatoires
+		$recordModel->set('accountname', mb_strtoupper(remove_accent($recordModel->get('accountname'))));
+		
+		return parent::saveRecord($recordModel);
 	}
 }

@@ -49,7 +49,7 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
         var form = this.getForm();
         var parentIdElement  = form.find('[name="parent_id"]');
         if(parentIdElement.length > 0 && parentIdElement.val().length > 0) {
-            var closestContainer = parentIdElement.closest('td');	    
+            var closestContainer = parentIdElement.closest('td');
             params['related_parent_id'] = parentIdElement.val();
             params['related_parent_module'] = closestContainer.find('[name="popupReferenceModule"]').val();
         }
@@ -208,20 +208,21 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
     referenceCreateHandler : function(container) {
         var thisInstance = this;
 	
-	//SG1409 Traitement vehiculeid
-
-        if(container.find('.sourceField').attr('name') != 'contact_id' && container.find('.sourceField').attr('name') != 'vehiculeid' ){
+		//SG1409 Traitement vehiculeid
+		var sourceField = container.find('.sourceField').attr('name');
+        if(sourceField != 'contact_id' && sourceField != 'vehiculeid' ){
             this._super();
         }
          var postQuickCreateSave  = function(data) {
             var params = {};
             params.name = data.result._recordLabel;
             params.id = data.result._recordId;
-	    thisInstance.addNewVehiculeToRelatedList({'data':[params]});
+	    	thisInstance.addNewVehiculeToRelatedList({'data':[params]});
             thisInstance.addNewContactToRelatedList({'data':[params]});
         }
-	var referenceModuleName = this.getReferencedModuleName(container);
-        var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]');
+		
+		var referenceModuleName = this.getReferencedModuleName(container);
+		var quickCreateNode = jQuery('#quickCreateModules').find('[data-name="'+ referenceModuleName +'"]');
         if(quickCreateNode.length <= 0) {
             Vtiger_Helper_Js.showPnotify(app.vtranslate('JS_NO_CREATE_OR_NOT_QUICK_CREATE_ENABLED'))
         }
@@ -235,11 +236,10 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
         this.getRelatedContactElement().closest('td').find('.clearReferenceSelection').on('click',function(e){
             thisInstance.getRelatedContactElement().select2('data',[]);
 	    });
-	//SG1409
-	this.getRelatedVehiculeElement().closest('td').find('.clearReferenceSelection').on('click',function(e){
-            thisInstance.getRelatedVehiculeElement().select2('data',[]);
-	    });
-	
+		//SG1409
+		this.getRelatedVehiculeElement().closest('td').find('.clearReferenceSelection').on('click',function(e){
+			thisInstance.getRelatedVehiculeElement().select2('data',[]);
+		});
     },
 	
 	/**
@@ -376,14 +376,13 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
 				jQuery('#recurringType').append(jQuery('<option value="--None--">None</option>')).val('--None--');
 			}
             if(thisInstance.isEvents()) {
-                jQuery('<input type="hidden" name="contactidlist" /> ').appendTo(form).val(thisInstance.getRelatedContactElement().val().split(',').join(';'));		
+				jQuery('<input type="hidden" name="contactidlist" /> ').appendTo(form).val(thisInstance.getRelatedContactElement().val().split(',').join(';'));
                 form.find('[name="contact_id"]').attr('name','');
-		//SG1409 Vehicules
-		jQuery('<input type="hidden" name="vehiculeidlist" /> ').appendTo(form).val(thisInstance.getRelatedVehiculeElement().val().split(',').join(';'));		
-                form.find('[name="vehicule_id"]').attr('name','');
-		//SG1409 END
-		
-		
+				//SG1409 Vehicules
+				jQuery('<input type="hidden" name="vehiculeidlist" /> ').appendTo(form).val(thisInstance.getRelatedVehiculeElement().val().split(',').join(';'));		
+				        form.find('[name="vehicule_id"]').attr('name','');
+				//SG1409 END
+
 				var inviteeIdsList = jQuery('#selectedUsers').val();
 				if(inviteeIdsList != null) {
 					inviteeIdsList = jQuery('#selectedUsers').val().join(';')
@@ -465,15 +464,12 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
              multiple : true
         });
 
-	
-	
-	
         //To add multiple selected contact from popup
         form.find('[name="contact_id"]').on(Vtiger_Edit_Js.refrenceMultiSelectionEvent,function(e,result){
             thisInstance.addNewContactToRelatedList(result);
         });
         //SG1409 idem vehicule
-	form.find('[name="vehiculeid"]').on(Vtiger_Edit_Js.refrenceMultiSelectionEvent,function(e,result){
+		form.find('[name="vehiculeid"]').on(Vtiger_Edit_Js.refrenceMultiSelectionEvent,function(e,result){
             thisInstance.addNewVehiculeToRelatedList(result);
 	   }); 
         form.find('[name="contact_id"]').on(Vtiger_Edit_Js.preReferencePopUpOpenEvent,function(e){
@@ -487,8 +483,8 @@ Vtiger_Edit_Js("Calendar_Edit_Js",{
                 Vtiger_Helper_Js.showPnotify(app.vtranslate('LBL_CANT_SELECT_CONTACT_FROM_LEADS'));
             }
         })
-	
-	this.fillRelatedVehicules();
+
+		this.fillRelatedVehicules();
         this.fillRelatedContacts();
     },
 

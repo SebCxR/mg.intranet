@@ -12,7 +12,7 @@ $languageStrings = array (
 		'LBL_TEMP_DIRECTORY_NOT_WRITABLE' => 'Le répertoire "temp" n\'est pas présent ou n\'est pas accessible en écriture',
 
 		'LBL_MODULEDESIGNER' => 'Module Designer',
-		'LBL_MODULEDESIGNER_DESCRIPTION' => 'Création de nouveaux modules pour Vtiger CRM',
+		'LBL_MODULEDESIGNER_DESCRIPTION' => 'Define new entity modules for vTiger',
 		'LBL_GENERAL' => 'Général',
 		'LBL_BLOCKS_FIELDS' => 'Blocs & Champs',
 		'LBL_CUSTOM_LINKS' => 'Custom links',
@@ -183,7 +183,7 @@ $languageStrings = array (
 		'LBL_MY_VARIABLE' => 'Ma variable',
 		'LBL_MY_VALUE' => 'Ma valeur',
 		'LBL_CUSTOM_VALUES_DESCRIPTION' => 'Vous pouvez configurer vos propres champs et variables. Pour faire cela, modifiez les fichiers suivants : <ul><li>/vlayouts/layout/Settings/ModuleDesigner/Custom.tpl</li>'.
-											'<li>/vlayouts/layout/Settings/ModuleDesigner/resources/CustomScript.js</li>'.
+											'<li>/layouts/vlayout/Settings/ModuleDesigner/resources/CustomScript.js</li>'.
 											'<li>/modules/ModuleDesigner/CustomManifestStructure.php</li></ul>'.
 											'Vous pouvez aussi créer des plugins pour traiter vos variables, dans le répertoire /modules/ModuleDesigner/plugins'
 );

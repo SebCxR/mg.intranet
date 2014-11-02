@@ -19,6 +19,13 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	protected $moduleMeta = false;
 	protected $fields = false;
 	protected $relations = null;
+	
+	/* ED140907
+	 * */
+	public function addTemporaryField($field){
+		$this->fields[$field->name] = $field;
+		return $field;
+	}
 
 	/**
 	 * Function to get the Module/Tab id
@@ -46,6 +53,15 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 */
 	public function isQuickCreateSupported() {
 		return $this->isEntityModule();
+	}
+	
+	/**
+	 * Function to check whether the entity has an quick create menu
+	 * @return <Boolean> true/false
+	 * ED141024
+	 */
+	public function isQuickCreateMenuVisible() {
+		return $this->isQuickCreateSupported();
 	}
 	
 	/**
@@ -1292,9 +1308,10 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			$queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
 			$queryGenerator->setFields($relatedListFields);
 			$selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
-			$newQuery = spliti('FROM', $query);
+			$newQuery = spliti('FROM ', $query); /* TODO regex */
 			$selectColumnSql = 'SELECT vtiger_crmentity.crmid,'.$selectColumnSql;
-			$query = $selectColumnSql.' FROM '.$newQuery[1];
+			$newQuery[0] = $selectColumnSql.' '; /* ED141012 */
+			$query = implode('FROM ', $newQuery);
 		}
 
 		if ($nonAdminQuery) {

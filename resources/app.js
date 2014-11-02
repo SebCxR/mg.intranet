@@ -151,8 +151,8 @@ var app = {
 		}
 		if(selectElement.attr('multiple') != 'undefined' && typeof params.closeOnSelect == 'undefined') {
 			params.closeOnSelect = false;
-		}
-
+		}	
+		/* ED141011 TODO background-color */
 		selectElement.select2(params)
 					 .on("open", function(e) {
 						 var element = jQuery(e.currentTarget);
@@ -460,6 +460,12 @@ var app = {
 	},
 
 	registerEventForDatePickerFields : function(parentElement,registerForAddon,customParams){
+		
+		/* ED141010
+		 * TODO ailleurs
+		 * */
+		this.registerEventForColorPickerFields(parentElement,registerForAddon,customParams);
+		
 		if(typeof parentElement == 'undefined') {
 			parentElement = jQuery('body');
 		}
@@ -629,6 +635,57 @@ var app = {
 		return container;
 	},
 
+
+	/**
+	 * Function to register color fields
+	 * ED141010
+	 */
+	registerEventForColorPickerFields : function(parentElement,registerForAddon, customParams) {
+		if(typeof parentElement == 'undefined') {
+			parentElement = jQuery('body');
+		}
+
+		parentElement = jQuery(parentElement);
+
+		if(parentElement.is('.colorField')){
+			var element = parentElement;
+		}else{
+			var element = jQuery('.colorField', parentElement);
+		}
+		if(element.length == 0){
+			return;
+		}
+		element.each(function(){
+			var $this = $(this);
+			var id = this.id;
+			var selectorId = '#' + id + '-colorSelector';
+			$(selectorId).ColorPicker({
+				color: $this.val(),
+				onShow: function (colpkr) {
+					$(colpkr).fadeIn(200);
+					return false;
+				},
+				onHide: function (colpkr) {
+					var $input = $this;
+					if ($input.parent().hasClass('edit')) { /*Detail view -> Edit on click*/
+						$input
+							.parent().prev().click() /* ne valide pas mais permet de declencher le submit en 1 seul clic ailleurs. Enfin, c'est bizarre
+													  * TODO : 	gerer le reset a la couleur d'origine (clic en haut a droite du pickcolor)
+													  *			apres enregistrement, affiche le #010fE24 de la couleur et le pickcolor ne fonctionne plus
+													  * 		*/
+						;
+					}
+					$(colpkr).fadeOut(200);
+					return false;
+				},
+				onChange: function (hsb, hex, rgb) {
+					$this.val('#' + hex);
+					$(selectorId + ' div').css('backgroundColor', '#' + hex);
+				}
+			})
+		});
+	},
+	
 	/**
 	 * Function to get the chosen element from the raw select element
 	 * @params: select element

@@ -22,7 +22,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
-
+		
 		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName);
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'));
 		$viewer->assign('CUSTOM_VIEWS', CustomView_Record_Model::getAllByGroup($moduleName));
@@ -38,7 +38,6 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('QUICK_LINKS', $quickLinkModels);
 		$this->initializeListViewContents($request, $viewer);
 		$viewer->assign('VIEWID', $this->viewName);
-
 		if($display) {
 			$this->preProcessDisplay($request);
 		}
@@ -70,6 +69,10 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		$viewer->assign('VIEW', $request->get('view'));
 		$viewer->assign('MODULE_MODEL', $moduleModel);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+		
+                $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+		$viewer->assign('RECORD_MODEL', $recordModel);
+		
 		$viewer->view('ListViewContents.tpl', $moduleName);
 	}
 
@@ -124,6 +127,7 @@ class Vtiger_List_View extends Vtiger_Index_View {
 		if(empty ($pageNumber)){
 			$pageNumber = '1';
 		}
+
 
 		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
 

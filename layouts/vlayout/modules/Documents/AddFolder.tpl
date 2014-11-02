@@ -38,6 +38,20 @@
                             <textarea rows="1" class="input-xxlarge fieldValue span3" name="folderdesc" id="description"></textarea>
                         </div>
                     </div>
+                    {* ED141010 *}
+                    <div class="control-group">
+                        <label class="control-label">
+                            {vtranslate('LBL_FOLDER_UICOLOR', $MODULE)}
+                        </label>
+                        <div class="controls">
+                            {assign var="INPUT_ID" value="`$MODULE`_addFolder_fieldName_`$FIELD_NAME`"}
+                            <input id="{$INPUT_ID}" type="hidden" 
+                                    class="colorField" 
+                                    name="uicolor" 
+                                    value=""/>
+                            <div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder"><div style="background-color: {$VALUE}"></div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             {include file='ModalFooter.tpl'|@vtemplate_path:$MODULE}
