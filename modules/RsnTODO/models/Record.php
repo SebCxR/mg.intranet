@@ -22,7 +22,8 @@ class RsnTODO_Record_Model extends Vtiger_Record_Model {
 		parent::setEntity($entity);
 		
 		/* nouvel enregistrement */
-		if(empty($this->get('id'))){
+		$id = $this->get('id');
+		if(empty($id)){
 			/* valeur par défaut du champ create_user_id */
 			global $current_user;
 			$this->set('create_user_id', $current_user->id);
@@ -38,7 +39,8 @@ class RsnTODO_Record_Model extends Vtiger_Record_Model {
 	 */
 	public function save() {
 		/* sécurité en double */
-		if(empty($this->get('create_user_id'))){
+		$id = $this->get('create_user_id');
+		if(empty($id)){
 			global $current_user;
 			$this->set('create_user_id', $current_user->id);
 		}
