@@ -30,6 +30,7 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 		$field1 = new Vtiger_Field_Model();
 		$field1->set('name', 'related_mgchauffeurs');
 		$field1->set('label', 'Chauffeurs');
+		$field1->set('sortable', false);
 
 		$headerFieldModels[] = $field1;
 
