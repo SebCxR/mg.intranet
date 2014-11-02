@@ -101,7 +101,12 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 							aDeferred.resolve(data);
 						});*/
 						//TODO reload widget only ?
-						thisInstance.getSelectedTab().click().then(function(data){
+						var selectedTab;
+						if(thisInstance.getSelectedTab)
+							selectedTab = thisInstance.getSelectedTab();
+						else
+							selectedTab = thisInstance.selectedRelatedTabElement;
+						selectedTab.click().then(function(data){
 							aDeferred.resolve(data);
 						}); 
 					}
