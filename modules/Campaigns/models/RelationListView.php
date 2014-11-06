@@ -9,9 +9,9 @@
  *************************************************************************************/
 
 class Campaigns_RelationListView_Model extends Vtiger_RelationListView_Model {
-
 	
-	/* Retourne les en-têtes des colonnes des contacts
+	
+	/* Retourne les en-tÃªtes des colonnes des contacts
 	 * Ajoute les champs de la relation
 	 * */
 	public function getHeaders() {
