@@ -43,7 +43,8 @@
 										</button>
 										{assign var=RECORD_ACTION_IDX value=$RECORD_ACTION_IDX+1}
 									{/foreach}
-									<input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
+									{* SG141106 class relatedModuleName added for compability with getRelatedModuleName() function in js script *}
+									<input type="hidden" name="relatedModule" class="relatedModuleName" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
 								{/if}
 							</div>
 							<div class="widget_contents">
@@ -83,7 +84,8 @@
 										</button>
 										{assign var=RECORD_ACTION_IDX value=$RECORD_ACTION_IDX+1}
 									{/foreach}
-									<input type="hidden" name="relatedModule" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
+									{* SG141106 debug : class relatedModuleName added for compability with getRelatedModuleName() function in js script *}
+									<input type="hidden" name="relatedModule" class="relatedModuleName" value="{$DETAIL_VIEW_WIDGET->get('linkName')}" />
 								{/if}
 							</div>
 							<div class="widget_contents">
