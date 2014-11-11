@@ -25,7 +25,13 @@ $languageStrings = array(
 	'LBL_VEHICULE_OWNER_INFO' => 'Propriétaire du véhicule autre que MG',
 	'LBL_VEHICULE_TYPE' => 'Type de véhicule',
 	'LBL_VEHIC_MAINTAIN_ACTIVITIES_LINK' => 'Maintenance',
+        'LBL_NO_ENGAGEMENT' => 'Disponible',
+        'LBL_VEHIC_ENGAGED_FOR' => 'Engagement',
+        'LBL_GET_TO_MGTRANSPORT' => 'Editer ce transport',
         'mgTypesTransport' => 'Types de transport',
+        'LBL_VEHIC_ISRENTED_TO' => ' en Loc. chez ',
+        'LBL_VEHIC_POPUP_NAME_HEADER' => 'Véhicule',
+        'LBL_ALREADY_SELECTED_IN' => 'déjà pris pour ',
 );
 
 ?>

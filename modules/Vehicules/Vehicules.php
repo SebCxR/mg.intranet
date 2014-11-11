@@ -57,6 +57,7 @@ class Vehicules extends Vtiger_CRMEntity {
 
 	// For Popup listview and UI type support
 	var $search_fields = Array(
+		
 		'LBL_VEHICULE_OWNER' => array('vehicules', 'vehicule_owner'),
 		'LBL_VEHICULE_NAME' => array('vehicules', 'vehicule_name'),
 		'LBL_VEHICULE_REGISTRATION' => array('vehicules', 'vehicule_registration'),
@@ -64,7 +65,7 @@ class Vehicules extends Vtiger_CRMEntity {
 		'LBL_VEHICULE_TYPE' => array('vehicules', 'vehicule_type'),
 
 	);
-	var $search_fields_name = Array (
+	var $search_fields_name = Array (	
 		'LBL_VEHICULE_OWNER' => 'vehicule_owner',
 		'LBL_VEHICULE_NAME' => 'vehicule_name',
 		'LBL_VEHICULE_REGISTRATION' => 'vehicule_registration',

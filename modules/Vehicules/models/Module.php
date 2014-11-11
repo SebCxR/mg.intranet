@@ -57,41 +57,49 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
 		}
 		
-		//SGNOW
-		//echo $query;
-		//die();
-		
 		return $query;
 	}
-		
 	
-	/**
-	 * Function to get the Quick Links for the module
-	 * @param <Array> $linkParams
-	 * @return <Array> List of Vtiger_Link_Model instances
-	 */
-	/* SG2409 Copy from Contacts_Module_Model 
-	public function getSideBarLinks($linkParams) {
-		$parentQuickLinks = parent::getSideBarLinks($linkParams);
+	// Function returns the Busylist on the date of the mgtransport
+	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
+	// @return <Array>
+	public function getBusylist($mgtransportId) {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$user = $currentUser->getId();
+		
+		$db = PearDatabase::getInstance();
+		
+		
+		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
+					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid"
+					." INNER JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
 
-		$quickLink = array(
-				'linktype' => 'SIDEBARLINK',
-				'linklabel' => 'LBL_DASHBOARD',
-				'linkurl' => $this->getDashBoardUrl(),
-				'linkicon' => '',
-		);
+		$query .= " WHERE vtiger_crmentity.deleted=0"
+			." AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
+			." AND vtiger_crmentityrel.relmodule = ?";	
 
-		//Check profile permissions for Dashboards
-		$moduleModel = Vtiger_Module_Model::getInstance('Dashboard');
-		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
-		$permission = $userPrivilegesModel->hasModulePermission($moduleModel->getId());
-		if($permission) {
-			$parentQuickLinks['SIDEBARLINK'][] = Vtiger_Link_Model::getInstanceFromValues($quickLink);
+		$params = array($mgtransportId,$this->getName());
+
+
+		$result = $db->pquery($query, $params);
+		$numOfRows = $db->num_rows($result);
+
+		$activities = array();
+		for($i=0; $i<$numOfRows; $i++) {
+			$row = $db->query_result_rowdata($result, $i);
+			$transporthref = "index.php?module=MGTransports".
+					"&view=Detail&record=".$row['crmid'] ;
+			$busyList[$row['vehiculeid']]= array('transportid'=>$row['crmid'],
+							     'transportlabel'=>$row['subject'],
+							     'transporthref'=>$transporthref
+							     );
 		}
-
-		return $parentQuickLinks;
+		
+		return $busyList;	
 	}
-	*/
+	
+	
+	
 	
 	/*
 	//SG copy from Contacts
