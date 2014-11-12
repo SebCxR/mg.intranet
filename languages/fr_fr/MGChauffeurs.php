@@ -23,7 +23,11 @@ $languageStrings = array(
 	'TRANSPORTS' => 'Transports',
 	'EVENTS' => 'Evénements',
 	'TASKS' => 'Tâches',
-
+        'LBL_GET_TO_MGTRANSPORT' => 'Editer ce transport',
+	'LBL_NO_ENGAGEMENT' => 'Disponible',
+        'LBL_MGCHAUFFEUR_ENGAGED_FOR' => 'Engagement',
+        'LBL_ALREADY_SELECTED_IN' => 'déjà pris pour ',
+        'LBL_MGCHAUFFEUR_POPUP_NAME_HEADER' => 'Chauffeur',
 );
 
 ?>
