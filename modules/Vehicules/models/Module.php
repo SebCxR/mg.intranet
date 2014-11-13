@@ -60,10 +60,21 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		return $query;
 	}
 	
+	// Function returns the Busylist on the date of the mgevent
+	// @param <int> $mgeventId : id of the transport being built, needed to get the date considered when checking engagement
+	// @return <Array>
+	public function getBusylist($mgevent) {
+		
+		$busylist = $this->getBusylistOnTransports($mgevent);
+		
+		return $busylist;
+	}
+
+	
 	// Function returns the Busylist on the date of the mgtransport
 	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
 	// @return <Array>
-	public function getBusylist($mgtransportId) {
+	public function getBusylistOnTransports($mgtransportId) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$user = $currentUser->getId();
 		
@@ -84,12 +95,13 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		$result = $db->pquery($query, $params);
 		$numOfRows = $db->num_rows($result);
 
-		$activities = array();
+		//$activities = array();
 		for($i=0; $i<$numOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
 					"&view=Detail&record=".$row['crmid'] ;
-			$busyList[$row['vehiculeid']]= array('transportid'=>$row['crmid'],
+			$busyList[$row['vehiculeid']]= array('modulename'=>'MGTransports',
+							     'transportid'=>$row['crmid'],
 							     'transportlabel'=>$row['subject'],
 							     'transporthref'=>$transporthref
 							     );

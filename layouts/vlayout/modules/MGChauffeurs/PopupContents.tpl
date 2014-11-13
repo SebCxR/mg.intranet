@@ -67,8 +67,10 @@
 				{if $LISTVIEW_HEADER_KEY eq 'engagement'}				
 					{if $BUSYLIST[$VEHICULEID]}
 						{if $BUSYLIST[$VEHICULEID]['transportid'] neq $SOURCE_RECORD}
-						<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="reference" data-field-name="mgtransports">			
+						<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="reference" data-field-name="{$BUSYLIST[$VEHICULEID]['modulename']}">
+							{if $BUSYLIST[$VEHICULEID]['modulename'] eq 'MGTransports'}
 							<a href='{$BUSYLIST[$VEHICULEID]['transporthref']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', $MODULE)}'>{$BUSYLIST[$VEHICULEID]['transportlabel']}</a>	
+							{/if}
 						</td>
 						{else}
 						<td class="listViewEntryValue {$WIDTHTYPE}">			
