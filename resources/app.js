@@ -321,10 +321,12 @@ var app = {
 
 			// TODO Make it better with jQuery.on
 			app.changeSelectElementView(container);
-            //register all select2 Elements
-            app.showSelect2ElementView(container.find('select.select2'));
+		 //register all select2 Elements
+		  app.showSelect2ElementView(container.find('select.select2'));
 			//register date fields event to show mini calendar on click of element
 			app.registerEventForDatePickerFields(container);
+			//SG1411 register all select2 Elements
+			app.registerEventForColorPickerFields(container.find('div.colorpicker-holder.colorField'));
 			cb(container);
 		}
 
@@ -464,7 +466,8 @@ var app = {
 		/* ED141010
 		 * TODO ailleurs
 		 * */
-		this.registerEventForColorPickerFields(parentElement,registerForAddon,customParams);
+		//SG1411 appel fait dans showModalData
+		//this.registerEventForColorPickerFields(parentElement,registerForAddon,customParams);
 		
 		if(typeof parentElement == 'undefined') {
 			parentElement = jQuery('body');
@@ -514,6 +517,7 @@ var app = {
                 var element = jQuery(this).data('datepicker').el;
                 element = jQuery(element);
                 var datePicker = jQuery('#'+ jQuery(this).data('datepicker').id);
+
                 var viewDaysElement = datePicker.find('table.datepickerViewDays');
                 //If it is in day mode and the prev value is not eqaul to current value
                 //Second condition is manily useful in places where user navigates to other month
@@ -639,6 +643,7 @@ var app = {
 	/**
 	 * Function to register color fields
 	 * ED141010
+	 * SG1411 debug
 	 */
 	registerEventForColorPickerFields : function(parentElement,registerForAddon, customParams) {
 		if(typeof parentElement == 'undefined') {
@@ -658,15 +663,16 @@ var app = {
 		element.each(function(){
 			var $this = $(this);
 			var id = this.id;
-			var selectorId = '#' + id + '-colorSelector';
-			$(selectorId).ColorPicker({
+			//var selectorId = '#' + id + '-colorSelector';
+			
+			$this.ColorPicker({
 				color: $this.val(),
 				onShow: function (colpkr) {
 					$(colpkr).fadeIn(200);
 					return false;
 				},
 				onHide: function (colpkr) {
-					var $input = $this;
+					var $input = $this.siblings('input');
 					if ($input.parent().hasClass('edit')) { /*Detail view -> Edit on click*/
 						$input
 							.parent().prev().click() /* ne valide pas mais permet de declencher le submit en 1 seul clic ailleurs. Enfin, c'est bizarre
@@ -680,7 +686,7 @@ var app = {
 				},
 				onChange: function (hsb, hex, rgb) {
 					$this.val('#' + hex);
-					$(selectorId + ' div').css('backgroundColor', '#' + hex);
+					$this.find('div').css('backgroundColor', '#' + hex);
 				}
 			})
 		});

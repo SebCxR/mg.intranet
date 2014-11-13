@@ -19,7 +19,7 @@
 {assign var="VALUE" value=$FIELD_MODEL->get('fieldvalue')}
 {assign var="INPUT_ID" value="`$MODULE`_editView_fieldName_`$FIELD_NAME`"} {*{$MODULE}_editView_fieldName_{$FIELD_NAME}*}
 <input id="{$INPUT_ID}" type="hidden" 
-	class="input-large {if $FIELD_MODEL->isNameField()}nameField{/if}" 
+	class="input-large {if $FIELD_MODEL->isNameField()}nameField{/if} colorField" 
 	data-validation-engine="validate[{if $FIELD_MODEL->isMandatory() eq true}required,{/if}funcCall[Vtiger_Base_Validator_Js.invokeValidation]]" 
 	name="{$FIELD_MODEL->getFieldName()}" 
 	value="{$VALUE}"
@@ -27,7 +27,7 @@
 		readonly 
 	{/if} 
 data-fieldinfo='{$FIELD_INFO}' {if !empty($SPECIAL_VALIDATOR)}data-validator={Zend_Json::encode($SPECIAL_VALIDATOR)}{/if} />
-<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder"><div style="background-color: {$VALUE}"></div></div>
+<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder colorField"><div style="background-color: {$VALUE}"></div></div>
 {if !$FIELD_MODEL->isReadOnly()}
 <script>$().ready(function(){
 	$('#{$INPUT_ID}-colorSelector').ColorPicker({

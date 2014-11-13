@@ -17,5 +17,5 @@
 {assign var="FIELD_NAME" value=$FIELD_MODEL->get('name')}
 {assign var="VALUE" value=$FIELD_MODEL->get('fieldvalue')}
 {assign var="INPUT_ID" value="`$MODULE`_editView_fieldName_`$FIELD_NAME`"} 
-<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder" {if !$FIELD_MODEL->isReadOnly()}title="2 clics pour editer"{/if}><div style="background-color: {$VALUE}"></div></div>
+<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder colorField" {if !$FIELD_MODEL->isReadOnly()}title="2 clics pour editer"{/if}><div style="background-color: {$VALUE}"></div></div>
 {/strip}
