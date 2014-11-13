@@ -60,14 +60,17 @@ class Vehicules extends Vtiger_CRMEntity {
 		
 		'LBL_VEHICULE_OWNER' => array('vehicules', 'vehicule_owner'),
 		'LBL_VEHICULE_NAME' => array('vehicules', 'vehicule_name'),
+		'LBL_VEHICULE_COLOR' => array('vehicules', 'calcolor'),
 		'LBL_VEHICULE_REGISTRATION' => array('vehicules', 'vehicule_registration'),
 		'LBL_ISRENTED' => array('vehicules', 'isrented'),
 		'LBL_VEHICULE_TYPE' => array('vehicules', 'vehicule_type'),
+		
 
 	);
 	var $search_fields_name = Array (	
 		'LBL_VEHICULE_OWNER' => 'vehicule_owner',
 		'LBL_VEHICULE_NAME' => 'vehicule_name',
+		'LBL_VEHICULE_COLOR' => 'calcolor',
 		'LBL_VEHICULE_REGISTRATION' => 'vehicule_registration',
 		'LBL_ISRENTED' => 'isrented',
 		'LBL_VEHICULE_TYPE' => 'vehicule_type',

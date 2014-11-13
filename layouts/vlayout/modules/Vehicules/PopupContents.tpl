@@ -35,7 +35,7 @@
 				{/if}
 				{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 				{if  $SOURCE_MODULE neq "MGTransports" or
-					($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner')
+					($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')
 					}
 				<th class="{$WIDTHTYPE}">
 					{if $LISTVIEW_HEADER_KEY eq 'engagement' or $LISTVIEW_HEADER_KEY eq 'popupname'}
@@ -62,7 +62,7 @@
 			{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 			
 			{if  $SOURCE_MODULE neq "MGTransports" or
-			($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner')
+			($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')
 			}
 				{if $LISTVIEW_HEADER_KEY eq 'engagement'}				
 					{if $BUSYLIST[$VEHICULEID]}
@@ -86,10 +86,11 @@
 					
 				{elseif $LISTVIEW_HEADER_KEY eq 'popupname'}
 					<td class="listViewEntryValue {$WIDTHTYPE}">			
-						{$LISTVIEW_ENTRY->get('vehicule_name')}
+						<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('calcolor')}" style="background-color : {$LISTVIEW_ENTRY->get('calcolor')}">{$LISTVIEW_ENTRY->get('vehicule_name')} 
 						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
 						{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
 						{/if}
+						</div>						
 					</td>
 									
 				{else}

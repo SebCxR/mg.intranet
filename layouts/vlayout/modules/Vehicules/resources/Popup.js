@@ -10,7 +10,30 @@
 
 Vtiger_Popup_Js("Vehicules_Popup_Js",{
 },
-{	
+{
+	setTextColorForColorTag : function(){
+		var popupPageContainer = jQuery('#popupPageContainer');
+		
+		popupPageContainer.find('tr.listViewEntries div.colortag').each(function(index,element) {
+			var colordiv = jQuery(element);
+			if ((colordiv.data('color'))) {
+				var thiscolor = colordiv.data('color');
+				var colorContrast = app.getColorContrast(thiscolor.slice(1));
+				if(colorContrast == 'light') {
+					var textColor = 'black'
+					}
+				else {
+					var textColor = 'white'
+				}
+				colordiv.css({'background-color':thiscolor,'color':textColor});
+				colordiv.find('a').css({'background-color':thiscolor,'color':textColor});
+			}
+		}
+		);
+		
+		
+	},
+	
 	disableBusyVehicules : function(){
 		var srcrcrd = (this.sourceRecord == false) ? this.getSourceRecord() : this.sourceRecord;
 		var popupPageContainer = jQuery('#popupPageContainer');
@@ -109,6 +132,7 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 	registerEvents: function(){
 		this._super();
 		this.disableBusyVehicules();
+		this.setTextColorForColorTag();
 		this.registerEventForListEntryValueLink();
 	}
 	
