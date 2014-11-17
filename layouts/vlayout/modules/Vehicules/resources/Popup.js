@@ -81,13 +81,54 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 		var thisanc  = jQuery(e.currentTarget);
 		var newhref = thisanc.attr('href');
 		if (newhref) {
+			//SGTODO progressIndicator doesn't appear
+				window.opener.$('div.detailViewContainer').progressIndicator();
 				window.opener.location = newhref;
 				
 		}
+		
 		window.close();
-		jQuery.progressIndicator();
+		//jQuery.progressIndicator();
 		e.stopPropagation();
 	},
+	
+	/**
+	 * Function to get Page Records. Appelee apres un search. SG1411 : Ajout des traitemnts spécifiques voir tag SG1411
+	 */
+	getPageRecords : function(params){
+		var thisInstance = this;
+		var aDeferred = jQuery.Deferred();
+		var progressIndicatorElement = jQuery.progressIndicator({
+			'position' : 'html',
+			'blockInfo' : {
+				'enabled' : true
+			}
+		});
+		Vtiger_BaseList_Js.getPageRecords(params).then(
+				function(data){
+					jQuery('#popupContents').html(data);
+					//SG1411
+					thisInstance.disableBusyVehicules();
+					thisInstance.setTextColorForColorTag();
+					thisInstance.registerEventForListEntryValueLink();
+					progressIndicatorElement.progressIndicator({
+						'mode' : 'hide'
+					})
+					thisInstance.calculatePages().then(function(data){
+						aDeferred.resolve(data);
+					});
+				},
+
+				function(textStatus, errorThrown){
+					aDeferred.reject(textStatus, errorThrown);
+				}
+			);
+		return aDeferred.promise();
+	},
+	
+	
+	
+	
 	
 	//SG1411 zapper de getListViewEntries à clickListViewEntries pour le popup de construction d'un mgtransport
 	registerEventForListViewEntries : function(){
