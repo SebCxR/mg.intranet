@@ -62,6 +62,40 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 			jQuery('tr.freeChauffeur input.entryCheckBox', tableElement).removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
 		}
 	},
+	/**
+	 * Function to get Page Records. Appelee apres un search. SG1411 : Ajout des traitemnts spécifiques voir tag SG1411
+	 */
+	getPageRecords : function(params){
+		var thisInstance = this;
+		var aDeferred = jQuery.Deferred();
+		var progressIndicatorElement = jQuery.progressIndicator({
+			'position' : 'html',
+			'blockInfo' : {
+				'enabled' : true
+			}
+		});
+		Vtiger_BaseList_Js.getPageRecords(params).then(
+				function(data){
+					jQuery('#popupContents').html(data);
+					
+					thisInstance.disableBusyChauffeurs();
+					thisInstance.setTextColorForColorTag();
+					thisInstance.registerEventForListEntryValueLink();
+					progressIndicatorElement.progressIndicator({
+						'mode' : 'hide'
+					})
+					thisInstance.calculatePages().then(function(data){
+						aDeferred.resolve(data);
+					});
+				},
+
+				function(textStatus, errorThrown){
+					aDeferred.reject(textStatus, errorThrown);
+				}
+			);
+		return aDeferred.promise();
+	},
+	
 	registerEventForListEntryValueLink : function(){		
 		var thisInstance = this;
 		var srcmod = thisInstance.getSourceModule();
