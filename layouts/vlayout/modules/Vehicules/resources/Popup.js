@@ -29,9 +29,17 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 				colordiv.find('a').css({'background-color':thiscolor,'color':textColor});
 			}
 		}
-		);
-		
-		
+		);	
+	},
+	setTextColorForBusyVehicule : function(){
+		var popupPageContainer = jQuery('#popupPageContainer');
+		popupPageContainer.find('tr.listViewEntries.alreadyBusy td.busyState').each(function(index,element) {
+			var busytd = jQuery(element);
+			
+				busytd.css({'color': 'red'});
+				busytd.find('a').css({'color': 'red'});
+			}
+		);		
 	},
 	
 	disableBusyVehicules : function(){
@@ -39,16 +47,10 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 		var popupPageContainer = jQuery('#popupPageContainer');
 		popupPageContainer.find('tr.listViewEntries').each(function(index,rowelement) {
 			var row = jQuery(rowelement);
-			if (row.data('busyin')) {
-				row.find('td input.entryCheckBox').hide();
-				if (row.data('busyin')==srcrcrd) {
-					row.addClass('alreadyIn highlightBackgroundColor');
+			if (row.hasClass('alreadySelected')) {
+				row.find('td input.entryCheckBox').hide();				
 				}
-				else {
-					row.addClass('alreadyBusy');	
-				}			
-			}
-			else row.addClass('freeVehicule');
+			else row.addClass('selectableVehicule');
 			});
 		
 	},
@@ -57,9 +59,9 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 		var isMainCheckBoxChecked = currentElement.is(':checked');
 		var tableElement = currentElement.closest('table');
 		if(isMainCheckBoxChecked) {
-			jQuery('tr.freeVehicule input.entryCheckBox', tableElement).attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+			jQuery('tr.selectableVehicule input.entryCheckBox', tableElement).attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
 		}else {
-			jQuery('tr.freeVehicule input.entryCheckBox', tableElement).removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+			jQuery('tr.selectableVehicule input.entryCheckBox', tableElement).removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
 		}
 	},
 	registerEventForListEntryValueLink : function(){		
@@ -110,6 +112,7 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 					//SG1411
 					thisInstance.disableBusyVehicules();
 					thisInstance.setTextColorForColorTag();
+					thisInstance.setTextColorForBusyVehicule();
 					thisInstance.registerEventForListEntryValueLink();
 					progressIndicatorElement.progressIndicator({
 						'mode' : 'hide'
@@ -143,37 +146,55 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 		}
 		else this._super();		
 	},
-	//SG1411 jouer seulement sur la chexkbox si le vehicule est dispo; ignorer si vehicule busy
+	//SG1411 
 	clickListViewEntries: function(e){
 		var thisInstance = this;
 		var row  = jQuery(e.currentTarget);
 
 		var dataIsBusyElsewhere = row.hasClass('alreadyBusy');
-		var dataIsBusy = (dataIsBusyElsewhere || row.hasClass('alreadyIn'));
+		var dataIsAlreadySelected = row.hasClass('alreadySelected');
+		var dataIsBusy = (dataIsBusyElsewhere || dataIsAlreadySelected);
 		
-		if (dataIsBusy) {
-			if (dataIsBusyElsewhere ) {
-				alert (app.vtranslate('JS_VEHICULE_IS_BUSY_ELSEWHERE'));
-				
-				}
-			else
-				alert (app.vtranslate('JS_VEHICULE_IS_ALREADY_SELECTED'));
-				e.preventDefault();
-		}
-		else {
+		if (!dataIsAlreadySelected) {
 			var thisCheckBox = row.find('td input.entryCheckBox');
 			var isChecked = thisCheckBox.is(':checked');
-			if(!isChecked) {
-			thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
-			}else {
-			thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+			if (dataIsBusyElsewhere ) {				
+				if(!isChecked) {
+					if (confirm(app.vtranslate('JS_VEHICULE_IS_BUSY_ELSEWHERE'))) {	
+						thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+						}
+				}
+				else{					
+					thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+					}
+				}
+			else {
+				if(!isChecked) {
+					thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+					}
+					else {
+					thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');				
+					}
 			}
-		}	
+		}
+		else {
+				if (dataIsBusyElsewhere) {
+				alert (app.vtranslate('JS_VEHICULE_IS_ALREADY_SELECTED')+ '\n' +
+						    app.vtranslate('JS_VEHICULE_IS_BUSY_ELSEWHERE'));
+				e.preventDefault();
+				}
+				else {
+				alert(app.vtranslate('JS_VEHICULE_IS_ALREADY_SELECTED'));
+				e.preventDefault();
+				}
+		}
+			
 	},
 	registerEvents: function(){
 		this._super();
 		this.disableBusyVehicules();
 		this.setTextColorForColorTag();
+		this.setTextColorForBusyVehicule();
 		this.registerEventForListEntryValueLink();
 	}
 	

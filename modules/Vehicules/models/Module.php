@@ -63,9 +63,9 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	// Function returns the Busylist on the date of the mgevent
 	// @param <int> $mgeventId : id of the transport being built, needed to get the date considered when checking engagement
 	// @return <Array>
-	public function getBusylist($mgevent) {
+	public function getBusylist($mgeventId) {
 		
-		$busylist = $this->getBusylistOnTransports($mgevent);
+		$busylist = $this->getBusylistOnTransports($mgeventId);
 		
 		return $busylist;
 	}
@@ -77,13 +77,13 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	public function getBusylistOnTransports($mgtransportId) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$user = $currentUser->getId();
-		
+		$busyList = array();
 		$db = PearDatabase::getInstance();
 		
 		
 		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
 					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid"
-					." INNER JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
+					." LEFT JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
 
 		$query .= " WHERE vtiger_crmentity.deleted=0"
 			." AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
@@ -95,16 +95,25 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		$result = $db->pquery($query, $params);
 		$numOfRows = $db->num_rows($result);
 
-		//$activities = array();
 		for($i=0; $i<$numOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
 					"&view=Detail&record=".$row['crmid'] ;
-			$busyList[$row['vehiculeid']]= array('modulename'=>'MGTransports',
-							     'transportid'=>$row['crmid'],
-							     'transportlabel'=>$row['subject'],
-							     'transporthref'=>$transporthref
-							     );
+					
+			$temparray = array('modulename'=>'MGTransports',
+					'label'=>$row['subject'],
+					'href'=>$transporthref
+					);
+			
+			if (!$busyList[$row['vehiculeid']]) {	
+			$busyList[$row['vehiculeid']]=array($row['crmid']=> $temparray);
+			}
+			
+			else {				
+			$busyList[$row['vehiculeid']][$row['crmid']] = $temparray ;
+			}
+			
+			
 		}
 		
 		return $busyList;	

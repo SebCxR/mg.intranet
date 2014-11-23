@@ -61,6 +61,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 			$listViewModel->set('src_module', $sourceModule);
 			$listViewModel->set('src_field', $sourceField);
 			$listViewModel->set('src_record', $sourceRecord);
+			$sourceRecordInstance = Vtiger_Record_Model::getInstanceById($sourceRecord);
 		}
 		if((!empty($searchKey)) && (!empty($searchValue)))  {
 			$listViewModel->set('search_key', $searchKey);
@@ -69,20 +70,27 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();			
-			//SGNOW
+			
+			$temp = array();
+			$field1 = new Vtiger_Field_Model();
+		
+			$field1->set('name', 'popupname');
+			$field1->set('column', 'popupname');
+			$field1->set('label', 'LBL_MGCHAUFFEUR_POPUP_NAME_HEADER');
+			$temp['popupname'] = $field1;
+		
+			$this->listViewHeaders = array_merge($temp,$this->listViewHeaders);
+			
 			if (!empty($sourceModule) && $sourceModule == 'MGTransports') {
-			$customHeaders = array ('popupname'=>array('column' => 'popupname',
-								'label' => 'LBL_MGCHAUFFEUR_POPUP_NAME_HEADER',
-								'name' => 'popupname'
-							),
-						'engagement'=>array('column' => 'engagedfor',
-								'label' => 'LBL_MGCHAUFFEUR_ENGAGED_FOR',
-								'name' => 'engaged_for'
-								),			   
-						   );
+			$customHeaders = array ();
+			$field1 = new Vtiger_Field_Model();		
+			$field1->set('name', 'engaged_for');
+			$field1->set('column', 'engagedfor');
+			$field1->set('label', 'LBL_MGCHAUFFEUR_ENGAGED_FOR');
+			$customHeaders['engagement'] = $field1;
+		
 			$this->listViewHeaders = array_merge($customHeaders,$this->listViewHeaders);
 			}
-		
 		}
 		
 		
@@ -94,7 +102,23 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 		//var_dump($this->listViewHeaders);
 		
 		//var_dump($this->listViewEntries);
+		$basebusylist = $moduleModel->getBusylist($sourceRecord);
 		
+		$popupBusylist = array();
+		
+		foreach($basebusylist as $vehiculeid=>$eventsarray) {
+			$popupBusylist[$vehiculeid] = array();
+			foreach($eventsarray as $eventid=>$eventinfo) {
+				if ($eventid == $sourceRecord) {
+					$popupBusylist[$vehiculeid]['alreadyselected']=$eventinfo['label'];
+				}
+				else {
+					if (!$popupBusylist[$vehiculeid]['busyelsewhere']) !$popupBusylist[$vehiculeid]['busyelsewhere'] = array();
+					$popupBusylist[$vehiculeid]['busyelsewhere'][$eventid] = $eventinfo;
+				}
+			}
+			
+		}
 			
 		$noOfEntries = count($this->listViewEntries);
 
@@ -114,7 +138,8 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 		$viewer->assign('SOURCE_MODULE', $sourceModule);
 		$viewer->assign('SOURCE_FIELD', $sourceField);
 		$viewer->assign('SOURCE_RECORD', $sourceRecord);
-
+		$viewer->assign('SOURCE_RECORD_INSTANCE', $sourceRecordInstance);
+		
 		$viewer->assign('SEARCH_KEY', $searchKey);
 		$viewer->assign('SEARCH_VALUE', $searchValue);
 
@@ -135,7 +160,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
 		
-		$viewer->assign('BUSYLIST', $moduleModel->getBusylist($sourceRecord));
+		$viewer->assign('BUSYLIST', $popupBusylist);
 		
 		
 		

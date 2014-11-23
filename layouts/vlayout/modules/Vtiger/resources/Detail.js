@@ -258,7 +258,9 @@ jQuery.Class("Vtiger_Detail_Js",{
 		AppConnector.request(params).then(
 			function(data){
 				contentContainer.progressIndicator({'mode': 'hide'});
+				
 				contentContainer.html(data);
+				
 				app.registerEventForTextAreaFields(jQuery(".commentcontent"))
 				contentContainer.trigger(thisInstance.widgetPostLoad,{'widgetName' : relatedModuleName})
 			},
@@ -1851,7 +1853,8 @@ jQuery.Class("Vtiger_Detail_Js",{
 		thisInstance.getForm().validationEngine(app.validationEngineOptions);
 
 		thisInstance.loadWidgets();
-
+		
+		
 		app.registerEventForTextAreaFields(jQuery('.commentcontent'));
 		this.registerEventForTotalRecordsCount();
 		jQuery('.pageNumbers',detailContentsHolder).tooltip();

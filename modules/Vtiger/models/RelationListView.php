@@ -245,6 +245,9 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		}else{
 			$pagingModel->set('nextPageExists', false);
 		}
+		
+
+		
 		return $relatedRecordList;
 	}
 
@@ -266,7 +269,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			foreach($headerFieldNames as $fieldName) {
 				$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
 			}
-		}
+		}		
 		return $headerFields;
 	}
 

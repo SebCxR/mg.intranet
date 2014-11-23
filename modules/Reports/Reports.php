@@ -724,6 +724,9 @@ class Reports extends CRMEntity{
 		if (is_string($block)) {
 		    $this->fixGetColumnsListbyBlockForInventory($module, $block, $module_columnlist);
 		}
+                
+                var_dump($module_columnlist);
+                
 		return $module_columnlist;
 	}
 	

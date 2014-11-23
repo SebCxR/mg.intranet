@@ -6,8 +6,8 @@
  * Portions created by vtiger are Copyright (C) vtiger.
  * All Rights Reserved.
  *************************************************************************************/
+//SG1411
 
-//SGTODO 
 Calendar_CalendarView_Js("InvitedCalendar_InvitedCalendarView_Js",{
 		
 	currentInstance : false,

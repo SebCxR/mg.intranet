@@ -1222,6 +1222,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	 * @return <Array> list of field models <Vtiger_Field_Model>
 	 */
 	public function getSummaryViewFieldsList() {
+		
 		if (!$this->summaryFields) {
 			$summaryFields = array();
 			$fields = $this->getFields();
@@ -1231,6 +1232,7 @@ class Vtiger_Module_Model extends Vtiger_Module {
 				}
 			}
 			$this->summaryFields = $summaryFields;
+			
 		}
 		return $this->summaryFields;
 	}

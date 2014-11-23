@@ -9,57 +9,54 @@
 
 Vtiger_Detail_Js("MGTransports_Detail_Js",{},{
 	
-	////detailViewRecentTicketsTabLabel : 'Trouble Tickets',
-	////detailViewRecentTasksTabLabel : 'Project Tasks',
-	////detailViewRecentMileStonesLabel : 'Project Milestones',
-	//
-	///**
-	// * Function to register event for create related record
-	// * in summary view widgets
-	// */
-	//registerSummaryViewContainerEvents : function(summaryViewContainer){
-	//	this._super(summaryViewContainer);
-	//	this.registerStatusChangeEventForWidget();
-	//	this.registerEventForAddingModuleRelatedRecordFromSummaryWidget();
-	//	this.registerEventForSelectingModuleRelatedRecordFromSummaryWidget();
-	//},
-	//
-	///**
-	//* Function to get records according to ticket status
-	//*/
-	//registerStatusChangeEventForWidget : function(){
-	//	var thisInstance = this;
-	//	jQuery('[name="ticketstatus"],[name="projecttaskstatus"]').on('change',function(e){
-	//		var statusCondition = {};
-	//		var params = {};
-	//		var currentElement = jQuery(e.currentTarget);
-	//		var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-	//		var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-	//		var referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val();
-	//		var recordId = thisInstance.getRecordId();
-	//		var module = app.getModuleName();
-	//		var selectedStatus = currentElement.find('option:selected').text();
-	//		if(selectedStatus != "Select Status" && referenceModuleName == "HelpDesk"){
-	//			statusCondition['vtiger_troubletickets.status'] = selectedStatus;
-	//			params['whereCondition'] = statusCondition;
-	//		} else if(selectedStatus != "Select Status" && referenceModuleName == "ProjectTask"){
-	//			statusCondition['vtiger_projecttask.projecttaskstatus'] = selectedStatus;
-	//			params['whereCondition'] = statusCondition;
-	//		}
-	//		
-	//		params['record'] = recordId;
-	//		params['view'] = 'Detail';
-	//		params['module'] = module;
-	//		params['page'] = widgetDataContainer.find('[name="page"]').val();
-	//		params['limit'] = widgetDataContainer.find('[name="pageLimit"]').val();
-	//		params['relatedModule'] = referenceModuleName;
-	//		params['mode'] = 'showRelatedRecords';
-	//		AppConnector.request(params).then(
-	//			function(data) {
-	//				widgetDataContainer.html(data);
-	//			}
-	//		);
-	//   })
+        /*
+	loadWidget : function(widgetContainer) {
+		var thisInstance = this;
+		var contentHeader = jQuery('.widget_header',widgetContainer);
+		var contentContainer = jQuery('.widget_contents',widgetContainer);
+		var urlParams = widgetContainer.data('url');
+		var relatedModuleName = contentHeader.find('[name="relatedModule"]').val();
+
+		var params = {
+			'type' : 'GET',
+			'dataType': 'html',
+			'data' : urlParams
+		};
+		contentContainer.progressIndicator({});
+		AppConnector.request(params).then(
+			function(data){
+				contentContainer.progressIndicator({'mode': 'hide'});				
+				contentContainer.html(data);
+                                //SG1411 Marche po
+				thisInstance.setColorForBusyRecords();
+                                
+				app.registerEventForTextAreaFields(jQuery(".commentcontent"))
+				contentContainer.trigger(thisInstance.widgetPostLoad,{'widgetName' : relatedModuleName})
+			},
+			function(){
+
+			}
+		);
+	},
+	
+	//SG1411 TODO On declenche ou ?
+	
+	setColorForBusyRecords : function(){
+
+               
+                var thisBusyTr = jQuery('div summaryWidgetContainer table.listViewEntriesTable tr.inBusyConflict');
+                
+                thisBusyTr.find('td.busyState a').css({'color': 'red'});
+               // alert('iciciciccii' + thisBusyTr.find('td.busyState span, td.busyState a'));
+	},
+        
+       */ 
+        
+        
+        
+       // registerSummaryViewContainerEvents : function(summaryViewContainer){
+        //   this._super(summaryViewContainer);
+	// this.setColorForBusyRecords();
 	//},
 	//
 	///**

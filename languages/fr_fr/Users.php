@@ -191,7 +191,8 @@ $languageStrings = array(
 	'LBL_TRANSFER_RECORDS_TO_USER' => ' Transférer les enregistrements à l\'utilisateur ',
 	'LBL_USER_TO_BE_DELETED' => 'Utilisateur à supprimer',    
 	
-	// Traductions manquantes 
+	// Traductions manquantes
+        'LBL_THERE_IS_NO'  => 'Aucun',
 	'Starting Day of the week' => 'Jour de début de semaine' ,
 	'Today' => 'Aujourd\'hui',
 	'1 Hour' => '1 heure',

@@ -32,23 +32,26 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 		
 		
 	},
-	
+	setTextColorForBusyChauffeur : function(){
+		var popupPageContainer = jQuery('#popupPageContainer');
+		popupPageContainer.find('tr.listViewEntries.alreadyBusy td.busyState').each(function(index,element) {
+			var busytd = jQuery(element);
+			
+				busytd.css({'color': 'red'});
+				busytd.find('a').css({'color': 'red'});
+			}
+		);		
+	},
 	
 	disableBusyChauffeurs : function(){
 		var srcrcrd = (this.sourceRecord == false) ? this.getSourceRecord() : this.sourceRecord;
 		var popupPageContainer = jQuery('#popupPageContainer');
 		popupPageContainer.find('tr.listViewEntries').each(function(index,rowelement) {
 			var row = jQuery(rowelement);
-			if (row.data('busyin')) {
-				row.find('td input.entryCheckBox').hide();
-				if (row.data('busyin')==srcrcrd) {
-					row.addClass('alreadyIn highlightBackgroundColor');
+			if (row.hasClass('alreadySelected')) {
+				row.find('td input.entryCheckBox').hide();				
 				}
-				else {
-					row.addClass('alreadyBusy');	
-				}			
-			}
-			else row.addClass('freeChauffeur');
+			else row.addClass('selectableChauffeur');
 			});
 		
 	},
@@ -57,9 +60,9 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 		var isMainCheckBoxChecked = currentElement.is(':checked');
 		var tableElement = currentElement.closest('table');
 		if(isMainCheckBoxChecked) {
-			jQuery('tr.freeChauffeur input.entryCheckBox', tableElement).attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+			jQuery('tr.selectableChauffeur input.entryCheckBox', tableElement).attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
 		}else {
-			jQuery('tr.freeChauffeur input.entryCheckBox', tableElement).removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+			jQuery('tr.selectableChauffeur input.entryCheckBox', tableElement).removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
 		}
 	},
 	/**
@@ -81,6 +84,7 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 					thisInstance.disableBusyChauffeurs();
 					thisInstance.setTextColorForColorTag();
 					thisInstance.registerEventForListEntryValueLink();
+					thisInstance.setTextColorForBusyChauffeur();
 					progressIndicatorElement.progressIndicator({
 						'mode' : 'hide'
 					})
@@ -115,11 +119,10 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 		var thisanc  = jQuery(e.currentTarget);
 		var newhref = thisanc.attr('href');
 		if (newhref) {
-				window.opener.location = newhref;
-				
+				window.opener.location = newhref;				
 		}
 		window.close();
-		jQuery.progressIndicator();
+		//jQuery.progressIndicator();
 		e.stopPropagation();
 	},
 	
@@ -140,33 +143,49 @@ Vtiger_Popup_Js("MGChauffeurs_Popup_Js",{
 	clickListViewEntries: function(e){
 		var thisInstance = this;
 		var row  = jQuery(e.currentTarget);
-
 		var dataIsBusyElsewhere = row.hasClass('alreadyBusy');
-		var dataIsBusy = (dataIsBusyElsewhere || row.hasClass('alreadyIn'));
+		var dataIsAlreadySelected = row.hasClass('alreadySelected');
+		var dataIsBusy = (dataIsBusyElsewhere || dataIsAlreadySelected);
 		
-		if (dataIsBusy) {
-			if (dataIsBusyElsewhere ) {
-				alert (app.vtranslate('JS_CHAUFFEUR_IS_BUSY_ELSEWHERE'));
-				
-				}
-			else
-				alert (app.vtranslate('JS_CHAUFFEUR_IS_ALREADY_SELECTED'));
-				e.preventDefault();
-		}
-		else {
+		if (!dataIsAlreadySelected) {
 			var thisCheckBox = row.find('td input.entryCheckBox');
 			var isChecked = thisCheckBox.is(':checked');
-			if(!isChecked) {
-			thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
-			}else {
-			thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+			if (dataIsBusyElsewhere ) {				
+				if(!isChecked) {
+					if (confirm(app.vtranslate('JS_VEHICULE_IS_BUSY_ELSEWHERE'))) {	
+						thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+						}
+				}
+				else{					
+					thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');
+					}
+				}
+			else {
+				if(!isChecked) {
+					thisCheckBox.attr('checked','checked').closest('tr').addClass('highlightBackgroundColor');
+					}
+					else {
+					thisCheckBox.removeAttr('checked').closest('tr').removeClass('highlightBackgroundColor');				
+					}
 			}
-		}	
+		}
+		else {
+				if (dataIsBusyElsewhere) {
+				alert (app.vtranslate('JS_VEHICULE_IS_ALREADY_SELECTED')+ '\n' +
+						    app.vtranslate('JS_VEHICULE_IS_BUSY_ELSEWHERE'));
+				e.preventDefault();
+				}
+				else {
+				alert(app.vtranslate('JS_VEHICULE_IS_ALREADY_SELECTED'));
+				e.preventDefault();
+				}
+		}
 	},
 	registerEvents: function(){
 		this._super();
 		this.disableBusyChauffeurs();
 		this.setTextColorForColorTag();
+		this.setTextColorForBusyChauffeur();
 		this.registerEventForListEntryValueLink();
 	}
 	

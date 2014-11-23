@@ -38,22 +38,22 @@
 					($LISTVIEW_HEADER_KEY neq 'uicolor' && $LISTVIEW_HEADER_KEY neq 'name')
 					}
 				<th class="{$WIDTHTYPE}">
-					{if $LISTVIEW_HEADER_KEY eq 'engagement' or $LISTVIEW_HEADER_KEY eq 'popupname'}
-					<a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER['column']}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER['column']}">{vtranslate($LISTVIEW_HEADER['label'], $MODULE)}
-										
-					{else}
+					
 					<a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
 						{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}<img class="sortImage" src="{vimage_path( $SORT_IMAGE, $MODULE)}">{else}<img class="hide sortingImage" src="{vimage_path( 'downArrowSmall.png', $MODULE)}">{/if}</a>
-					{/if}
+					
 				</th>
 				{/if}
 				{/foreach}
 			</tr>
 		</thead>
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
-		{assign var=VEHICULEID value={$LISTVIEW_ENTRY->getId()}}
-		<tr class="listViewEntries" data-id="{$LISTVIEW_ENTRY->getId()}" data-name='{$LISTVIEW_ENTRY->getName()}' data-info='{ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData())}'
-			{if $GETURL neq '' } data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if} {if $BUSYLIST[$VEHICULEID]} data-busyin ='{$BUSYLIST[$VEHICULEID]['transportid']}'{/if}  id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
+		{assign var=CHAUFFEURID value={$LISTVIEW_ENTRY->getId()}}
+		<tr class="listViewEntries {if $BUSYLIST[$CHAUFFEURID]['alreadyselected']}alreadySelected highlightBackgroundColor{/if} {if $BUSYLIST[$CHAUFFEURID]['busyelsewhere']} alreadyBusy{/if}"
+		 data-id="{$CHAUFFEURID}" data-name='{$LISTVIEW_ENTRY->getName()}' data-info='{ZEND_JSON::encode($LISTVIEW_ENTRY->getRawData())}'
+			{if $GETURL neq '' } data-url='{$LISTVIEW_ENTRY->$GETURL()}' {/if}
+			{if $BUSYLIST[$CHAUFFEURID]['busyelsewhere']} data-busyin ='{ZEND_JSON::encode($BUSYLIST[$CHAUFFEURID]['busyelsewhere'])}'{/if}
+			 id="{$MODULE}_popUpListView_row_{$smarty.foreach.popupListView.index+1}">
 			{if $MULTI_SELECT}
 			<td class="{$WIDTHTYPE}">
 				<input class="entryCheckBox" type="checkbox" />
@@ -65,23 +65,31 @@
 			($LISTVIEW_HEADER_KEY neq 'uicolor' && $LISTVIEW_HEADER_KEY neq 'name')
 			}
 				{if $LISTVIEW_HEADER_KEY eq 'engagement'}				
-					{if $BUSYLIST[$VEHICULEID]}
-						{if $BUSYLIST[$VEHICULEID]['transportid'] neq $SOURCE_RECORD}
-						<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="reference" data-field-name="{$BUSYLIST[$VEHICULEID]['modulename']}">
-							{if $BUSYLIST[$VEHICULEID]['modulename'] eq 'MGTransports'}
-							<a href='{$BUSYLIST[$VEHICULEID]['transporthref']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', $MODULE)}'>{$BUSYLIST[$VEHICULEID]['transportlabel']}</a>	
-							{/if}
-						</td>
-						{else}
-						<td class="listViewEntryValue {$WIDTHTYPE}">			
-							{vtranslate('LBL_ALREADY_SELECTED_IN', $MODULE)}{$BUSYLIST[$VEHICULEID]['transportlabel']}	
-						</td>
+					{if $BUSYLIST[$CHAUFFEURID]}
+						
+						{if $BUSYLIST[$CHAUFFEURID]['busyelsewhere']}
+							<td class="listViewEntryValue {$WIDTHTYPE} busyState">
+								{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$CHAUFFEURID]['busyelsewhere'] name=eventinfolist}
+								{if $EVENTINFO['modulename'] eq 'MGTransports'}
+									<a href='{$EVENTINFO['href']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', $MODULE)}'>{$EVENTINFO['label']}
+									{if $smarty.foreach.eventinfolist.last}. {else}, {/if}
+									</a>
+								{/if}
+								{/foreach}
+							</td>
+								
+						{elseif $BUSYLIST[$CHAUFFEURID]['alreadyselected']}
+								<td class="listViewEntryValue {$WIDTHTYPE} busyState">			
+								{vtranslate('LBL_ALREADY_SELECTED_IN', $MODULE)}{*$BUSYLIST[$CHAUFFEURID]['alreadyselected']*}	
+								</td>
 						{/if}
+						
 					{else}
-					<td class="listViewEntryValue {$WIDTHTYPE}">			
+						<td class="listViewEntryValue {$WIDTHTYPE} busyState">			
 						{vtranslate('LBL_NO_ENGAGEMENT', $MODULE)}		
-					</td>
-					
+						</td>
+							
+						
 					{/if}
 					
 				{elseif $LISTVIEW_HEADER_KEY eq 'popupname'}

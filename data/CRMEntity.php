@@ -81,20 +81,14 @@ class CRMEntity {
 			
 
 		foreach ($this->tab_name as $table_name) {
-/*
-echo "\r\nsaveentity<pre>";
-var_dump($table_name);	
-var_dump($fileid);	
-echo "</pre>//saveentity\r\n";
-//var_dump($this);
-*/
+
 			if ($table_name == "vtiger_crmentity") {
 				$this->insertIntoCrmEntity($module, $fileid);
 			} else {
 				$this->insertIntoEntityTable($table_name, $module, $fileid);
 			}
 		}
-//SGNOW
+
 		//Calling the Module specific save code
 		$this->save_module($module);
 
@@ -1980,6 +1974,7 @@ if($fileid == '') {
 		// Add the pre-joined relation table query
 		$query .= " " . $relquery;
 
+		
 		return $query;
 	}
 

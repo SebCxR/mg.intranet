@@ -54,11 +54,20 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
 					"&view=Detail&record=".$row['crmid'] ;
-			$busyList[$row['chauffeurid']]= array('modulename'=>'MGTransports',
-							      'transportid'=>$row['crmid'],
-							     'transportlabel'=>$row['subject'],
-							     'transporthref'=>$transporthref
-							     );
+					
+			$temparray = array('modulename'=>'MGTransports',
+					'label'=>$row['subject'],
+					'href'=>$transporthref
+					);
+			
+			if (!$busyList[$row['chauffeurid']]) {	
+			$busyList[$row['chauffeurid']]=array($row['crmid']=> $temparray);
+			}
+			
+			else {				
+			$busyList[$row['chauffeurid']][$row['crmid']] = $temparray ;
+			}		
+					
 		}
 		
 		return $busyList;	

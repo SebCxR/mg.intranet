@@ -28,10 +28,13 @@ $languageStrings = array(
         'LBL_NO_ENGAGEMENT' => 'Disponible',
         'LBL_VEHIC_ENGAGED_FOR' => 'Engagement',
         'LBL_GET_TO_MGTRANSPORT' => 'Editer ce transport',
+        'LBL_CONFLICT_WITH' => 'Ce véhicule est pris ailleurs à la même date',
         'mgTypesTransport' => 'Types de transport',
         'LBL_VEHIC_ISRENTED_TO' => ' en Loc. chez ',
         'LBL_VEHIC_POPUP_NAME_HEADER' => 'Véhicule',
-        'LBL_ALREADY_SELECTED_IN' => 'déjà pris pour ',
+        'LBL_ALREADY_SELECTED_IN' => 'Sélectionné ',
+        'LBL_BUILDING_VEHICULES_LIST' => 'Constitution de la liste des véhicules : ',
+        'LBL_THERE_IS_NO'  => 'Aucun'
 );
 
 ?>
