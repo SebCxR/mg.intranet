@@ -98,9 +98,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
 			
 		}
-		//SGNOW
-		//var_dump($this->listViewHeaders);
-		
+		//var_dump($this->listViewHeaders);		
 		//var_dump($this->listViewEntries);
 		$basebusylist = $moduleModel->getBusylist($sourceRecord);
 		
@@ -113,7 +111,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 					$popupBusylist[$vehiculeid]['alreadyselected']=$eventinfo['label'];
 				}
 				else {
-					if (!$popupBusylist[$vehiculeid]['busyelsewhere']) !$popupBusylist[$vehiculeid]['busyelsewhere'] = array();
+					if (!$popupBusylist[$vehiculeid]['busyelsewhere']) $popupBusylist[$vehiculeid]['busyelsewhere'] = array();
 					$popupBusylist[$vehiculeid]['busyelsewhere'][$eventid] = $eventinfo;
 				}
 			}

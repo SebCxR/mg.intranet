@@ -49,20 +49,26 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		$pagingModel->set('page', $pageNumber);
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		
 		$listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);
+		
+		
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
 
+		
 		if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder', $sortOrder);
 		}
 		if(!empty($sourceModule)) {
 			$listViewModel->set('src_module', $sourceModule);
-			$listViewModel->set('src_field', $sourceField);
+			$listViewModel->set('src_field', $sourceField);			
 			$listViewModel->set('src_record', $sourceRecord);
-			
-			$sourceRecordInstance = Vtiger_Record_Model::getInstanceById($sourceRecord);
+			if(!empty($sourceRecord)) {
+				$sourceRecordInstance = Vtiger_Record_Model::getInstanceById($sourceRecord);
+			}
 		}
+		//SG1411 On force le critère de recherche $sourceRecordInstance->get("mgtypetransport")à l'ouverture du popup
 		if((!empty($searchKey)) && (!empty($searchValue)))  {
 			
 			if ($searchValue == vtranslate('LBL_ALL') || $searchValue == strtolower(vtranslate('LBL_ALL'))) {
@@ -82,8 +88,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		}
 
 		if(!$this->listViewHeaders){
-			$this->listViewHeaders = $listViewModel->getListViewHeaders();			
-			//SGNOW
+			$this->listViewHeaders = $listViewModel->getListViewHeaders();	
 			
 			$temp = array();
 			$field1 = new Vtiger_Field_Model();
@@ -95,7 +100,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		
 			$this->listViewHeaders = array_merge($temp,$this->listViewHeaders);
 			
-			if (!empty($sourceModule) && $sourceModule == 'MGTransports') {
+			if (!empty($sourceModule) && !empty($sourceRecord) && $sourceModule == 'MGTransports') {
 			$customHeaders = array ();
 			$field1 = new Vtiger_Field_Model();		
 			$field1->set('name', 'engaged_for');
@@ -112,6 +117,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
 			
 		}
+		
 		$basebusylist = $moduleModel->getBusylist($sourceRecord);
 		
 		$popupBusylist = array();

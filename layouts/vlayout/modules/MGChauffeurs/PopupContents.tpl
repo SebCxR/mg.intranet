@@ -47,6 +47,7 @@
 				{/foreach}
 			</tr>
 		</thead>
+		
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=popupListView}
 		{assign var=CHAUFFEURID value={$LISTVIEW_ENTRY->getId()}}
 		<tr class="listViewEntries {if $BUSYLIST[$CHAUFFEURID]['alreadyselected']}alreadySelected highlightBackgroundColor{/if} {if $BUSYLIST[$CHAUFFEURID]['busyelsewhere']} alreadyBusy{/if}"
@@ -70,11 +71,11 @@
 						{if $BUSYLIST[$CHAUFFEURID]['busyelsewhere']}
 							<td class="listViewEntryValue {$WIDTHTYPE} busyState">
 								{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$CHAUFFEURID]['busyelsewhere'] name=eventinfolist}
-								{if $EVENTINFO['modulename'] eq 'MGTransports'}
-									<a href='{$EVENTINFO['href']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', $MODULE)}'>{$EVENTINFO['label']}
+								
+									<a href='{$EVENTINFO['href']}' title='{vtranslate($EVENTINFO['type'], $EVENTINFO['modulename'])}'>{$EVENTINFO['label']}
 									{if $smarty.foreach.eventinfolist.last}. {else}, {/if}
 									</a>
-								{/if}
+								
 								{/foreach}
 							</td>
 								

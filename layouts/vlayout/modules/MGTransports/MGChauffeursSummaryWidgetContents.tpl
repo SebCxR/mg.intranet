@@ -21,7 +21,7 @@
 			    <td class="span3 rowfluid busyState">
 				<span class="ui-icon ui-icon-alert" title="{vtranslate('LBL_CONFLICT_WITH', {$RELATED_MODULE})}"></span>
 				{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$CHAUFFEURID] name=eventinfolist}
-				    <a href='{$EVENTINFO['href']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', {$RELATED_MODULE})}' style='color: red'>{$EVENTINFO['label']}
+				    <a href='{$EVENTINFO['href']}' title='{vtranslate({$EVENTINFO['type']}, {$EVENTINFO['modulename']})}' style='color: red'>{$EVENTINFO['label']}
 				    {if $smarty.foreach.eventinfolist.last}. {else}, {/if}
 				    </a>
 				{/foreach}

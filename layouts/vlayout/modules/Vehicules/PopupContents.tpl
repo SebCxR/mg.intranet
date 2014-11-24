@@ -36,7 +36,7 @@
 				{/if}
 				{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 				
-				{if  $SOURCE_MODULE neq "MGTransports" or
+				{if  ($SOURCE_MODULE neq "MGTransports" and $SOURCE_MODULE neq "Calendar" and $SOURCE_MODULE neq "Events") or
 					($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')
 					}
 				<th class="{$WIDTHTYPE}">
@@ -65,7 +65,7 @@
 			{/if}
 			{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 			
-			{if  $SOURCE_MODULE neq "MGTransports" or
+			{if  ($SOURCE_MODULE neq "MGTransports" and $SOURCE_MODULE neq "Calendar" and $SOURCE_MODULE neq "Events") or
 			($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')
 			}
 				{if $LISTVIEW_HEADER_KEY eq 'engagement'}				
@@ -74,17 +74,17 @@
 						{if $BUSYLIST[$VEHICULEID]['busyelsewhere']}
 							<td class="listViewEntryValue {$WIDTHTYPE} busyState">
 								{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$VEHICULEID]['busyelsewhere'] name=eventinfolist}
-								{if $EVENTINFO['modulename'] eq 'MGTransports'}
-									<a href='{$EVENTINFO['href']}' title='{vtranslate('LBL_GET_TO_MGTRANSPORT', $MODULE)}'>{$EVENTINFO['label']}
+								
+									<a href='{$EVENTINFO['href']}' title='{vtranslate($EVENTINFO['type'], $EVENTINFO['modulename'])}'>{$EVENTINFO['label']}
 									{if $smarty.foreach.eventinfolist.last}. {else}, {/if}
 									</a>
-								{/if}
+								
 								{/foreach}
 							</td>
 								
 						{elseif $BUSYLIST[$VEHICULEID]['alreadyselected']}
 								<td class="listViewEntryValue {$WIDTHTYPE} busyState">			
-								{vtranslate('LBL_ALREADY_SELECTED_IN', $MODULE)}{*$BUSYLIST[$VEHICULEID]['alreadyselected']*}	
+								{vtranslate('LBL_ALREADY_SELECTED_IN', $MODULE)}	
 								</td>
 						{/if}
 						

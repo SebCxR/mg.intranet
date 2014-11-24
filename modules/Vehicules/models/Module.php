@@ -61,15 +61,85 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	}
 	
 	// Function returns the Busylist on the date of the mgevent
-	// @param <int> $mgeventId : id of the transport being built, needed to get the date considered when checking engagement
+	// @param <int> $mgeventId : id of the event or transport considered, needed to get the date
 	// @return <Array>
-	public function getBusylist($mgeventId) {
+	public function getBusylist($mgevent) {		
+		$busyontransportslist = $this->getBusylistOnTransports($mgevent);
+		$busyoneventslist = $this->getBusylistOnEvents($mgevent);
+		$busylist = array();
 		
-		$busylist = $this->getBusylistOnTransports($mgeventId);
+		if (empty($busyoneventslist)) {
+			$busylist = $busyontransportslist;
+		}
+		else {
+		foreach($busyontransportslist as $vehicid => $transportsarray) {
+			 if (array_key_exists($vehicid,$busyoneventslist)) {				
+				$busylist[$vehicid] = $transportsarray + $busyoneventslist[$vehicid];
+			 }
+			 else{
+				$busylist[$vehicid] = $transportsarray;
+			 }
+		}
 		
+		foreach($busyoneventslist as $vehicid => $eventsarray) {			
+			 if (!array_key_exists($vehicid,$busylist)) {
+				$busylist[$vehicid] = $eventsarray;
+			 }
+		}
+		}
 		return $busylist;
-	}
+	}	
 
+	//
+	// Function returns the Busylist on the date of the mgtransport
+	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
+	// @return <Array> (vehiculeid1 => array (eventidx=>arrayofinfo,eventidy=>arrayofinfo,...), vehiculeid2 => array (eventidx=>arrayofinfo,eventidz=>arrayofinfo,...))
+	public function getBusylistOnEvents($mgtransportId) {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$user = $currentUser->getId();
+		
+		$busyList = array();
+		$db = PearDatabase::getInstance();
+		
+		
+		$query = "SELECT vtiger_crmentity.crmid, vtiger_activity.subject,vtiger_activity.activitytype, vtiger_vehiculeactivityrel.vehiculeid as vehiculeid FROM vtiger_activity"
+					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid"
+					." INNER JOIN vtiger_vehiculeactivityrel ON vtiger_vehiculeactivityrel.activityid = vtiger_activity.activityid"
+					;
+
+		$query .= " WHERE vtiger_crmentity.deleted=0"
+			." AND (vtiger_activity.date_start <= (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
+			." AND (vtiger_activity.due_date >= (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
+			;	
+
+		$params = array($mgtransportId,$mgtransportId);
+
+		$result = $db->pquery($query, $params);
+		$numOfRows = $db->num_rows($result);
+
+		for($i=0; $i<$numOfRows; $i++) {
+			$row = $db->query_result_rowdata($result, $i);
+			$eventhref = "index.php?module=Calendar".
+					"&view=Detail&record=".$row['crmid'] ;
+					
+			$temparray = array('modulename'=>'Calendar',
+					'label'=>$row['subject'],
+					'type'=>$row['activitytype'],
+					'href'=>$eventhref
+					);
+			
+			if (!$busyList[$row['vehiculeid']]) {	
+			$busyList[$row['vehiculeid']]=array($row['crmid']=> $temparray);
+			}
+			
+			else {				
+			$busyList[$row['vehiculeid']][$row['crmid']] = $temparray ;
+			}		
+					
+		}
+		
+		return $busyList;	
+	}
 	
 	// Function returns the Busylist on the date of the mgtransport
 	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
@@ -81,9 +151,10 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		
 		
-		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
+		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_mgtransports.mgtypetransport, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
 					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid"
-					." LEFT JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
+					." LEFT JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid"
+					;
 
 		$query .= " WHERE vtiger_crmentity.deleted=0"
 			." AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
@@ -102,6 +173,7 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 					
 			$temparray = array('modulename'=>'MGTransports',
 					'label'=>$row['subject'],
+					'type'=>$row['mgtypetransport'],
 					'href'=>$transporthref
 					);
 			
