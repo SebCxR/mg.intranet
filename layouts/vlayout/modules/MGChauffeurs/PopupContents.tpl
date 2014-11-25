@@ -93,7 +93,7 @@
 						
 					{/if}
 					
-				{elseif $LISTVIEW_HEADER_KEY eq 'popupname'}
+				{elseif $LISTVIEW_HEADER_KEY eq 'colored_name'}
 					<td class="listViewEntryValue {$WIDTHTYPE}">						
 						<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('uicolor')}" style="background-color : {$LISTVIEW_ENTRY->get('uicolor')}">{$LISTVIEW_ENTRY->get('name')} </div>
 					</td>

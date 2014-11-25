@@ -91,6 +91,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();	
 			
 			$temp = array();
+			/*
 			$field1 = new Vtiger_Field_Model();
 		
 			$field1->set('name', 'full_vehicule_name');
@@ -99,7 +100,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			$temp['full_vehicule_name'] = $field1;
 		
 			$this->listViewHeaders = array_merge($temp,$this->listViewHeaders);
-			
+			*/
 			if (!empty($sourceModule) && !empty($sourceRecord) && $sourceModule == 'MGTransports') {
 			$customHeaders = array ();
 			$field1 = new Vtiger_Field_Model();		

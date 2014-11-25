@@ -70,7 +70,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 
 		if(!$this->listViewHeaders){
 			$this->listViewHeaders = $listViewModel->getListViewHeaders();			
-			
+			/*
 			$temp = array();
 			$field1 = new Vtiger_Field_Model();
 		
@@ -80,7 +80,7 @@ class MGChauffeurs_Popup_View extends Vtiger_Popup_View {
 			$temp['popupname'] = $field1;
 		
 			$this->listViewHeaders = array_merge($temp,$this->listViewHeaders);
-			
+			*/
 			if (!empty($sourceModule) && $sourceModule == 'MGTransports') {
 			$customHeaders = array ();
 			$field1 = new Vtiger_Field_Model();		
