@@ -51,25 +51,32 @@
 	<table class="table table-bordered listViewEntriesTable">
 		<thead>
 			<tr class="listViewHeaders">
+				
 				{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
+					{*SGDEBUG Pas de champ 'immatriculation' dans les users... 					
 					{if $LISTVIEW_HEADER->getName() eq 'immatriculation'}
 						<th nowrap class="{$WIDTHTYPE}">
 							<a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">{vtranslate('LBL_USER_LIST_DETAILS', $MODULE)}
 							&nbsp;&nbsp;{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('column')}<img class="{$SORT_IMAGE} icon-white">{/if}</a>
 						</th>
-					{elseif $LISTVIEW_HEADER->getName() neq 'last_name' and $LISTVIEW_HEADER->getName() neq 'email1'}
+						
+					SGDEBUG Je ne comprends pas la condition elseif originale (ci dessous), pourquoi enlever les headers "last_name" et "email1"? De plus, ils n"étaieant pas enlevés dans les entrées d'ou tableau foireux
+					{elseif $LISTVIEW_HEADER->getName() neq 'last_name' and $LISTVIEW_HEADER->getName() neq 'email1'}					
+					*}
 						<th nowrap class="{$WIDTHTYPE}"><a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
 							&nbsp;&nbsp;{if $COLUMN_NAME eq $LISTVIEW_HEADER->get('column')}<img class="{$SORT_IMAGE} icon-white">{/if}</a>
 						</th>
-					{/if}
+					{*{/if}*}
 				{/foreach}
 			</tr>
 		</thead>
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
 		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}' id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
+			
+			<input type="hidden" name="deleteActionUrl" value="{$LISTVIEW_ENTRY->getDeleteUrl()}">
 			{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 			{assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
-			<input type="hidden" name="deleteActionUrl" value="{$LISTVIEW_ENTRY->getDeleteUrl()}">
+			
 				{if $LISTVIEW_HEADER->getName() eq 'immatriculation'}
 					<td class="listViewEntryValue {$WIDTHTYPE}">
 					<div class='row-fluid'>
