@@ -136,9 +136,6 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			}
 			
 		}
-		
-		
-		//SGNOW
 		//var_dump($this->listViewHeaders);
 		//var_dump($this->listViewEntries);
 		//var_dump($basebusylist);

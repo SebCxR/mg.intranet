@@ -79,6 +79,22 @@ Class Users_Edit_View extends Users_PreferenceEdit_View {
 	}
 	
 	public function process(Vtiger_Request $request) {
+		global $current_user,$default_timezone, $default_language;
+		//SG set TimeZone and language if it is not
+		if(empty($user)) {
+				$user = $current_user;
+			}
+		if (!($request->get('record')))	{
+		if (!($request->get('time_zone')) || $request->get('time_zone') == ''){
+			$userTimeZone = $user->time_zone ? $user->time_zone : $default_timezone;
+			$request->set('time_zone',$userTimeZone);
+		}
+		if (!($request->get('language')) || $request->get('language') == ''){
+			$userLanguage = $user->language ? $user->language : $default_language;
+		$request->set('language',$userLanguage);
+		}
+		}		
+		
 		parent::process($request);
 	}
 }

@@ -28,8 +28,11 @@ $languageStrings = array(
         'LBL_MGCHAUFFEUR_ENGAGED_FOR' => 'Engagement',
         'LBL_ALREADY_SELECTED_IN' => 'Sélectionné ',
         'LBL_MGCHAUFFEUR_POPUP_NAME_HEADER' => 'Chauffeur',
+        'LBL_CHAUFFEUR_COLORED_NAME_HEADER' => 'Chauffeur',
         'LBL_BUILDING_CHAUFFEURS_LIST'=> 'Constitution de la liste des chauffeurs :',
+        'LBL_CREATEUSER'=> 'Créer un nouveau compte utilisateur pour ce chauffeur',
         'Start Date & Time' => 'Date de début',
+        
 );
 
 ?>

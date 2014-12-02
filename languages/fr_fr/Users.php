@@ -11,7 +11,8 @@
  * December 2013 
  ************************************************************************************/
 $languageStrings = array(
-	'LBL_ADD_RECORD'               => 'Ajouter un untilisateur'                    , 
+        'SINGLE_Users'               => 'compte utilisateur'                    , 
+	'LBL_ADD_RECORD'               => 'Ajouter un utilisateur'                    , 
 	'LBL_MY_PREFERENCES'           => 'Mes préférences'           , 
 	'LBL_MORE_INFORMATION'         => 'Informations complémentaires', 
 	'LBL_USERLOGIN_ROLE'           => 'Informations'                , 

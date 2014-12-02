@@ -243,7 +243,6 @@ var app = {
 			css = url;
 			url = false;
 		}
-
 		if (typeof cb != 'function') {
 			cb = function() { }
 		}
@@ -325,8 +324,9 @@ var app = {
 		  app.showSelect2ElementView(container.find('select.select2'));
 			//register date fields event to show mini calendar on click of element
 			app.registerEventForDatePickerFields(container);
-			//SG1411 register all select2 Elements
+			//SG1411 register colorPicker Events
 			app.registerEventForColorPickerFields(container.find('div.colorpicker-holder.colorField'));
+			
 			cb(container);
 		}
 

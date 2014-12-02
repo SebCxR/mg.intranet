@@ -47,7 +47,7 @@
 <!-- Show the add button only if it is edit view  -->
 {if $smarty.request.view eq 'Edit' && !in_array($REFERENCE_LIST[0],$QUICKCREATE_RESTRICTED_MODULES)}
 <span class="add-on cursorPointer createReferenceRecord">
-	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class='icon-plus' title="{vtranslate('LBL_CREATE', $MODULE)}"></i>
+	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class='icon-plus' title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_CREATEUSER', $MODULE)}"{else}"{vtranslate('LBL_CREATE', $MODULE)}"{/if}></i>
 </span>
 {/if}
 </div>
