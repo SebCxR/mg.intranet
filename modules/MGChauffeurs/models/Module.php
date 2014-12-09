@@ -45,9 +45,6 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		return $busylist;
 	}
 	
-	
-	
-	//SGNOW
 	// Function returns the Busylist on the date of the mgtransport
 	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
 	// @return <Array> (chauffeurid1 => array (eventidx=>arrayofinfo,eventidy=>arrayofinfo,...), chauffeurid2 => array (eventidx=>arrayofinfo,eventidz=>arrayofinfo,...))

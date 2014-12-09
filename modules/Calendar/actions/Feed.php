@@ -226,7 +226,6 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}
 	}
 	
-	//SGNOWTODO
 	protected function pullEventsByVehiculeId($start, $end, &$result,$vehiculeid,$backcolor,$textcolor) {		
 		
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
@@ -352,7 +351,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$this->groupResultsById($result);
 		
 	}
-	//SGNOWTODO
+
 	protected function pullInvitedEvents($start,$end,&$result,$mapping) {
 
 		foreach ($mapping as $inviteeid=>$color) {

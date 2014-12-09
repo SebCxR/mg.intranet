@@ -39,7 +39,7 @@ referenceCreateHandler : function(container) {
 				var thisQCFieldValueInput = jQuery(ele);
 				
 				switch (thisQCFieldValueInput.attr('name')) {
-					 case ('user_name'):
+					case ('user_name'):
 						thisQCFieldValueInput.val(chauffName);
 						 break;
 					case ('email1'):
@@ -48,6 +48,20 @@ referenceCreateHandler : function(container) {
 					case ('last_name'):
 						thisQCFieldValueInput.val(chauffName);
 					 break;
+					case ('is_admin'):
+						if (thisQCFieldValueInput.data('fieldinfo')) {
+							var fieldInfo = thisQCFieldValueInput.data('fieldinfo');
+							var fieldLabel = fieldInfo.label;
+							thisQCFieldValueInput.parent().siblings('td.fieldLabel').find('label').each( function (){
+								$this = jQuery(this);
+								if ($this.html()== fieldInfo.label ) {
+									$this.hide();
+								};
+							}
+							);							
+						}
+						thisQCFieldValueInput.hide();
+					break;
 					default : break;
 					};
 			});
@@ -110,7 +124,83 @@ referenceCreateHandler : function(container) {
 		}
 		quickCreateNode.trigger('click',{'callbackFunction':postQuickCreateSave});
 	},
+//SGNOW
+registerEditUserLinkEvent : function(container){
+		var thisInstance = this;
+		var $userEditButton = container.find('.editUserLink');
+		var $userInput = $userEditButton.parent().siblings('input[name="userid"]');
+		var selectUserPopupButton = $userEditButton.siblings('.relatedPopup');
+		var createUserButton = $userEditButton.siblings('.createReferenceRecord');
+		$userEditButton.on("click",function(e){
+			$thisUserInput = jQuery(e.currentTarget).parent().siblings('input[name="userid"]');
+			if ($thisUserInput.val() && $thisUserInput.val()!= '') {				
+				var userUrl = "index.php?module=Users&parent=Settings&view=Edit&record=" + $thisUserInput.val();
+				window.location.href = userUrl;
+			}	
+		});
 		
+		if ($userInput.val() && $userInput.val()!= '' && $userInput.val()!= '0') {
+				$userEditButton.show();
+				selectUserPopupButton.hide();
+				createUserButton.hide();
+			}
+		else {			
+				$userEditButton.hide();
+				selectUserPopupButton.show();
+				createUserButton.show();
+				
+				
+			};
+		
+	},
+	
+setReferenceFieldValue : function(container, params) {
+		var sourceField = container.find('input[class="sourceField"]').attr('name');
+		var fieldElement = container.find('input[name="'+sourceField+'"]');
+		var sourceFieldDisplay = sourceField+"_display";
+		var fieldDisplayElement = container.find('input[name="'+sourceFieldDisplay+'"]');
+		var popupReferenceModule = container.find('input[name="popupReferenceModule"]').val();
+
+		var selectedName = params.name;
+		var id = params.id;
+
+		fieldElement.val(id)
+		fieldDisplayElement.val(selectedName).attr('readonly',true);
+		
+		fieldDisplayElement.siblings('.editUserLink').show();
+		fieldDisplayElement.siblings('.clearReferenceSelection').show();
+		fieldDisplayElement.siblings('.relatedPopup').hide();
+		fieldDisplayElement.siblings('.createReferenceRecord').hide();
+		fieldElement.trigger(Vtiger_Edit_Js.referenceSelectionEvent, {'source_module' : popupReferenceModule, 'record' : id, 'selectedName' : selectedName});
+
+		fieldDisplayElement.validationEngine('closePrompt',fieldDisplayElement);
+	},
+/**
+ * Function which will register reference field clear event
+ * @params - container <jQuery> - element in which auto complete fields needs to be searched
+*/
+registerClearReferenceSelectionEvent : function(container) {
+	container.find('.clearReferenceSelection').on('click', function(e){
+		var element = jQuery(e.currentTarget);
+		var parentTdElement = element.closest('td');
+		var fieldNameElement = parentTdElement.find('.sourceField');
+		var fieldName = fieldNameElement.attr('name');
+		fieldNameElement.val('');
+		parentTdElement.find('#'+fieldName+'_display').removeAttr('readonly').val('');
+			
+		//SG1412
+		parentTdElement.find('span.editUserLink').hide();
+		parentTdElement.find('span.clearReferenceSelection').hide();
+		parentTdElement.find('.relatedPopup').show();
+		parentTdElement.find('.createReferenceRecord').show();
+			
+		element.trigger(Vtiger_Edit_Js.referenceDeSelectionEvent);
+		e.preventDefault();
+		})
+	},	
+	
+	
+			
 registerUserQuickCreateEvent : function(){
 	var thisInstance = this;	
 	userfieldtd = jQuery('input[name="popupReferenceModule"][value="Users"]').closest('td');	
@@ -397,6 +487,8 @@ checkDuplicateUser: function(userName){
 	
 registerEvents : function() {
 	this._super();
-	this.registerUserQuickCreateEvent();	
+	var editViewForm = this.getForm();
+	this.registerUserQuickCreateEvent();
+	this.registerEditUserLinkEvent(editViewForm);
 	}
 });
