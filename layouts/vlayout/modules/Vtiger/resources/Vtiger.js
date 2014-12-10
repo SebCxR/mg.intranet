@@ -321,6 +321,26 @@ var Vtiger_Index_Js = {
 		}
 	},
 
+	setTextColorForColorTag : function(){
+		var listviewEntriesTable = jQuery('table.listViewEntriesTable');
+		
+		listviewEntriesTable.find('tr.listViewEntries div.colortag').each(function(index,element) {
+			var colordiv = jQuery(element);
+			if ((colordiv.data('color'))) {
+				var thiscolor = colordiv.data('color');
+				var colorContrast = app.getColorContrast(thiscolor.slice(1));
+				if(colorContrast == 'light') {
+					var textColor = 'black'
+					}
+				else {
+					var textColor = 'white'
+				}
+				colordiv.css({'background-color':thiscolor,'color':textColor});
+				colordiv.find('a').css({'background-color':thiscolor,'color':textColor});
+			}
+		}
+		);	
+	},
 	registerShowHideLeftPanelEvent : function() {
 		jQuery('#toggleButton').click(function(e){
 			e.preventDefault();
@@ -358,7 +378,10 @@ var Vtiger_Index_Js = {
 	},
 
 	registerPostAjaxEvents: function() {
+		
 		Vtiger_Index_Js.registerTooltipEvents();
+		Vtiger_Index_Js.setTextColorForColorTag();
+		
 	}
 }
 

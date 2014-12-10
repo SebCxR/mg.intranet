@@ -192,7 +192,36 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	}
 	
 	
-	
+     //Function that returns related list header fields that will be showed in the Related List View
+     // @return <Array> returns related fields list.
+    //
+	public function getRelatedListFields() {
+		
+	$relatedListFields = parent::getRelatedListFields();
+
+		$temp = array();
+
+		$temp['full_vehicule_name'] = 'full_vehicule_name';
+		
+		$relatedListFields = array_merge($temp,$relatedListFields);
+		
+		
+        return $relatedListFields;
+	}
+
+	public function getField($fieldName) {
+	if ($fieldName == 'full_vehicule_name') {
+		$field = new Vtiger_Field_Model();
+		
+		$field->set('name', 'full_vehicule_name');
+		$field->set('column', 'full_vehicule_name');
+		$field->set('label', 'LBL_FULL_VEHICULE_NAME');
+		
+		return $field;
+	}
+	else
+	return Vtiger_Field_Model::getInstance($fieldName,$this);
+	}
 	
 	/*
 	//SG copy from Contacts

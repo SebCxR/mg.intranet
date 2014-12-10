@@ -43,8 +43,8 @@ class Vehicules extends Vtiger_CRMEntity {
 		'LBL_VEHICULE_ISRENTED' => array('vehicules','isrented'),
 		'LBL_VEHICULE_OWNER' => array('vehicules', 'vehicule_owner'),
 		'LBL_VEHICULE_TYPE' => array('vehicules', 'vehicule_type'),
-		'LBL_VEHICULE_TARE' => array('vehiculescf', 'tare'),
-		'LBL_VEHICULE_TYPESTRANSPORT' => array('vehiculescf', 'typestransport'),
+		'LBL_VEHICULE_TARE' => array('vehicules', 'tare'),
+		'LBL_VEHICULE_TYPESTRANSPORT' => array('vehicules', 'typestransport'),
 		'LBL_VEHICULE_COLOR' => array('vehicules', 'calcolor'),
 
 	);
@@ -56,7 +56,7 @@ class Vehicules extends Vtiger_CRMEntity {
 		'LBL_VEHICULE_OWNER' => 'vehicule_owner',
 		'LBL_VEHICULE_TYPE' => 'vehicule_type',
 		'LBL_VEHICULE_TARE' => 'tare',
-		'LBL_VEHICULE_TYPESTRANSPORT' => 'typestransport',
+		'LBL_VEHICULE_TYPESTRANSPORT' => 'mgtypetransport',
 		'LBL_VEHICULE_COLOR' => 'calcolor',
 		
 	);
@@ -85,7 +85,7 @@ class Vehicules extends Vtiger_CRMEntity {
 		'LBL_ISRENTED' => 'isrented',
 		'LBL_VEHICULE_TYPE' => 'vehicule_type',	
 		'LBL_VEHICULE_TARE' => 'tare',
-		'LBL_VEHICULE_TYPESTRANSPORT' => 'typestransport',
+		'LBL_VEHICULE_TYPESTRANSPORT' => 'mgtypetransport',
 	);
 
 	// For Popup window record selection

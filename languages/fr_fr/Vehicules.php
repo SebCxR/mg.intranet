@@ -34,7 +34,8 @@ $languageStrings = array(
         'LBL_VEHIC_POPUP_NAME_HEADER' => 'Véhicule',
         'LBL_ALREADY_SELECTED_IN' => 'Sélectionné ',
         'LBL_BUILDING_VEHICULES_LIST' => 'Constitution de la liste des véhicules : ',
-        'LBL_THERE_IS_NO'  => 'Aucun'
+        'LBL_THERE_IS_NO'  => 'Aucun',
+        'LBL_FULL_VEHICULE_NAME' => 'Véhicule',
 );
 
 ?>

@@ -86,16 +86,19 @@
     </div>
 </div>
 <div class="relatedContents contents-bottomscroll">
+
     <div class="bottomscroll-div">
 			{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
         <table class="table table-bordered listViewEntriesTable">
             <thead>
                 <tr class="listViewHeaders">
-                    {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
+		    
+                    {foreach item=HEADER_FIELD key=HEADER_KEY from=$RELATED_HEADERS}
 			<th {if $HEADER_FIELD@last} colspan="2" {/if} nowrap class="{$WIDTHTYPE}">
                             {if $HEADER_FIELD->get('column') eq 'access_count' or $HEADER_FIELD->get('column') eq 'idlists' }
                                 <a href="javascript:void(0);" class="noSorting">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}</a>
                             {elseif $HEADER_FIELD->get('column') eq 'time_start'}
+			    
                             {else}
                                 <a href="javascript:void(0);" class="relatedListHeaderValues" data-nextsortorderval="{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-fieldname="{$HEADER_FIELD->get('column')}">{vtranslate($HEADER_FIELD->get('label'), $RELATED_MODULE->get('name'))}
                                     &nbsp;&nbsp;{if $COLUMN_NAME eq $HEADER_FIELD->get('column')}<img class="{$SORT_IMAGE} icon-white">{/if}
@@ -107,23 +110,57 @@
             </thead>
             {foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 		{assign var=UICOLOR value=$RELATED_RECORD->get('uicolor')}
+		{assign var=CALCOLOR value=$RELATED_RECORD->get('calcolor')}
+		
                 <tr class="listViewEntries" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
                     {foreach item=HEADER_FIELD from=$RELATED_HEADERS}
                         {assign var=RELATED_HEADERNAME value=$HEADER_FIELD->get('name')}
-			    <td class="{$WIDTHTYPE}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap
-			    {if ($RELATED_HEADERNAME eq 'folderid') && ($UICOLOR neq null) && ($UICOLOR neq '')}/* ED141018 TODO elargir 'folderid' */
+    			    <td class="{$WIDTHTYPE}" data-field-type="{$HEADER_FIELD->getFieldDataType()}" nowrap
+			    {if (($RELATED_HEADERNAME eq 'folderid')) && ($UICOLOR neq null) && ($UICOLOR neq '')}/* ED141018 TODO elargir 'folderid' */
 				style="background-color: {$UICOLOR};"
 			    {/if}>
+			    
                             {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-                                <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+				{if ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs') and ($UICOLOR neq null) and ($UICOLOR neq '')}
+				<div class="colortag" data-color="{$RELATED_RECORD->get('uicolor')}" style="background-color : {$RELATED_RECORD->get('uicolor')}">
+				 {/if}
+                            <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
+				{if ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs') and ($UICOLOR neq null) and ($UICOLOR neq '')}
+				</div>
+				 {/if}
+				
                             {elseif $RELATED_HEADERNAME eq 'access_count'}
                                 {$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
+			    {elseif $RELATED_HEADERNAME eq 'full_vehicule_name'}
+			    
+						{if $RELATED_RECORD->get('calcolor')}
+							<div class="colortag" data-color="{$RELATED_RECORD->get('calcolor')}" style="background-color : {$RELATED_RECORD->get('calcolor')}">{$RELATED_RECORD->get('vehicule_name')} 
+							{if ($RELATED_RECORD->get('isrented') eq 'yes') or ($RELATED_RECORD->get('isrented') eq '1')}
+							{vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE->get('name'))} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
+							{/if}
+							</div>
+						{else}
+							{$RELATED_RECORD->get('vehicule_name')}
+							{if ($RELATED_RECORD->get('isrented') eq 'yes') or ($RELATED_RECORD->get('isrented') eq '1')}
+								{vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE->get('name'))} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
+							{/if}
+						{/if}
+			    {elseif ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs')}
+			    
+						{if $RELATED_RECORD->get('uicolor')}
+							<div class="colortag" data-color="{$RELATED_RECORD->get('uicolor')}" style="background-color : {$RELATED_RECORD->get('uicolor')}">{$RELATED_RECORD->get('name')}
+							</div>
+						{else}
+							{$RELATED_RECORD->get('name')}
+						{/if}		
                             {elseif $RELATED_HEADERNAME eq 'time_start'}
                             {elseif empty($UNKNOWN_FIELD_RETURNS_VALUE)}{*ED140907*}
                                 {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}
                             {else}{*ED140907*}
                                 {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME, false, $UNKNOWN_FIELD_RETURNS_VALUE)}
                             {/if}
+			    
+			    
                             {if $HEADER_FIELD@last}
 			    </td><td nowrap class="{$WIDTHTYPE}">
                                 <div class="pull-right actions">
@@ -138,10 +175,12 @@
                                     </span>
                                 </div>
                             </td>
-                        {/if}
+			    {/if}
                         </td>
+			
                     {/foreach}
                 </tr>
+		
             {/foreach}
         </table>
     </div>
