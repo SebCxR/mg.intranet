@@ -285,17 +285,35 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			    s = (s <= 9)? ("0"+s) : s;
 			    return h + ":" + mn + ":" + s;
 				}
+				
 			    var progressIndicatorInstance = jQuery.progressIndicator({
-				});	
+				});
+			    
+			    var vttype = (typeof event['vtigertype'] == undefined) ? '' : event.vtigertype;
+			    
+			    //var strttime = (toTimeString(event.start) == '00:00:00') ? '12:00:00' : toTimeString(event.start);
+			    
+			    switch (vttype) {
+				case 'MGTransports' :
+				    strttime = "12:00:00";
+				    event.allDay = true;
+				    break;
+				default :
+				    break;
+				
+			    }
+			    
 			    var params = {
 				    module : 'Calendar',
 				    action : 'UpdateFromCalendar',				    
 				    activityid : event.id,
+				    vtigertype : vttype,
 				    startdate : toDateString(event.start),
 				    enddate : toDateString(event.end),
-				    starttime : toTimeString(event.start),
+				    starttime : strttime,
 				    endtime : toTimeString(event.end == null ? event.start : event.end)
-				}		
+				}
+				
 			    AppConnector.request(params).then(function(data){				
 					progressIndicatorInstance.hide();
 					if (data.result === false) {

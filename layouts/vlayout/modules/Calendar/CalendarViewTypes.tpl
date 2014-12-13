@@ -35,12 +35,13 @@
 		<label class="checkbox">
 			<input type="checkbox" data-calendar-sourcekey="Invoice" data-calendar-feed="Invoice" data-calendar-feed-css="fc-event-style5"> <span class="label fc-event-style5">{vtranslate('SINGLE_Invoice', 'Invoice')}</span>
 		</label>
-		*}
+		
 		<label class="checkbox">
 			<input type="checkbox" data-calendar-sourcekey="Project" data-calendar-feed="Project" data-calendar-feed-css="fc-event-style7"> <span class="label fc-event-style7">{vtranslate('SINGLE_Project', 'Project')}</span>
 		</label>
+		*}
 		<label class="checkbox">
-			<input type="checkbox" data-calendar-sourcekey="ProjectTask" data-calendar-feed="ProjectTask" data-calendar-feed-css="fc-event-style8"> <span class="label fc-event-style8">{vtranslate('SINGLE_ProjectTask', 'ProjectTask')}</span>
+			<input type="checkbox" data-calendar-sourcekey="MGTransports" data-calendar-feed="MGTransports" data-calendar-feed-css="fc-event-style8"> <span class="label fc-event-style8">{vtranslate('MGTransports', 'MGTransports')}</span>
 	
 		</label>
 		

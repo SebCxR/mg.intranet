@@ -45,6 +45,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 				case 'ProjectTask': $this->pullProjectTasks($start, $end, $result, $request->get('cssClass')); break;
 				case 'Vehicule': $this->pullVehiculeEvents($start, $end, $result,$mapping);						
 						break;
+				case 'MGChauffeurs': $this->pullMGChauffeurEvents($start, $end, $result,$mapping);						
+						break;
+				case 'MGTransports': $this->pullMGTransports($start, $end, $result, $request->get('cssClass')); break;
 				case 'Invited' : $this->pullInvitedEvents($start, $end, $result,$mapping);						
 						break;
 			}
@@ -351,7 +354,152 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$this->groupResultsById($result);
 		
 	}
+	
+	protected function pullMGChauffeurEvents($start,$end,&$result,$mgcdata) {
+			
+		foreach ($mgcdata as $mgcuserid=>$color) {
+			$colorComponents = explode(',',$color);
+			$backgroundColor = $colorComponents[0];
+			$textColor = $colorComponents[1];
+			$mgchauffeurEvents = array();
+			
+			
+			$this->pullEventsByMGCUserId($start, $end, $mgchauffeurEvents,$mgcuserid,$backgroundColor,$textColor);
+								
+			$result[$mgcuserid] = $mgchauffeurEvents;
+		}
+	}
+	protected function pullEventsByMGCUserId($start, $end, &$result,$mgcuserid,$backcolor,$textcolor) {		
+		
+		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
+		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
+		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
+		$dbStartDate = $dbStartDateTimeComponents[0];
+		
+		$dbEndDateObject = DateTimeField::convertToDBTimeZone($end);
+		$dbEndDateTime = $dbEndDateObject->format('Y-m-d H:i:s');
+		
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$db = PearDatabase::getInstance();
 
+		$query = "SELECT vtiger_activity.subject, vtiger_activity.eventstatus, vtiger_activity.visibility, vtiger_activity.date_start,
+			vtiger_activity.time_start, vtiger_activity.due_date, vtiger_activity.time_end, vtiger_crmentity.smownerid, vtiger_activity.activityid,
+			vtiger_cntactivityrel.contactid, vtiger_activity.activitytype, vtiger_seactivityrel.crmid, vtiger_vehiculeactivityrel.vehiculeid,
+			vtiger_invitees.inviteeid, vtiger_mgchauffeurs.uicolor as calcolor
+			FROM vtiger_activity
+			INNER JOIN vtiger_crmentity ON vtiger_activity.activityid = vtiger_crmentity.crmid
+			LEFT JOIN vtiger_invitees ON vtiger_activity.activityid = vtiger_invitees.activityid
+			LEFT JOIN vtiger_users ON vtiger_crmentity.smownerid = vtiger_users.id
+			LEFT JOIN vtiger_mgchauffeurs ON vtiger_mgchauffeurs.userid = vtiger_users.id
+			LEFT JOIN vtiger_groups ON vtiger_crmentity.smownerid = vtiger_groups.groupid
+			LEFT JOIN vtiger_cntactivityrel ON vtiger_activity.activityid = vtiger_cntactivityrel.activityid
+			LEFT JOIN vtiger_seactivityrel ON vtiger_activity.activityid = vtiger_seactivityrel.activityid
+			LEFT JOIN vtiger_vehiculeactivityrel ON vtiger_activity.activityid = vtiger_vehiculeactivityrel.activityid
+			WHERE vtiger_crmentity.deleted=0
+			AND vtiger_activity.activityid > 0";
+		
+		$query.= " AND vtiger_activity.activitytype NOT IN ('Emails','Task') AND ";
+		$query.= " ((concat(date_start, '', time_start)  >= '$dbStartDateTime' AND concat(due_date, '', time_end) < '$dbEndDateTime') OR ( due_date >= '$dbStartDate'))";
+		
+		$query.= " AND vtiger_invitees.inviteeid = '$mgcuserid'";
+		
+		$params = array();
+		if(empty($userid)){
+			$eventUserId  = $currentUser->getId();
+		}else{
+			$eventUserId = $userid;
+		}	
+        $params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
+        $query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
+		
+	//SGNOW
+	//var_dump($params);
+	//echo $query;
+	
+		
+	$queryResult = $db->pquery($query, $params);
+
+		while($record = $db->fetchByAssoc($queryResult)){
+			$item = array();
+			$crmid = $record['activityid'];
+			$visibility = $record['visibility'];
+			$item['id'] = $crmid;
+			$item['visibility'] = $visibility;
+			
+			// SG1410 TODO if needed Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// pour chaque custom field, item.cfname = valeur du custom field 
+			//$item['cflbls'] = $cfarray;
+			//foreach ($cfarray as $cfnm=>$cflbl) {				
+			//	$item[$cfnm] = $record[$cfnm];
+			//	}		
+			if ($record['vehiculeid']) {
+				$vehiculearray = getEntityName('Vehicules',$record['vehiculeid']);
+				$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
+				$item['vehiculename'] = $vehiculearray[$record['vehiculeid']];
+			}
+			
+			if ($record['contactid']) {$item['contactname'] = decode_html(getContactName($record['contactid']));}
+			//record['crmid'] est l'id de l'entité liée à l'évènement issue de la table vtiger_seactivityrel. Ne pas confondre avec $crmid qui est l'id de cet event.
+			if ($record['crmid']) {	$pt = getSalesEntityType($record['crmid']);		
+						$item['parenttype'] = vtranslate('SINGLE_'.$pt,$pt);
+						
+						if (getCampaignName($record['crmid']) && getCampaignName($record['crmid'])!='') {
+							//$item['parenttype'] = vtranslate('SINGLE_Campaigns','Campaigns');
+							$item['parentname'] = getCampaignName($record['crmid']);
+							}
+						if (getPotentialName($record['crmid']) && getPotentialName($record['crmid'])!='') {
+							//$item['parenttype'] = vtranslate('SINGLE_Potentials','Potentials');
+							$item['parentname'] = getPotentialName($record['crmid']);
+							}
+						if (getAccountName($record['crmid']) && getAccountName($record['crmid'])!='') {
+								//$item['parenttype'] = vtranslate('SINGLE_Accounts','Accounts');
+								$item['parentname'] = getAccountName($record['crmid']);
+								}
+						}
+			//if ($record['activitytype']) $item['activitytype'] = vtranslate($record['activitytype'],'Calendar');
+			// END of SG1409
+			
+			if($visibility == 'Private' && $userid && $userid != $currentUser->getId()) {
+				$item['title'] = decode_html($userName).' - '.decode_html(vtranslate('Busy','Events')).'*';
+				$item['url']   = '';
+			} else {
+				$item['title'] = decode_html($record['subject']) 
+			//SG1409
+			//.' - (' . vtranslate($record['eventstatus'],'Calendar') . ')'
+				;
+				$item['url']   = sprintf('index.php?module=Calendar&view=Detail&record=%s', $crmid);
+			}
+
+			$dateTimeFieldInstance = new DateTimeField($record['date_start'] . ' ' . $record['time_start']);
+			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue($currentUser);
+			$dateTimeComponents = explode(' ',$userDateTimeString);
+			$dateComponent = $dateTimeComponents[0];
+			//Conveting the date format in to Y-m-d . since full calendar expects in the same format
+			$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $currentUser->get('date_format'));
+			$item['start'] = $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+
+			$dateTimeFieldInstance = new DateTimeField($record['due_date'] . ' ' . $record['time_end']);
+			$userDateTimeString = $dateTimeFieldInstance->getDisplayDateTimeValue($currentUser);
+			$dateTimeComponents = explode(' ',$userDateTimeString);
+			$dateComponent = $dateTimeComponents[0];
+			//Converting the date format in to Y-m-d . since full calendar expects in the same format
+			$dataBaseDateFormatedString = DateTimeField::__convertToDBFormat($dateComponent, $currentUser->get('date_format'));
+			$item['end']   =  $dataBaseDateFormatedString.' '. $dateTimeComponents[1];
+
+			$item['vtigertype'] = 'Events';
+			$item['editable'] = true;
+			$item['className'] = $cssClass;
+			$item['allDay'] = false;
+			$item['color'] = $backcolor;
+			$item['textColor'] = $textcolor;
+			$result[] = $item;
+			}
+		//SG1409
+		$this->groupResultsById($result);
+		
+	}
+	
+	
 	protected function pullInvitedEvents($start,$end,&$result,$mapping) {
 
 		foreach ($mapping as $inviteeid=>$color) {
@@ -483,6 +631,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 
 			$item['vtigertype'] = 'Events';
 			$item['editable'] = true;
+			
 			$item['className'] = $cssClass;
 			$item['allDay'] = false;
 			$item['color'] = $backcolor;
@@ -717,6 +866,68 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['className'] = $cssClass;
 			//SG1410 as long as dropEvent and resizeEvent in CalendarView.js only manages Event or Task drag & drop.
 			$item['editable'] = false;
+		
+			
+			$result[] = $item;
+		}
+	}
+	protected function pullMGTransports($start, $end, &$result, $cssClass) {
+				
+		$db = PearDatabase::getInstance();
+		
+		$user = Users_Record_Model::getCurrentUserModel();
+		
+		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
+		$params = $userAndGroupIds;
+		
+		$query = "SELECT mgtransportsid, subject, datetransport, mgtypetransport, contactid, accountid, potentialid FROM vtiger_mgtransports";
+		$query.= " INNER JOIN vtiger_crmentity ON vtiger_mgtransports.mgtransportsid = vtiger_crmentity.crmid";
+		$query.= " WHERE vtiger_crmentity.deleted=0 AND smownerid IN (". generateQuestionMarks($params) .")";
+		
+		$query.= " AND datetransport >= '$start' AND datetransport <= '$end'";
+		
+
+		
+		
+		$queryResult = $db->pquery($query, $params);
+		
+		
+		
+		//$records = $this->queryForRecords($query,false);
+		//SGNOW
+		
+		
+		while($record = $db->fetchByAssoc($queryResult)){
+			
+			//var_dump($record);
+			
+			$item = array();
+			$item['id'] = $record['mgtransportsid'];
+			$item['title'] = decode_html($record['subject']) ." - " . decode_html($record['mgtypetransport']) ;
+			//$item['description'] = decode_html($record['mgtypetransport']) ;
+			$item['start'] = $record['datetransport'];
+			$item['url']   = sprintf('index.php?module=MGTransports&view=Detail&record=%s', $record['mgtransportsid']);
+			$item['className'] = $cssClass;
+			//SG1410 as long as dropEvent and resizeEvent in CalendarView.js only manages Event or Task drag & drop.
+			//SGTODONOW
+			//$item['editable'] = false;
+			$item['vtigertype'] = 'MGTransports';
+			$item['editable'] = true;
+			$item['allDay'] = true;
+			
+			if ($record['contactid']) {$item['contactname'] = decode_html(getContactName($record['contactid']));}
+			if ($record['accountid']) {
+				if (getAccountName($record['accountid']) && getAccountName($record['accountid'])!='') {
+								$item['accountname'] = getAccountName($record['accountid']);
+								}
+			}
+			if ($record['potentialid']) {
+				if (getPotentialName($record['potentialid']) && getPotentialName($record['potentialid'])!='') {
+							$item['potentialname'] = getPotentialName($record['potentialid']);
+							}
+			}
+			
+			
 			$result[] = $item;
 		}
 	}

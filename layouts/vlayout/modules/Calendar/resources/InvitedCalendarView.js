@@ -69,7 +69,7 @@ Calendar_CalendarView_Js("InvitedCalendar_InvitedCalendarView_Js",{
 			var feedcheckbox = jQuery(element);
 			thisInstance.fetchCalendarFeed(feedcheckbox);
 		});
-
+		this.multipleEvents = false;
 	},
 	
 	toDateString : function(date) {
@@ -154,6 +154,9 @@ Calendar_CalendarView_Js("InvitedCalendar_InvitedCalendarView_Js",{
 		
 	},
 	isAllowedToAddCalendarEvent : function(calendarDetails){
+		
+		//SGTODONOW critère affichage du nouveau CalendarEvent créé
+		// voir éventuellement comment passer la liste des invités dans calendarDetails
 		var assignedUserId = calendarDetails.assigned_user_id.value;
 		if(jQuery('[data-calendar-userid='+assignedUserId+']').is(':checked')){
 			return true;

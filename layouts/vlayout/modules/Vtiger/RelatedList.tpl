@@ -152,7 +152,8 @@
 							</div>
 						{else}
 							{$RELATED_RECORD->get('name')}
-						{/if}		
+						{/if}
+						
                             {elseif $RELATED_HEADERNAME eq 'time_start'}
                             {elseif empty($UNKNOWN_FIELD_RETURNS_VALUE)}{*ED140907*}
                                 {$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}

@@ -8,7 +8,7 @@
  *************************************************************************************/
 //SG1411
 
-Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
+Calendar_CalendarView_Js("MGChauffeursCalendar_MGChauffeursCalendarView_Js",{
 		
 	currentInstance : false,
 	
@@ -19,7 +19,7 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 	
 	multipleEvents : {},
 	
-	getAllVehiculesColors : function() {
+	getAllMGChauffeursColors : function() {
 		var result = {};
 		var calendarfeeds = jQuery('[data-calendar-feed]');
 		
@@ -28,8 +28,8 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 			var	disabledOnes = app.cacheGet('calendar.feeds.disabled',[]);
 			if (disabledOnes.indexOf(feedcheckbox.data('calendar-sourcekey')) == -1) {
 				feedcheckbox.attr('checked',true);
-				var id = feedcheckbox.data('calendar-vehiculeid');
-				var vcolor = feedcheckbox.data('calendar-vehiculecolor');
+				var id = feedcheckbox.data('calendar-userid');
+				var vcolor = feedcheckbox.data('calendar-usercolor');
 				var colorContrast = app.getColorContrast(vcolor.slice(1));
 				if(colorContrast == 'light') {
 					var textColor = 'black'
@@ -47,15 +47,15 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 		var calendarfeeds = jQuery('[data-calendar-feed]');		
 		calendarfeeds.each(function(index,element){
 			var feedcheckbox = jQuery(element);
-			var vehiculecolor = feedcheckbox.data('calendar-vehiculecolor');
-			var colorContrast = app.getColorContrast(vehiculecolor.slice(1));
+			var usercolor = feedcheckbox.data('calendar-usercolor');
+			var colorContrast = app.getColorContrast(usercolor.slice(1));
 			if(colorContrast == 'light') {
 				var textColor = 'black'
 			} else {
 				var textColor = 'white'
 			}
 			
-			feedcheckbox.closest('label').find('.label').css({'background-color':vehiculecolor,'color':textColor});
+			feedcheckbox.closest('label').find('.label').css({'background-color':usercolor,'color':textColor});
 		});
 
 	},
@@ -67,7 +67,7 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 			var feedcheckbox = jQuery(element);
 			thisInstance.fetchCalendarFeed(feedcheckbox);
 		});
-		thisInstance.multipleEvents = false;
+	thisInstance.multipleEvents = false;
 	},
 	
 	toDateString : function(date) {
@@ -80,12 +80,11 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 		return y + "-" + m + "-" + d;
 	},
 	fetchCalendarFeed : function(feedcheckbox) {
-		var thisInstance = this;
-		
+		var thisInstance = this;	
 		//var type = feedcheckbox.data('calendar-sourcekey');
 		this.calendarfeedDS[feedcheckbox.data('calendar-sourcekey')] = function(start, end, callback) {
-			if(thisInstance.multipleEvents != null && typeof thisInstance.multipleEvents != 'undefined' && thisInstance.multipleEvents != false){
-				var events = thisInstance.multipleEvents[feedcheckbox.data('calendar-vehiculeid')];
+			if(typeof thisInstance.multipleEvents != 'undefined' && thisInstance.multipleEvents != false){
+				var events = thisInstance.multipleEvents[feedcheckbox.data('calendar-userid')];				
 				if(events !== false && events !== undefined) {
 					callback(events);
 					return;
@@ -97,62 +96,64 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 			}
 			feedcheckbox.attr('disabled', true);
 			
-			var tempmap = {};
-			var vid = feedcheckbox.data('calendar-vehiculeid');
-			var vcolor = feedcheckbox.data('calendar-vehiculecolor');		
-			tempmap[vid] = vcolor;
 			
+			var tempmap = {};
+			var usrid = feedcheckbox.data('calendar-userid');
+			var vcolor = feedcheckbox.data('calendar-feed-color') + ',' + feedcheckbox.data('calendar-feed-textcolor');		
+			tempmap[usrid] = vcolor;
+			
+						
 			var params = {
 				module: 'Calendar',
 				action: 'Feed',
 				start: thisInstance.toDateString(start),
 				end: thisInstance.toDateString(end),
 				type: feedcheckbox.data('calendar-feed'),
-				mapping : tempmap
-				//vehiculeid : feedcheckbox.data('calendar-vehiculeid'),
-				//color : feedcheckbox.data('calendar-vehiculecolor'),
-				//textColor : 'white'
+				mapping : tempmap,
+				userid : feedcheckbox.data('calendar-userid'),
+				//color : feedcheckbox.data('calendar-feed-color'),
+				//textColor : feedcheckbox.data('calendar-feed-textcolor')
 			}
-						
-			AppConnector.request(params).then(function(vevents){
-				thisInstance.multipleEvents[vid] = vevents[vid];			
-				callback(vevents[vid]);
+			AppConnector.request(params).then(function(events){	
+				thisInstance.multipleEvents[usrid] = events[usrid];			
+				callback(events[usrid]);
 				feedcheckbox.attr('disabled', false).attr('checked', true);
 				},
 				function(error){
 				//To send empty events if error occurs
-				callback([]);
+				 callback([]);
 				}
 				);
 	}
-	this.getCalendarView().fullCalendar('addEventSource', this.calendarfeedDS[feedcheckbox.data('calendar-sourcekey')]);
+		this.getCalendarView().fullCalendar('addEventSource', this.calendarfeedDS[feedcheckbox.data('calendar-sourcekey')]);
 		
 	},
 	
 	fetchAllEvents : function() {
 		var thisInstance = this;
-		var result = this.getAllVehiculesColors();
+		var result = this.getAllMGChauffeursColors();
 		var params = {
 			module: 'Calendar',
 			action: 'Feed',
 			start: thisInstance.toDateString(thisInstance.getCalendarView().fullCalendar('getView').visStart),
 			end: thisInstance.toDateString(thisInstance.getCalendarView().fullCalendar('getView').visEnd),
-			type: 'Vehicule',
+			type: 'MGChauffeurs',
 			mapping : result
 		}
 
 		AppConnector.request(params).then(function(multipleEvents){
 				thisInstance.multipleEvents = multipleEvents;
-				//alert(multipleEvents);
 				thisInstance.fetchAllCalendarFeeds();
 				},
 			function(error){
-				//alert(error);
+			
 			});
 		
 		
 	},
+	//SGTODONOW actuel pompage 
 	isAllowedToAddCalendarEvent : function(calendarDetails){
+		//revoir condition affichage
 		var assignedUserId = calendarDetails.assigned_user_id.value;
 		if(jQuery('[data-calendar-userid='+assignedUserId+']').is(':checked')){
 			return true;
@@ -188,7 +189,7 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 		this._super();
 		// Open the Calendar added by default (override previous widget close state)
 		// This is required to display the event items on the view.
-		jQuery('[data-widget-url="module=Calendar&view=ViewTypes&mode=getVehiculesListForCalendar"]').trigger('click');
+		jQuery('[data-widget-url="module=Calendar&view=ViewTypes&mode=getMGChauffeursListForCalendar"]').trigger('click');
 		return this;
 	}
 });
