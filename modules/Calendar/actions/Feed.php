@@ -494,12 +494,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['textColor'] = $textcolor;
 			$result[] = $item;
 			}
-		//SG1409
+		
 		$this->groupResultsById($result);
 		
 	}
 	
-	
+	/*
 	protected function pullInvitedEvents($start,$end,&$result,$mapping) {
 
 		foreach ($mapping as $inviteeid=>$color) {
@@ -642,7 +642,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$this->groupResultsById($result);
 		
 	}
-	
+	*/
 	
 	protected function pullMultipleEvents($start, $end, &$result, $data) {
 

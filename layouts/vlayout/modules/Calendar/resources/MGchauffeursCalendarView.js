@@ -98,9 +98,18 @@ Calendar_CalendarView_Js("MGChauffeursCalendar_MGChauffeursCalendarView_Js",{
 			
 			
 			var tempmap = {};
-			var usrid = feedcheckbox.data('calendar-userid');
-			var vcolor = feedcheckbox.data('calendar-feed-color') + ',' + feedcheckbox.data('calendar-feed-textcolor');		
-			tempmap[usrid] = vcolor;
+			var usrid = feedcheckbox.data('calendar-userid');			
+			var usercolor = feedcheckbox.data('calendar-usercolor');
+				var colorContrast = app.getColorContrast(usercolor.slice(1));
+				if(colorContrast == 'light') {
+					var textColor = 'black'
+					} else {
+					var textColor = 'white'
+					}
+				
+				tempmap[usrid] = usercolor + "," + textColor;
+			
+			
 			
 						
 			var params = {

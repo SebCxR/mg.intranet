@@ -295,6 +295,7 @@ jQuery.Class("Calendar_CalendarView_Js",{
 			    
 			    switch (vttype) {
 				case 'MGTransports' :
+				    //par défaut l'heure est 00:00:00 et avec le changement de fuseau horaire, ça change la date.
 				    strttime = "12:00:00";
 				    event.allDay = true;
 				    break;
