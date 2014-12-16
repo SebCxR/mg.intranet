@@ -109,19 +109,20 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		
 		$db = PearDatabase::getInstance();
 		
+		$query = "SELECT vtiger_crmentity.crmid as trsprtid, vtiger_mgtransports.subject,vtiger_mgtransports.mgtypetransport, vtiger_crmentityrel.relcrmid, vtiger_crmentityrel.relmodule, vtiger_crmentityrel.module, vtiger_crmentityrel.crmid as crmidbis
+			FROM vtiger_mgtransports
+			INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid
+			INNER JOIN vtiger_crmentityrel ON ((vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid AND vtiger_crmentityrel.relmodule = ?)
+							OR (vtiger_crmentityrel.relcrmid = vtiger_mgtransports.mgtransportsid AND vtiger_crmentityrel.module = ?))				
+			INNER JOIN vtiger_mgchauffeurs ON (vtiger_mgchauffeurs.mgchauffeursid = vtiger_crmentityrel.relcrmid OR vtiger_mgchauffeurs.mgchauffeursid = vtiger_crmentityrel.relcrmid)
+			INNER JOIN vtiger_users ON vtiger_users.id = vtiger_mgchauffeurs.userid
+			WHERE vtiger_crmentity.deleted=0
+			AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))
+			AND vtiger_users.status = 'Active'";
 		
-		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject,vtiger_mgtransports.mgtypetransport, vtiger_crmentityrel.relcrmid as chauffeurid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
-					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid"
-					." INNER JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
+		$params = array($this->getName(),$this->getName(),$mgtransportId);
 
-		$query .= " WHERE vtiger_crmentity.deleted=0"
-			." AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
-			." AND vtiger_crmentityrel.relmodule = ?";	
-
-		$params = array($mgtransportId,$this->getName());
-
-
-
+		
 		$result = $db->pquery($query, $params);
 		$numOfRows = $db->num_rows($result);
 
@@ -136,19 +137,60 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 					'type'=>$row['mgtypetransport'],
 					'href'=>$transporthref
 					);
+			$chauffeurid = '';
 			
-			if (!$busyList[$row['chauffeurid']]) {	
-			$busyList[$row['chauffeurid']]=array($row['crmid']=> $temparray);
+			if (($row['relmodule']==$this->getName()) && ($row['module']=='MGTransports')) {
+				$chauffeurid = $row['relcrmid'];
+				}
+			if ($row['module']==$this->getName() && $row['relmodule']=='MGTransports') {
+			$chauffeurid = $row['crmidbis'];
+			}
+			
+			if (!$busyList[$chauffeurid]) {	
+			$busyList[$chauffeurid]=array($row['trsprtid']=> $temparray);
 			}
 			
 			else {				
-			$busyList[$row['chauffeurid']][$row['crmid']] = $temparray ;
-			}		
+			$busyList[$chauffeurid][$row['trsprtid']] = $temparray ;
+			}
 					
 		}
 		
 		return $busyList;	
 	}
+	
+	/**
+	 * Function to get list view query for popup window
+	 * @param <String> $sourceModule Parent module
+	 * @param <String> $field parent fieldname
+	 * @param <Integer> $record parent id
+	 * @param <String> $listQuery
+	 * @return <String> Listview Query
+	 */
+	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
+		if ($sourceModule == 'MGTransports' && $record) {
+		
+		
+		
+				$joinusers = " INNER JOIN vtiger_users ON vtiger_users.id = vtiger_mgchauffeurs.userid";
+				$condition = "vtiger_users.status = 'Active'";
+			
+				//$condition = " vtiger_account.accountid != '$record'";
+			
+			$position = stripos($listQuery, 'where');
+			if($position) {
+				$split = spliti('where', $listQuery);
+				$overRideQuery = $split[0] . $joinusers . ' WHERE ' . $split[1] . ' AND ' . $condition;
+			} else {
+				$overRideQuery = $listQuery. $joinusers . ' WHERE ' . $condition;
+			}
+			
+			return $overRideQuery;
+			
+		}
+
+	}
+
 	
 
 }

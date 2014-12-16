@@ -72,6 +72,36 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 				$query = appendFromClauseToQuery($query, $nonAdminQuery);
 			}
 		}
+		else if ($functionName === 'get_related_list' && ($relatedModuleName == 'MGChauffeurs')) {
+			
+			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+
+			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name, vtiger_crmentity.*, vtiger_mgchauffeurs.*
+				FROM vtiger_mgchauffeurs
+				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgchauffeurs.mgchauffeursid
+				INNER JOIN vtiger_users ON vtiger_mgchauffeurs.userid = vtiger_users.id
+				INNER JOIN vtiger_crmentityrel ON ( vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid
+							OR vtiger_crmentityrel.crmid = vtiger_crmentity.crmid)";
+				//SG1412 A voir comment on gere assigned_user inutile pour l'instant : LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid			
+			$query .= " LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				WHERE (vtiger_crmentityrel.crmid = ".$recordId." OR vtiger_crmentityrel.relcrmid = ".$recordId.")
+				AND vtiger_crmentity.deleted = 0
+				AND vtiger_users.status = 'Active'
+			";
+
+			$relatedModuleName = $relatedModule->getName();
+			
+			$query .= $this->getSpecificRelationQuery($relatedModuleName);
+			
+			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
+			
+			if ($nonAdminQuery) {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+			}
+			//echo $query;
+			//die();
+		}
+	
 		else {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
 		}
