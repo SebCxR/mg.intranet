@@ -107,29 +107,7 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 							aDeferred.resolve(data);
 						});
 						}
-						/* loadRelatedList : recharge l'onglet de la relation
-						 * bug pour les summary widgets
-						 * */
 						
-						/*thisInstance.loadRelatedList(params).then(function(data){
-							aDeferred.resolve(data);
-						});*/
-						
-						//TODO reload widget only ?
-						/*
-						var selectedTab;
-						if(thisInstance.getSelectedTab)
-							selectedTab = thisInstance.getSelectedTab();
-						else
-							selectedTab = thisInstance.selectedRelatedTabElement;
-						
-						selectedTab.click();
-						*/
-						/*
-						.then(function(data){
-							aDeferred.resolve(data);
-						});
-						*/
 					}
 				);
 			}

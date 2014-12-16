@@ -771,12 +771,10 @@ jQuery.Class("Vtiger_Detail_Js",{
 						widgetHolder.find('.widget_contents').html('');
 						thisInstance.loadWidget(widgetHolder.find('div[data-url]'));
 				}
-				else {
 						    
 				var emailEnabledModule = jQuery(data).find('[name="emailEnabledModules"]').val();
 				if(emailEnabledModule){
-					thisInstance.registerEventToEditRelatedStatus();
-				    }
+					thisInstance.registerEventToEditRelatedStatus();	   
 				}
 			});
 		});
