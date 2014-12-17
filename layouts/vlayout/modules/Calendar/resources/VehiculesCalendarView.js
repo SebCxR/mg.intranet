@@ -137,7 +137,7 @@ Calendar_CalendarView_Js("VehiculesCalendar_VehiculesCalendarView_Js",{
 			action: 'Feed',
 			start: thisInstance.toDateString(thisInstance.getCalendarView().fullCalendar('getView').visStart),
 			end: thisInstance.toDateString(thisInstance.getCalendarView().fullCalendar('getView').visEnd),
-			type: 'Vehicule',
+			type: 'Vehicules',
 			mapping : result
 		}
 
