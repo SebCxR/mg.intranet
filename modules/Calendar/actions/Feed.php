@@ -27,10 +27,13 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			//$vehiculecolor = $request->get('color');
 			//$vehiculetextcolor = $request->get('textColor');
 			switch ($type) {
-				case 'Events': $this->pullEvents($start, $end, $result, $request->get('cssClass'),$userid,$request->get('color'),$request->get('textColor'));				
+				case 'Events': $result = $this->pullEvents($start, $end, $request->get('cssClass'),$userid,$request->get('color'),$request->get('textColor'));				
 						break;
-				case 'Tasks': $this->pullTasks($start, $end, $result, $request->get('cssClass')); break;
-				case 'Potentials': $this->pullPotentials($start, $end, $result, $request->get('cssClass')); break;
+				case 'Tasks': $result = $this->pullTasks($start, $end, $request->get('cssClass'));
+						break;
+				case 'Potentials': $result = $this->pullPotentials($start, $end, $request->get('cssClass'));
+						break;
+				/* TODO modifier pullContacts ou autres pour ne plus passer $result par référence
 				case 'Contacts':
 							if($request->get('fieldname') == 'support_end_date') {
 								$this->pullContactsBySupportEndDate($start, $end, $result, $request->get('cssClass'));
@@ -38,19 +41,29 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 								$this->pullContactsByBirthday($start, $end, $result, $request->get('cssClass'));
 							}
 							break;
-
-				case 'Invoice': $this->pullInvoice($start, $end, $result, $request->get('cssClass')); break;
-				case 'MultipleEvents' : $this->pullMultipleEvents($start,$end, $result,$request->get('mapping'));break;
-				case 'Project': $this->pullProjects($start, $end, $result, $request->get('cssClass')); break;
-				case 'ProjectTask': $this->pullProjectTasks($start, $end, $result, $request->get('cssClass')); break;
-				case 'Vehicule': $this->pullVehiculeEvents($start, $end, $result,$mapping);						
-						break;
-				case 'MGChauffeurs': $this->pullMGChauffeurAllActivities($start, $end, $result,$mapping);
-						//$this->pullMGChauffeurEvents($start, $end, $result,$mapping);						
-						break;
-				case 'MGTransports': $this->pullMGTransports($start, $end, $result, $request->get('cssClass')); break;
 				case 'Invited' : $this->pullInvitedEvents($start, $end, $result,$mapping);						
 						break;
+				case 'Invoice': $this->pullInvoice($start, $end, $result, $request->get('cssClass'));
+						break;
+				*/
+				
+				case 'Project': $result = $this->pullProjects($start, $end, $request->get('cssClass'));
+						break;
+				
+				case 'ProjectTask': $result = $this->pullProjectTasks($start, $end, $request->get('cssClass'));
+						break;		
+					
+				case 'MultipleEvents' : $result = $this->pullMultipleEvents($start,$end,$request->get('mapping'));
+						break;
+				
+				case 'Vehicules': $result = $this->pullVehiculesEvents($start, $end, $mapping);						
+						break;
+				case 'MGChauffeurs': $result = $this->pullMGChauffeurAllActivities($start, $end, $mapping);
+						//$this->pullMGChauffeurEvents($start, $end, $result,$mapping);						
+						break;
+				case 'MGTransports': $result = $this->pullMGTransports($start, $end, $request->get('cssClass'));
+					break;
+				default : break;
 			}
 			echo json_encode($result);
 		} catch (Exception $ex) {
@@ -82,7 +95,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		return vtws_query($query.';', $user);
 	}
 	
-	protected function pullEvents($start, $end, &$result, $cssClass,$userid = false,$color = null,$textColor = 'white') {
+	protected function pullEvents($start, $end, $cssClass,$userid = false,$color = null,$textColor = 'white') {
+		$result = array();
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
 		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
 		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
@@ -114,10 +128,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		//Ces tableaux sont utilisés pour enrichir l'info sur les Events envoyée à fullcalendar.js
 		$basicfields = array('subject', 'eventstatus', 'visibility','date_start','time_start','due_date','time_end','assigned_user_id','id','contact_id', 'activitytype','parent_id','vehiculeid');
 		$finalfields = array();
-		$customfields = array();
-		$cfarray = array();
-		$this->fillCustomFieldsArrays($customfields,$cfarray,'Events',$hasCustomField);
+		$cffa = $this->getCustomFieldsArrays('Events');
+		$customfields = $cffa['customfields'];
+		$cfarray = $cffa['cfarray'];
 		
+	
 		$finalfields = array_merge($customfields,$basicfields);	
 				
 		$queryGenerator->setFields($finalfields);
@@ -144,7 +159,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['id'] = $crmid;
 			$item['visibility'] = $visibility;
 			
-			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par getCustomFieldsArrays()) 
 			// pour chaque custom field, item.cfname = valeur du custom field 
 			$item['cflbls'] = $cfarray;
 			foreach ($cfarray as $cfnm=>$cflbl) {				
@@ -152,7 +167,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 				}		
 			if ($record['vehiculeid']) {
 				$vehiculearray = getEntityName('Vehicules',$record['vehiculeid']);
-				$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
+				//$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
 				$item['vehiculename'] = $vehiculearray[$record['vehiculeid']];
 				//$color = $vehiculecolor;
 			}
@@ -213,21 +228,21 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 			}
 		//SG1409
-		$this->groupResultsById($result);
+		$result = $this->groupResultsById($result);
+		return $result;
 	}
 
-	protected function pullVehiculeEvents($start,$end,&$result,$vehiculedata) {
-
+	protected function pullVehiculesEvents($start,$end,$vehiculedata) {
+		$result = array();
 		foreach ($vehiculedata as $vehicid=>$color) {
 			$colorComponents = explode(',',$color);
 			$backgroundColor = $colorComponents[0];
 			$textColor = $colorComponents[1];
-			$vehiculeEvents = array();
-			
-			$this->pullEventsByVehiculeId($start, $end, $vehiculeEvents,$vehicid,$backgroundColor,$textColor);
-								
+			$vehiculeEvents = array();			
+			$this->pullEventsByVehiculeId($start, $end, $vehiculeEvents,$vehicid,$backgroundColor,$textColor);								
 			$result[$vehicid] = $vehiculeEvents;
 		}
+		return $result;
 	}
 	
 	protected function pullEventsByVehiculeId($start, $end, &$result,$vehiculeid,$backcolor,$textcolor) {		
@@ -249,9 +264,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		
 		$basicfields = array('subject', 'eventstatus', 'visibility','date_start','time_start','due_date','time_end','assigned_user_id','id','contact_id', 'activitytype','parent_id','vehiculeid');
 		$finalfields = array();
-		$customfields = array();
-		$cfarray = array();
-		$this->fillCustomFieldsArrays($customfields,$cfarray,'Events',$hasCustomField);		
+		
+		$cffa = $this->getCustomFieldsArrays('Events');
+		$customfields = $cffa['customfields'];
+		$cfarray = $cffa['cfarray'];	
+		
 		$finalfields = array_merge($customfields,$basicfields);	
 				
 		$queryGenerator->setFields($finalfields);
@@ -283,17 +300,19 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['id'] = $crmid;
 			$item['visibility'] = $visibility;
 			
-			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par getCustomFieldsArrays()) 
 			// pour chaque custom field, item.cfname = valeur du custom field 
 			$item['cflbls'] = $cfarray;
 			foreach ($cfarray as $cfnm=>$cflbl) {				
 				$item[$cfnm] = $record[$cfnm];
-				}		
+				}
+			/*	Inutile d'afficher le nom du véhicule dans ce mode
 			if ($record['vehiculeid']) {
 				$vehiculearray = getEntityName('Vehicules',$record['vehiculeid']);
-				$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
+				//$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
 				$item['vehiculename'] = $vehiculearray[$record['vehiculeid']];
 			}
+			*/
 			
 			if ($record['contactid']) {$item['contactname'] = decode_html(getContactName($record['contactid']));}
 			//record['crmid'] est l'id de l'entité liée à l'évènement issue de la table vtiger_seactivityrel. Ne pas confondre avec $crmid qui est l'id de cet event.
@@ -352,34 +371,29 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 			}
 		//SG1409
-		$this->groupResultsById($result);
+		$result = $this->groupResultsById($result);
 		
 	}
 	
-	protected function pullMGChauffeurAllActivities($start,$end,&$result,$mgcdata) {
-			
+	protected function pullMGChauffeurAllActivities($start,$end,$mgcdata) {
+		$result = array();	
 		foreach ($mgcdata as $mgcuserid=>$color) {
 			$colorComponents = explode(',',$color);
 			$backgroundColor = $colorComponents[0];
 			$textColor = $colorComponents[1];
-			$mgchauffeurEvents = array();
-			$mgchauffeurTransports = array();
 			
-			$this->pullEventsByMGCUserId($start, $end, $mgchauffeurEvents,$mgcuserid,$backgroundColor,$textColor);
+			$mgchauffeurEvents = $this->pullEventsByMGCUserId($start,$end,$mgcuserid,$backgroundColor,$textColor);
 					
-			$this->pullTranportsByMGCUserId($start, $end, $mgchauffeurTransports,$mgcuserid,$backgroundColor,$textColor);
-			
-			//var_dump($mgchauffeurTransports);
-			//die();
-			
-								
+			$mgchauffeurTransports = $this->pullTranportsByMGCUserId($start, $end,$mgcuserid,$backgroundColor,$textColor);
+							
 			$result[$mgcuserid] = array_merge($mgchauffeurEvents, $mgchauffeurTransports);;
 		}
+		return $result;
 	}
 	
-	
-	protected function pullMGChauffeurEvents($start,$end,&$result,$mgcdata) {
-			
+	/*
+	protected function pullMGChauffeurEvents($start,$end,$mgcdata) {
+		$result = array();
 		foreach ($mgcdata as $mgcuserid=>$color) {
 			$colorComponents = explode(',',$color);
 			$backgroundColor = $colorComponents[0];
@@ -391,9 +405,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 								
 			$result[$mgcuserid] = $mgchauffeurEvents;
 		}
+		return $result;
 	}
-	protected function pullEventsByMGCUserId($start, $end, &$result,$mgcuserid,$backcolor,$textcolor) {		
-		
+	*/
+	protected function pullEventsByMGCUserId($start, $end,$mgcuserid,$backcolor,$textcolor) {		
+		$result = array();
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
 		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
 		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
@@ -449,7 +465,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['id'] = $crmid;
 			$item['visibility'] = $visibility;
 			
-			// SG1410 TODO if needed Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// SG1410 TODO if needed Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par getCustomFieldsArrays()) 
 			// pour chaque custom field, item.cfname = valeur du custom field 
 			//$item['cflbls'] = $cfarray;
 			//foreach ($cfarray as $cfnm=>$cflbl) {				
@@ -457,7 +473,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			//	}		
 			if ($record['vehiculeid']) {
 				$vehiculearray = getEntityName('Vehicules',$record['vehiculeid']);
-				$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
+				//$vehiculecolor = getSingleFieldValue('vtiger_vehicules','calcolor','vehiculesid',$record['vehiculeid']);
 				$item['vehiculename'] = $vehiculearray[$record['vehiculeid']];
 			}
 			
@@ -522,12 +538,12 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 			}
 		
-		$this->groupResultsById($result);
-		
+		$result = $this->groupResultsById($result);
+		return $result;
 	}
 	
-	protected function pullTranportsByMGCUserId($start, $end, &$result,$mgcuserid,$backcolor,$textcolor) {		
-		
+	protected function pullTranportsByMGCUserId($start,$end,$mgcuserid,$backcolor,$textcolor) {		
+		$result = array();
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
 		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
 		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
@@ -595,11 +611,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 			}
 		
-		//var_dump($result);
+		$result = $this->groupResultsById($result);
+		return $result;
 		
-		$this->groupResultsById($result);
-		
-		//var_dump($result);
 		
 	}
 	
@@ -673,7 +687,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['id'] = $crmid;
 			$item['visibility'] = $visibility;
 			
-			// SG1410 TODO if needed Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// SG1410 TODO if needed Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par getCustomFieldsArrays()) 
 			// pour chaque custom field, item.cfname = valeur du custom field 
 			//$item['cflbls'] = $cfarray;
 			//foreach ($cfarray as $cfnm=>$cflbl) {				
@@ -743,24 +757,28 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 			}
 		//SG1409
-		$this->groupResultsById($result);
+		$result = $this->groupResultsById($result);
 		
 	}
 	*/
 	
-	protected function pullMultipleEvents($start, $end, &$result, $data) {
-
+	protected function pullMultipleEvents($start,$end,$data) {
+		$result = array();
 		foreach ($data as $id=>$backgroundColorAndTextColor) {
 			$userEvents = array();
 			$colorComponents = explode(',',$backgroundColorAndTextColor);
-			$this->pullEvents($start, $end, $userEvents ,null,$id, $colorComponents[0], $colorComponents[1]);
+			$userEvents = $this->pullEvents($start, $end,null,$id, $colorComponents[0], $colorComponents[1]);
 			$result[$id] = $userEvents;
 		}
+		return $result;
 	}
 	
 	
 	
-	protected function pullTasks($start, $end, &$result, $cssClass) {
+	protected function pullTasks($start, $end, $cssClass) {
+		
+		$result = array();
+		
 		$user = Users_Record_Model::getCurrentUserModel();
 		$db = PearDatabase::getInstance();
 
@@ -768,7 +786,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
 		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $user);
 
-		$hasCustomFields = false;
+		
 		
 		//SG140908 ajout des 'cf_xxx','contact_id', 'activitytype' et 'parent_id' dans la liste de fields du querygenerator
 		//$basicfields est le tableau de champs utilisé dans la version originale auquel on a ajouté 'contact_id', 'activitytype' et 'parent_id'
@@ -779,9 +797,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		
 		$basicfields = array('subject', 'taskstatus','date_start','time_start','due_date','time_end','assigned_user_id','id','contact_id', 'activitytype','parent_id','vehiculeid');
 		$finalfields = array();
-		$customfields = array();
-		$cfarray = array();
-		$this->fillCustomFieldsArrays($customfields,$cfarray,'Tasks',$hasCustomFields);
+		
+		$cffa = $this->getCustomFieldsArrays('Events');
+		$customfields = $cffa['customfields'];
+		$cfarray = $cffa['cfarray'];
+		
 		$finalfields = array_merge($customfields,$basicfields);	
 				
 		$queryGenerator->setFields($finalfields);
@@ -805,7 +825,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['id'] = $crmid;
 			$item['title'] = decode_html($record['subject']) . ' - (' . vtranslate($record['status'],'Calendar') . ')';
 			
-			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par fillCustomFieldsArrays()) 
+			// SG140904 Ajout info evenement : item.cflbls = array associatif cfname=>cflbl (construit par getCustomFieldsArrays()) 
 			// pour chaque custom field, item.cfname = valeur du custom field 
 			$item['cflbls'] = $cfarray;
 			foreach ($cfarray as $cfnm=>$cflbl) {
@@ -864,19 +884,20 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['className'] = $cssClass;
 			$result[] = $item;
 		}		
-		$this->groupResultsById($result);		
+		$result = $this->groupResultsById($result);
+		return $result;
 	}
 	
 	//SG1409 Fills two arrays of the custom fields of Events module
 	//$customfields is the array list of the custom fields
 	//$cfarray is an associative array of the custom fields of events module : customfieldname=>customfieldlabel. This array can be sent to fullcalendar.js to show the custom fields data
 	//$eventtype is 'Events' or 'Tasks' to get correct $tabid
-	//$hasCustomFields flag for pullTasks or pullEvents
 	
 	
-	protected function fillCustomFieldsArrays(&$customfields,&$cfarray,$eventtype,&$hasCustomFields) {
-		//$customfields = array();
-		//$cfarray = array();
+	
+	protected function getCustomFieldsArrays($eventtype) {
+		$customfields = array();
+		$cfarray = array();
 		switch ($eventtype) {
 			case 'Events' :
 				$eventfields = getColumnFields('Events');
@@ -886,13 +907,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 				$eventfields = getColumnFields('Calendar');
 				$tabid = getTabid('Calendar');
 				break;
-			default :
-				
+			default :				
 				$eventfields = array();
 		}	
 		foreach ($eventfields as $fldnm=>$v) {			
 			if (strpos ($fldnm,'cf_')!==false && strpos ($fldnm,'cf_') === 0) {
-				$hasCustomFields = true;
 				array_push($customfields,$fldnm);	
 					$cfid = getFieldid($tabid,$fldnm);
 					$cfrealtabid = getSingleFieldValue('vtiger_field','tabid','fieldid',$cfid);
@@ -900,8 +919,13 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 						$cflbl = getSingleFieldValue('vtiger_field','fieldlabel','fieldid',$cfid);
 						$cfarray[$fldnm]=$cflbl;
 					}
-				}		
-			}
+			}		
+		}
+		$res = array();
+		$res['customfields'] = $customfields;
+		$res['cfarray'] = $cfarray;
+		return $res;
+		
 	}
 	//SG1409
 	// Because a same activity can have multiple contacts or other field values, the SQL response gives multiple rows for the same id
@@ -911,7 +935,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	//@param &$res Result rows given by SQL
 	//@return Array : Grouped and concatenated rows.
 	
-	protected function groupResultsById(&$res) {
+	protected function groupResultsById($res) {
 	    $keychanged = array();
 	    $resulttodel = array();
 	    $changemap = array();
@@ -953,10 +977,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$finalresult[] = $value;
 		}
 	    $res = $finalresult;
-	   // return $res;
+	   return $res;
 	}
 
-	protected function pullPotentials($start, $end, &$result, $cssClass) {
+	protected function pullPotentials($start, $end, $cssClass) {
+		$result = array();
 		$query = "SELECT potentialname,closingdate FROM Potentials";
 		$query.= " WHERE closingdate >= '$start' AND closingdate <= '$end'";
 		$records = $this->queryForRecords($query);
@@ -974,8 +999,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			
 			$result[] = $item;
 		}
+		return $result;
 	}
-	protected function pullMGTransports($start, $end, &$result, $cssClass) {
+	protected function pullMGTransports($start, $end, $cssClass) {
+		
+		$result = array();
 				
 		$db = PearDatabase::getInstance();
 		
@@ -989,17 +1017,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$query.= " WHERE vtiger_crmentity.deleted=0 AND smownerid IN (". generateQuestionMarks($params) .")";
 		
 		$query.= " AND datetransport >= '$start' AND datetransport <= '$end'";
-		
-
-		
-		
+			
 		$queryResult = $db->pquery($query, $params);
-		
-		
-		
-		//$records = $this->queryForRecords($query,false);
-		//SGNOW
-		
 		
 		while($record = $db->fetchByAssoc($queryResult)){
 			
@@ -1034,8 +1053,9 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			
 			$result[] = $item;
 		}
+		return $result;
 	}
-
+/*
 	protected function pullContacts($start, $end, &$result, $cssClass) {
 		$this->pullContactsBySupportEndDate($start, $end, $result, $cssClass);
 		$this->pullContactsByBirthday($start, $end, $result, $cssClass);
@@ -1127,7 +1147,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$result[] = $item;
 		}
 	}
-
+*/
 	/**
 	 * Function to pull all the current user projects
 	 * @param type $startdate
@@ -1135,7 +1155,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	 * @param type $result
 	 * @param type $cssClass
 	 */
-	protected function pullProjects($start, $end, &$result, $cssClass) {
+	protected function pullProjects($start, $end, $cssClass) {
+		$result = array();
 		$db = PearDatabase::getInstance();
 		$user = Users_Record_Model::getCurrentUserModel();
 		$userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
@@ -1161,6 +1182,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			
 			$result[] = $item;
 		}
+		return $result;
 	}
 
 	/**
@@ -1170,7 +1192,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	 * @param type $result
 	 * @param type $cssClass
 	 */
-	protected function pullProjectTasks($start, $end, &$result, $cssClass) {
+	protected function pullProjectTasks($start, $end, $cssClass) {
+		$result = array();
 		$db = PearDatabase::getInstance();
 		$user = Users_Record_Model::getCurrentUserModel();
         $userAndGroupIds = array_merge(array($user->getId()),$this->getGroupsIdsForUsers($user->getId()));
@@ -1195,6 +1218,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			$item['editable'] = false;
 			$result[] = $item;
 		}
+	return $result;
 	}
 
 }
