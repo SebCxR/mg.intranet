@@ -287,19 +287,17 @@ jQuery.Class("Calendar_CalendarView_Js",{
 				}
 				
 			    var progressIndicatorInstance = jQuery.progressIndicator({
-				});
-			    
-			    var vttype = (typeof event['vtigertype'] == undefined) ? '' : event.vtigertype;
-			    
-			    //var strttime = (toTimeString(event.start) == '00:00:00') ? '12:00:00' : toTimeString(event.start);
-			    
+				});		    
+			    var vttype = (typeof event['vtigertype'] == undefined) ? '' : event.vtigertype;			    
+			    var strttime = toTimeString(event.start);
+			    		    
 			    switch (vttype) {
 				case 'MGTransports' :
 				    //par défaut l'heure est 00:00:00 et avec le changement de fuseau horaire, ça change la date.
-				    strttime = "12:00:00";
+				    strttime = "09:00:00";
 				    event.allDay = true;
 				    break;
-				default :
+				default :				   
 				    break;
 				
 			    }
