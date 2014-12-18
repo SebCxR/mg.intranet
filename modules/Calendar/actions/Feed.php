@@ -432,11 +432,11 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			
 			$item = array();
 			$item = array();
-			$item['id'] = $record['mgtransportsid'];
+			$item['id'] = $record['mgtid'];
 			$item['title'] = vtranslate('SINGLE_MGTransports','MGTransports'). ' : ' . decode_html($record['subject']) ." - " . decode_html($record['mgtypetransport']) ;
 			//$item['description'] = decode_html($record['mgtypetransport']) ;
 			$item['start'] = $record['datetransport'];
-			$item['url']   = sprintf('index.php?module=MGTransports&view=Detail&record=%s', $record['mgtransportsid']);
+			$item['url']   = sprintf('index.php?module=MGTransports&view=Detail&record=%s', $record['mgtid']);
 			$item['className'] = $cssClass;
 			//SG1410 as long as dropEvent and resizeEvent in CalendarView.js only manages Event or Task drag & drop.
 			//SGTODONOW
