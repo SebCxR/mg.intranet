@@ -14,7 +14,7 @@
 	<div id="calendarview-feeds" style="margin-left:10px;">			
 		{foreach key=ID item=VEHICULE from=$VEHICULES}
 			<label class="checkbox">
-				<input type="checkbox" data-calendar-sourcekey="Events55_{$ID}" data-calendar-feed="Vehicule" data-calendar-vehiculeid="{$ID}" data-calendar-vehiculecolor="{$VEHICULE['color']}">
+				<input type="checkbox" data-calendar-sourcekey="Events55_{$ID}" data-calendar-feed="Vehicules" data-calendar-vehiculeid="{$ID}" data-calendar-vehiculecolor="{$VEHICULE['color']}">
 				<span class="label" style="text-shadow:none">{$VEHICULE['name']}</span>
 			</label>
 		{/foreach}

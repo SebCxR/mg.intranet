@@ -56,7 +56,8 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 				case 'MultipleEvents' : $result = $this->pullMultipleEvents($start,$end,$request->get('mapping'));
 						break;
 				
-				case 'Vehicules': $result = $this->pullVehiculesEvents($start, $end, $mapping);						
+				case 'Vehicules': $result = $this->pullVehiculesAllActivities($start, $end, $mapping);
+				//$result = $this->pullVehiculesEvents($start, $end, $mapping);						
 						break;
 				case 'MGChauffeurs': $result = $this->pullMGChauffeurAllActivities($start, $end, $mapping);
 						//$this->pullMGChauffeurEvents($start, $end, $result,$mapping);						
@@ -231,7 +232,24 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		$result = $this->groupResultsById($result);
 		return $result;
 	}
-
+	
+	protected function pullVehiculesAllActivities($start,$end,$mgcdata) {
+		$result = array();	
+		foreach ($mgcdata as $vehiculeid=>$color) {
+			$colorComponents = explode(',',$color);
+			$backgroundColor = $colorComponents[0];
+			$textColor = $colorComponents[1];
+			
+			$vehiculeEvents = $this->pullEventsByVehiculeId($start,$end,$vehiculeid,$backgroundColor,$textColor);
+					
+			$vehiculeTransports = $this->pullTranportsByVehiculeId($start, $end,$vehiculeid,$backgroundColor,$textColor);
+			//$vehiculeTransports = array();				
+			$result[$vehiculeid] = array_merge($vehiculeEvents, $vehiculeTransports);;
+		}
+		
+		return $result;
+	}
+	/*
 	protected function pullVehiculesEvents($start,$end,$vehiculedata) {
 		$result = array();
 		foreach ($vehiculedata as $vehicid=>$color) {
@@ -244,9 +262,10 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}
 		return $result;
 	}
-	
-	protected function pullEventsByVehiculeId($start, $end, &$result,$vehiculeid,$backcolor,$textcolor) {		
+	*/
+	protected function pullEventsByVehiculeId($start, $end,$vehiculeid,$backcolor,$textcolor) {		
 		
+		$result = array();
 		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
 		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
 		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
@@ -372,6 +391,81 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			}
 		//SG1409
 		$result = $this->groupResultsById($result);
+		return $result;
+	}
+	protected function pullTranportsByVehiculeId($start,$end,$vehiculesid,$backcolor,$textcolor) {		
+		$result = array();
+		$dbStartDateOject = DateTimeField::convertToDBTimeZone($start);
+		$dbStartDateTime = $dbStartDateOject->format('Y-m-d H:i:s');
+		$dbStartDateTimeComponents = explode(' ', $dbStartDateTime);
+		$dbStartDate = $dbStartDateTimeComponents[0];
+		
+		$dbEndDateObject = DateTimeField::convertToDBTimeZone($end);
+		$dbEndDateTime = $dbEndDateObject->format('Y-m-d H:i:s');
+		
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$db = PearDatabase::getInstance();
+
+		$query = "SELECT vtiger_mgtransports.subject, vtiger_mgtransports.datetransport, vtiger_crmentity.crmid as mgtid, vtiger_vehicules.vehiculesid,
+			vtiger_mgtransports.contactid, vtiger_mgtransports.accountid, vtiger_mgtransports.mgtypetransport,
+			vtiger_crmentityrel.crmid,vtiger_crmentityrel.module, vtiger_crmentityrel.relcrmid,vtiger_crmentityrel.relmodule
+			 FROM vtiger_mgtransports
+			 INNER JOIN vtiger_crmentity ON vtiger_mgtransports.mgtransportsid = vtiger_crmentity.crmid
+			 INNER JOIN vtiger_vehicules ON (vtiger_vehicules.vehiculesid = '$vehiculesid')
+			INNER JOIN vtiger_crmentityrel ON ( (vtiger_crmentityrel.crmid = vtiger_vehicules.vehiculesid AND vtiger_crmentityrel.relcrmid = vtiger_mgtransports.mgtransportsid)
+							OR (vtiger_crmentityrel.relcrmid = vtiger_vehicules.vehiculesid AND vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid))			
+			WHERE vtiger_crmentity.deleted=0
+			 AND vtiger_mgtransports.mgtransportsid > 0";
+		
+		$query.= " AND (vtiger_mgtransports.datetransport  >= '$dbStartDateTime' AND vtiger_mgtransports.datetransport < '$dbEndDateTime')";
+		
+		$query.= " AND vtiger_vehicules.vehiculesid = '$vehiculesid'";
+		$query.= " GROUP BY vtiger_mgtransports.mgtransportsid";
+		
+	//SGNOW
+	
+	//echo $query;
+		
+	$queryResult = $db->pquery($query, $params);
+
+		while($record = $db->fetchByAssoc($queryResult)){
+			
+			$item = array();
+			$item = array();
+			$item['id'] = $record['mgtransportsid'];
+			$item['title'] = vtranslate('SINGLE_MGTransports','MGTransports'). ' : ' . decode_html($record['subject']) ." - " . decode_html($record['mgtypetransport']) ;
+			//$item['description'] = decode_html($record['mgtypetransport']) ;
+			$item['start'] = $record['datetransport'];
+			$item['url']   = sprintf('index.php?module=MGTransports&view=Detail&record=%s', $record['mgtransportsid']);
+			$item['className'] = $cssClass;
+			//SG1410 as long as dropEvent and resizeEvent in CalendarView.js only manages Event or Task drag & drop.
+			//SGTODONOW
+			//$item['editable'] = false;
+			$item['vtigertype'] = 'MGTransports';
+			$item['editable'] = true;
+			$item['allDay'] = true;			
+			if ($record['contactid']) {$item['contactname'] = decode_html(getContactName($record['contactid']));}
+			if ($record['accountid']) {
+				if (getAccountName($record['accountid']) && getAccountName($record['accountid'])!='') {
+								$item['accountname'] = getAccountName($record['accountid']);
+								}
+			}
+			if ($record['potentialid']) {
+				if (getPotentialName($record['potentialid']) && getPotentialName($record['potentialid'])!='') {
+							$item['potentialname'] = getPotentialName($record['potentialid']);
+							}
+			}
+			
+			$item['color'] = $backcolor;
+			$item['textColor'] = $textcolor;
+			
+			$result[] = $item;
+			}
+		
+		
+		
+		return $result;
+		
 		
 	}
 	
@@ -939,6 +1033,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	    $keychanged = array();
 	    $resulttodel = array();
 	    $changemap = array();
+	    $finalresult = array();
 	    foreach ($res as $i=>$activity) {   
 		$activityid = $activity['id'];
 		if ($i < count($res)-1) {
