@@ -243,24 +243,29 @@ class Vtiger_Util_Helper {
     /**
      * Function which will give the picklist values for a field
      * @param type $fieldName -- string
+     * &$picklistvaluesdata : more data (uicolor) ED141127
      * @return type -- array of values
      */
-    public static function getPickListValues($fieldName) {
-        $cache = Vtiger_Cache::getInstance();
-        if($cache->getPicklistValues($fieldName)) {
+    public static function getPickListValues($fieldName, &$picklistvaluesdata = FALSE) {
+	$cache = Vtiger_Cache::getInstance();
+        if($cache->getPicklistValues($fieldName, $picklistvaluesdata)) {
             return $cache->getPicklistValues($fieldName);
         }
         $db = PearDatabase::getInstance();
 
-        $query = 'SELECT '.$fieldName.' FROM vtiger_'.$fieldName.' order by sortorderid';
-        $values = array();
+        $query = 'SELECT '.$fieldName.', * FROM vtiger_'.$fieldName.' order by sortorderid';
+	$values = array();
         $result = $db->pquery($query, array());
         $num_rows = $db->num_rows($result);
         for($i=0; $i<$num_rows; $i++) {
 			//Need to decode the picklist values twice which are saved from old ui
             $values[] = decode_html(decode_html($db->query_result($result,$i,$fieldName)));
         }
-        $cache->setPicklistValues($fieldName, $values);
+	if(is_array($picklistvaluesdata))
+        for($i=0; $i<$num_rows; $i++) {
+		$picklistvaluesdata[] = array('uicolor'=>$db->query_result($result, $i, 'uicolor'));
+	    }
+	$cache->setPicklistValues($fieldName, $values, $picklistvaluesdata);
         return $values;
     }
 	

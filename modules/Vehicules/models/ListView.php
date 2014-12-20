@@ -13,7 +13,41 @@
  */
 class Vehicules_ListView_Model extends Vtiger_ListView_Model {
 
+	/**
+	 * Function to get the list view header
+	 * @return <Array> - List of Vtiger_Field_Model instances
+	 */
+	//public function getListViewHeaders() {
+	//	$headerFields = parent::getListViewHeaders();
+	//	
+	//	$module = $this->getModule();
+	//	$headerFields['calcolor'] = Vtiger_Field_Model::getInstance('calcolor', $module);
+	//	
+	//	return $headerFields;
+	//}
 
+	//public function getQuery(){
+	//	$query = parent::getQuery();
+	//	// ajout de la colonne calcolor
+	//	$query = preg_replace('/^SELECT\s/', 'SELECT vtiger_vehicules.calcolor, ', $query);
+	//	return $query ;
+	//}
+	
+	/**
+	 * Function to get the list view entries
+	 * @param Vtiger_Paging_Model $pagingModel
+	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
+	 */
+	public function getListViewEntries($pagingModel) {
+		
+		$queryGenerator = $this->get('query_generator');
+		$listFields = $queryGenerator->getFields();
+		$listFields[] = 'calcolor';
+		$queryGenerator->setFields($listFields);		
+		
+		return parent::getListViewEntries($pagingModel);
+	}
+	
 	/**
 	 * SG copie du generique de Vtiger_ListView_Model
 	 * SGTODO 
@@ -32,9 +66,9 @@ class Vehicules_ListView_Model extends Vtiger_ListView_Model {
 
 		$queryGenerator = new QueryGenerator($moduleModel->get('name'), $currentUser);
 
-        $listFields = $moduleModel->getPopupFields();
-        $listFields[] = 'id';
-        $queryGenerator->setFields($listFields);
+		$listFields = $moduleModel->getPopupFields();
+		$listFields[] = 'id';
+		$queryGenerator->setFields($listFields);
 
 		$controller = new ListViewController($db, $currentUser, $queryGenerator);
 
