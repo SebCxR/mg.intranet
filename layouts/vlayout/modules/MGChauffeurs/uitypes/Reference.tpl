@@ -35,7 +35,8 @@
 <div class="row-fluid input-prepend input-append">	
 	
 <span class="add-on clearReferenceSelection cursorPointer">
-	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_clear" class='icon-remove-sign' title="{vtranslate('LBL_CLEAR', $MODULE)}"></i>
+	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_clear" class='icon-remove-sign' title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_CLEARUSER', $MODULE)}"{else}"{vtranslate('LBL_CLEAR', $MODULE)}"{/if}
+	 {if $REFERENCE_LIST[0] eq 'Users' and empty($displayId)} type="hidden"{/if}></i>
 </span>
 
 
@@ -46,12 +47,13 @@
 
 {if $REFERENCE_LIST[0] eq 'Users' and !empty($displayId)}	
 <span class="add-on editUserLink cursorPointer">	
-	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_details" class="icon-pencil" title="{vtranslate('LBL_EDIT', $MODULE)}"  {if empty($displayId)}type="hidden"{/if}></i>
+	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_details" class="icon-pencil" title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_EDITUSER', $MODULE)}"{else}"{vtranslate('LBL_EDIT', $MODULE)}"{/if}  {if empty($displayId)}type="hidden"{/if}></i>
 </span>
 {/if}
 
 <span class="add-on relatedPopup cursorPointer">
-	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_select" class="icon-search relatedPopup" title="{vtranslate('LBL_SELECT', $MODULE)}" ></i>
+	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_select" class="icon-search relatedPopup" title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_SELECTUSER', $MODULE)}"{else}"{vtranslate('LBL_SELECT', $MODULE)}"{/if}
+	 {if $REFERENCE_LIST[0] eq 'Users' and !empty($displayId)} type="hidden"{/if}  ></i>
 </span>
 
 
@@ -59,7 +61,8 @@
 <!-- Show the add button only if it is edit view  -->
 {if $smarty.request.view eq 'Edit' && !in_array($REFERENCE_LIST[0],$QUICKCREATE_RESTRICTED_MODULES)}
 <span class="add-on cursorPointer createReferenceRecord">
-	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class='icon-plus' title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_CREATEUSER', $MODULE)}"{else}"{vtranslate('LBL_CREATE', $MODULE)}"{/if}></i>
+	<i id="{$MODULE}_editView_fieldName_{$FIELD_NAME}_create" class='icon-plus' title={if $REFERENCE_LIST[0] eq 'Users'}"{vtranslate('LBL_CREATEUSER', $MODULE)}"{else}"{vtranslate('LBL_CREATE', $MODULE)}"{/if}
+	{if $REFERENCE_LIST[0] eq 'Users' and !empty($displayId)} type="hidden"{/if}> </i>
 </span>
 {/if}
 </div>

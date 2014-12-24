@@ -7,17 +7,29 @@
 <div class="relatedContainer">
     <input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE}" />
 </div>
+{*var_dump($BUSYLIST)*}
 <table class="table table-bordered listViewEntriesTable unstyled">
 	{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
-		<tr class="listViewEntries row-fluid" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
-			<td class="span6 textOverflowEllipsis" nowrap>
-			    <a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('vehicule_name')}">
+		{assign var=CHAUFFEURID value={$RELATED_RECORD->getId()}}
+		<tr class="listViewEntries {if $BUSYLIST[$VEHICULEID]} inBusyConflict{/if}" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
+			<td class="span3 textOverflowEllipsis" nowrap>
+			    <a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="Tel : {$RELATED_RECORD->getDisplayValue('phone_mobile')}">
 				{$RELATED_RECORD->getDisplayValue('name')}
 			    </a>
 			</td>
-			<td class="span3" style="border: none !important"-->
-			    <span class="pull-right">{$RELATED_RECORD->getDisplayValue('phone_mobile')}&nbsp;</span>
+			{if $BUSYLIST[$CHAUFFEURID]}				
+			    <td class="span3 rowfluid busyState">
+				<span class="ui-icon ui-icon-alert" title="{vtranslate('LBL_CONFLICT_WITH', {$RELATED_MODULE})}"></span>
+				{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$CHAUFFEURID] name=eventinfolist}
+				    <a href='{$EVENTINFO['href']}' title='{vtranslate({$EVENTINFO['type']}, {$EVENTINFO['modulename']})}' style='color: red'>{$EVENTINFO['label']}
+				    {if $smarty.foreach.eventinfolist.last}. {else}, {/if}
+				    </a>
+				{/foreach}
+			    </td>
+			{else}
+			<td class="span3">	
 			</td>
+			{/if}
 			<td class="span1" style="border: none !important"-->
 			<div class="pull-right actions">
 			    <span class="actionImages">

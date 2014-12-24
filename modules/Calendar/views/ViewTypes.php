@@ -18,6 +18,9 @@ class Calendar_ViewTypes_View extends Vtiger_IndexAjax_View {
 	$this->exposeMethod('getVehiculesListForCalendar');
 	$this->exposeMethod('getInvitedListForCalendar');
 	
+	$this->exposeMethod('getMGChauffeursListForCalendar');
+	
+	
     }
         
 	function getViewTypes(Vtiger_Request $request) {
@@ -60,6 +63,23 @@ class Calendar_ViewTypes_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('INVITEDUSERS', $invitedUsers);
 		$viewer->assign('CURRENTUSER_MODEL',$currentUser);
 		$viewer->view('CalendarInvitedUsers.tpl', $moduleName);
+	}
+	/**
+	 * Function to get MGChauffeurs list
+	 * @param Vtiger_Request $request
+	 */
+	function getMGChauffeursListForCalendar(Vtiger_Request $request){
+		$viewer = $this->getViewer($request);
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		
+
+		$moduleName = $request->getModule();
+		$mgchauffeurs = Calendar_Module_Model::getMGChauffeursForCalendar($currentUser->id);
+		
+		$viewer->assign('MODULE', $moduleName);
+		$viewer->assign('MGCHAUFFEURS', $mgchauffeurs);
+		$viewer->assign('CURRENTUSER_MODEL',$currentUser);
+		$viewer->view('CalendarMGChauffeurs.tpl', $moduleName);
 	}
 	/**
 	 * Function to get Vehicules involved

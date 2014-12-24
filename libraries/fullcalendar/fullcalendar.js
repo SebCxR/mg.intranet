@@ -3907,14 +3907,18 @@ function AgendaEventRenderer() {
 		if (event.contactname && event.contactname != '') {
 			event.description += "<div class='event-description-contact'> Contact : " + htmlEscape(event.contactname) + "</div>";
 		}
-		
+		if (event.potentialname && event.potentialname != '') {
+			event.description += "<div class='event-description-potential'>" + htmlEscape(event.contactname) + "</div>";
+		}
+		if (event.accountname && event.accountname != '') {
+			event.description += "<div class='event-description-account'>" + htmlEscape(event.accountname) + "</div>";
+		}
 		if (event.vehiculename && event.vehiculename != '') {
 			//var vehiculemodulelbl = "V&eacutehicules : ";
 			event.description += "<div class='event-description-vehicule'> " + htmlEscape( event.vehiculename) + "</div>";
 		}
 				
 		//END
-		
 		
 		if (isEventDraggable(event)) {
 			classes.push('fc-event-draggable');
@@ -4745,7 +4749,12 @@ function DayEventRenderer() {
 			if (event.contactname && event.contactname != '') {
 				event.description += "<div class='event-description-contact'> Contact : " + htmlEscape(event.contactname) + "</div>"
 				}
-				
+			if (event.potentialname && event.potentialname != '') {
+				event.description += "<div class='event-description-potential'>" + htmlEscape(event.potentialname) + "</div>";
+				}
+			if (event.accountname && event.accountname != '') {
+				event.description += "<div class='event-description-account'>" + htmlEscape(event.accountname) + "</div>";
+				}	
 			if (event.vehiculename && event.vehiculename != '') {
 				//var vehiculemodulelbl = ""V&eacutehicules : ";
 				event.description += "<div class='event-description-vehicule'> " + htmlEscape( event.vehiculename) + "</div>";

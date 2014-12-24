@@ -12,7 +12,7 @@ class Calendar_UpdateFromCalendar_Action extends Calendar_Save_Action {
 
 	public function process(Vtiger_Request $request) {
 			
-		$activitytype = $request->get('vtigertype');
+		$vtigertype = $request->get('vtigertype');
 		$activityid = $request->get('activityid');
 		$dstart = $request->get('startdate');
 		$tstart = $request->get('starttime');
@@ -21,7 +21,13 @@ class Calendar_UpdateFromCalendar_Action extends Calendar_Save_Action {
 		
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		
-		$dateTimeFieldInstance = new DateTimeField($dstart . ' ' . $tstart);
+		if ($tstart &&  $tstart) {
+			$dateTimeFieldInstance = new DateTimeField($dstart . ' ' . $tstart);
+		}
+		else {
+			$dateTimeFieldInstance = new DateTimeField($dstart . ' ' . $tstart);
+			
+		}
 		$dbinsertDateTimeString = $dateTimeFieldInstance->getDBInsertDateTimeValue($currentUser);
 		
 		$dateTimeComponents = explode(' ',$dbinsertDateTimeString);
@@ -39,14 +45,28 @@ class Calendar_UpdateFromCalendar_Action extends Calendar_Save_Action {
 			
 		$db = PearDatabase::getInstance();
 		
-		//todo update start time and date, end time and date for the activity's record in db
-		$updatequery = "UPDATE vtiger_activity SET date_start=?,  due_date=?, time_start=?, time_end=?  WHERE activityid=?";
-		$updtparams = array($dstart, $dend, $tstart,$tend,$activityid);
+		switch ($vtigertype) {
+			
+			case 'MGTransports' :
+				$updatequery = "UPDATE vtiger_mgtransports SET datetransport=? WHERE mgtransportsid=?";
+				$updtparams = array($dstart,$activityid);				
+				
+				break;			
+			default :
+				$updatequery = "UPDATE vtiger_activity SET date_start=?,  due_date=?, time_start=?, time_end=?  WHERE activityid=?";
+				$updtparams = array($dstart, $dend, $tstart,$tend,$activityid);
+			break;
+						
+		}
+		// update start time and date, end time and date for the activity's record in db
+		//$updatequery = "UPDATE vtiger_activity SET date_start=?,  due_date=?, time_start=?, time_end=?  WHERE activityid=?";
+		//$updtparams = array($dstart, $dend, $tstart,$tend,$activityid);
 		
 		$result = $db->pquery($updatequery, $updtparams);
 		
 		
-			
+		
+				
 		$response = new Vtiger_Response();
 		$response->setEmitType(Vtiger_Response::$EMIT_JSON);
 		$response->setResult($result);

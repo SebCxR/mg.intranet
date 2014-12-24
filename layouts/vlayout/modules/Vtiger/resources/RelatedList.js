@@ -55,6 +55,7 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 				//thisInstance.triggerDisplayTypeEvent();
 				Vtiger_Helper_Js.showHorizontalTopScrollBar();
 				jQuery('.pageNumbers',thisInstance.relatedContentContainer).tooltip();
+				
 				aDeferred.resolve(responseData);
 				jQuery('input[name="currentPageNum"]', thisInstance.relatedContentContainer).val(completeParams.page);
 				// Let listeners know about page state change.
@@ -87,6 +88,9 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 		var aDeferred = jQuery.Deferred();
 		var thisInstance = this;
 		var popupInstance = Vtiger_Popup_Js.getInstance();
+		
+		
+		
 		popupInstance.show(this.getPopupParams(), function(responseString){
 				var responseData = JSON.parse(responseString);
 				var relatedIdList = Object.keys(responseData);
@@ -94,21 +98,16 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 					function(data){
 						var relatedCurrentPage = thisInstance.getCurrentPageNum();
 						var params = {'page':relatedCurrentPage};
-						/* loadRelatedList : recharge l'onglet de la relation
-						 * bug pour les summary widgets
-						 * */
-						/*thisInstance.loadRelatedList(params).then(function(data){
+						if (thisInstance.relatedContentWidgetContainer) {
+							//SG1412 load Widget only from Detail.js
+							aDeferred.resolve(data);						
+						}
+						else {
+							thisInstance.loadRelatedList(params).then(function(data){
 							aDeferred.resolve(data);
-						});*/
-						//TODO reload widget only ?
-						var selectedTab;
-						if(thisInstance.getSelectedTab)
-							selectedTab = thisInstance.getSelectedTab();
-						else
-							selectedTab = thisInstance.selectedRelatedTabElement;
-						selectedTab.click().then(function(data){
-							aDeferred.resolve(data);
-						}); 
+						});
+						}
+						
 					}
 				);
 			}
@@ -484,6 +483,7 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 		return aDeferred.promise();
 	},
 	init : function(parentId, parentModule, selectedRelatedTabElement, relatedModuleName){
+		
 		this.selectedRelatedTabElement = selectedRelatedTabElement,
 		this.parentRecordId = parentId;
 		this.parentModuleName = parentModule;
@@ -491,6 +491,10 @@ jQuery.Class("Vtiger_RelatedList_Js",{},{
 		this.relatedTabsContainer = selectedRelatedTabElement.closest('div.related');
 		this.detailViewContainer = this.relatedTabsContainer.closest('div.detailViewContainer');
 		this.relatedContentContainer = jQuery('div.contents',this.detailViewContainer);
+		//SG1412 Debug relatedlist liés aux widgets
+		this.relatedContentWidgetContainer = jQuery('div.summaryWidgetContainer div.widget_header input[value='+ relatedModuleName +']',this.relatedContentContainer).closest('div[data-url]');
+		if (this.relatedContentWidgetContainer.length === 0) this.relatedContentWidgetContainer = false;
+		
 		Vtiger_Helper_Js.showHorizontalTopScrollBar();
 	}
 })

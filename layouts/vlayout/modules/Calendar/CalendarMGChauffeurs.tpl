@@ -12,17 +12,17 @@
 {strip}
 <div name='calendarViewTypes'>
 	<div id="calendarview-feeds" style="margin-left:10px;">			
-		{foreach key=ID item=VEHICULE from=$VEHICULES}
+		{foreach key=ID item=MGCHAUFFEUR from=$MGCHAUFFEURS}
 			<label class="checkbox">
-				<input type="checkbox" data-calendar-sourcekey="Events55_{$ID}" data-calendar-feed="Vehicules" data-calendar-vehiculeid="{$ID}" data-calendar-vehiculecolor="{$VEHICULE['color']}">
-				<span class="label" style="text-shadow:none">{$VEHICULE['name']}</span>
-			</label>
+				<input type="checkbox" data-calendar-sourcekey="EventsMGC_{$ID}" data-calendar-feed="MGChauffeurs" data-calendar-userid="{$ID}" data-calendar-usercolor="{$MGCHAUFFEUR['color']}">
+				<span class="label" style="text-shadow:none">{if $CURRENTUSER_MODEL->getId() eq ID}{vtranslate('LBL_MINE',$MODULE)}{else}{$MGCHAUFFEUR['name']}{/if}</span>
+			</label>	
 		{/foreach}
 	</div>
 </div>
 {/strip}
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	VehiculesCalendar_VehiculesCalendarView_Js.initiateCalendarFeeds();
+	MGChauffeursCalendar_MGChauffeursCalendarView_Js.initiateCalendarFeeds();
 });
 </script>

@@ -49,39 +49,68 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		$pagingModel->set('page', $pageNumber);
 
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+		
 		$listViewModel = Vtiger_ListView_Model::getInstanceForPopup($moduleName);
+		
+		
 		$recordStructureInstance = Vtiger_RecordStructure_Model::getInstanceForModule($moduleModel);
 
+		
 		if(!empty($orderBy)) {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder', $sortOrder);
 		}
 		if(!empty($sourceModule)) {
 			$listViewModel->set('src_module', $sourceModule);
-			$listViewModel->set('src_field', $sourceField);
+			$listViewModel->set('src_field', $sourceField);			
 			$listViewModel->set('src_record', $sourceRecord);
+			if(!empty($sourceRecord)) {
+				$sourceRecordInstance = Vtiger_Record_Model::getInstanceById($sourceRecord);
+			}
 		}
+		//SG1411 On force le critère de recherche $sourceRecordInstance->get("mgtypetransport")à l'ouverture du popup
 		if((!empty($searchKey)) && (!empty($searchValue)))  {
+			
+			if ($searchValue == vtranslate('LBL_ALL') || $searchValue == strtolower(vtranslate('LBL_ALL'))) {
+				unset ($searchKey);
+				unset($searchValue);
+			}
+			else {
+			$listViewModel->set('search_key', $searchKey);
+			$listViewModel->set('search_value', $searchValue);
+			}
+		}
+		else if (empty($searchKey) && !empty($sourceModule) && $sourceModule == 'MGTransports' && $sourceRecordInstance->get("mgtypetransport")) {			
+			$searchKey = "mgtypetransport";
+			$searchValue = $sourceRecordInstance->get("mgtypetransport");
 			$listViewModel->set('search_key', $searchKey);
 			$listViewModel->set('search_value', $searchValue);
 		}
 
 		if(!$this->listViewHeaders){
-			$this->listViewHeaders = $listViewModel->getListViewHeaders();			
-			//SGNOW
-			if (!empty($sourceModule) && $sourceModule == 'MGTransports') {
-			$customHeaders = array ('popupname'=>array('column' => 'popupname',
-								'label' => 'LBL_VEHIC_POPUP_NAME_HEADER',
-								'name' => 'popupname'
-							),
-						'engagement'=>array('column' => 'engagedfor',
-								'label' => 'LBL_VEHIC_ENGAGED_FOR',
-								'name' => 'engaged_for'
-								),			   
-						   );
-			$this->listViewHeaders = array_merge($customHeaders,$this->listViewHeaders);
-			}
+			$this->listViewHeaders = $listViewModel->getListViewHeaders();	
+			
+			$temp = array();
+			/*
+			$field1 = new Vtiger_Field_Model();
 		
+			$field1->set('name', 'full_vehicule_name');
+			$field1->set('column', 'full_vehicule_name');
+			$field1->set('label', 'LBL_VEHIC_POPUP_NAME_HEADER');
+			$temp['full_vehicule_name'] = $field1;
+		
+			$this->listViewHeaders = array_merge($temp,$this->listViewHeaders);
+			*/
+			if (!empty($sourceModule) && !empty($sourceRecord) && $sourceModule == 'MGTransports') {
+			$customHeaders = array ();
+			$field1 = new Vtiger_Field_Model();		
+			$field1->set('name', 'engaged_for');
+			$field1->set('column', 'engagedfor');
+			$field1->set('label', 'LBL_VEHIC_ENGAGED_FOR');
+			$customHeaders['engagement'] = $field1;
+		
+			$this->listViewHeaders = array_merge($customHeaders,$this->listViewHeaders);
+			}				
 		}
 		
 		
@@ -89,10 +118,27 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
 			
 		}
-		//SGNOW
+		
+		$basebusylist = $moduleModel->getBusylist($sourceRecord);
+		
+		$popupBusylist = array();
+		
+		foreach($basebusylist as $vehiculeid=>$eventsarray) {
+			$popupBusylist[$vehiculeid] = array();
+			foreach($eventsarray as $eventid=>$eventinfo) {
+				if ($eventid == $sourceRecord) {
+					$popupBusylist[$vehiculeid]['alreadyselected']=$eventinfo['label'];
+				}
+				else {
+					if (!$popupBusylist[$vehiculeid]['busyelsewhere']) !$popupBusylist[$vehiculeid]['busyelsewhere'] = array();
+					$popupBusylist[$vehiculeid]['busyelsewhere'][$eventid] = $eventinfo;
+				}
+			}
+			
+		}
 		//var_dump($this->listViewHeaders);
 		//var_dump($this->listViewEntries);
-		
+		//var_dump($basebusylist);
 			
 		$noOfEntries = count($this->listViewEntries);
 
@@ -112,7 +158,8 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		$viewer->assign('SOURCE_MODULE', $sourceModule);
 		$viewer->assign('SOURCE_FIELD', $sourceField);
 		$viewer->assign('SOURCE_RECORD', $sourceRecord);
-
+		$viewer->assign('SOURCE_RECORD_INSTANCE', $sourceRecordInstance);
+		
 		$viewer->assign('SEARCH_KEY', $searchKey);
 		$viewer->assign('SEARCH_VALUE', $searchValue);
 
@@ -132,7 +179,8 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 		$viewer->assign('LISTVIEW_ENTIRES_COUNT',$noOfEntries);
 		$viewer->assign('LISTVIEW_HEADERS', $this->listViewHeaders);
 		$viewer->assign('LISTVIEW_ENTRIES', $this->listViewEntries);
-		$viewer->assign('BUSYLIST', $moduleModel->getBusylist($sourceRecord));
+		
+		$viewer->assign('BUSYLIST', $popupBusylist);
 		
 		
 		

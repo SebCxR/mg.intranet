@@ -61,15 +61,85 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	}
 	
 	// Function returns the Busylist on the date of the mgevent
-	// @param <int> $mgeventId : id of the transport being built, needed to get the date considered when checking engagement
+	// @param <int> $mgeventId : id of the event or transport considered, needed to get the date
 	// @return <Array>
-	public function getBusylist($mgevent) {
+	public function getBusylist($mgevent) {		
+		$busyontransportslist = $this->getBusylistOnTransports($mgevent);
+		$busyoneventslist = $this->getBusylistOnEvents($mgevent);
+		$busylist = array();
 		
-		$busylist = $this->getBusylistOnTransports($mgevent);
+		if (empty($busyoneventslist)) {
+			$busylist = $busyontransportslist;
+		}
+		else {
+		foreach($busyontransportslist as $vehicid => $transportsarray) {
+			 if (array_key_exists($vehicid,$busyoneventslist)) {				
+				$busylist[$vehicid] = $transportsarray + $busyoneventslist[$vehicid];
+			 }
+			 else{
+				$busylist[$vehicid] = $transportsarray;
+			 }
+		}
 		
+		foreach($busyoneventslist as $vehicid => $eventsarray) {			
+			 if (!array_key_exists($vehicid,$busylist)) {
+				$busylist[$vehicid] = $eventsarray;
+			 }
+		}
+		}
 		return $busylist;
-	}
+	}	
 
+	//
+	// Function returns the Busylist on the date of the mgtransport
+	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
+	// @return <Array> (vehiculeid1 => array (eventidx=>arrayofinfo,eventidy=>arrayofinfo,...), vehiculeid2 => array (eventidx=>arrayofinfo,eventidz=>arrayofinfo,...))
+	public function getBusylistOnEvents($mgtransportId) {
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$user = $currentUser->getId();
+		
+		$busyList = array();
+		$db = PearDatabase::getInstance();
+		
+		
+		$query = "SELECT vtiger_crmentity.crmid, vtiger_activity.subject,vtiger_activity.activitytype, vtiger_vehiculeactivityrel.vehiculeid as vehiculeid FROM vtiger_activity"
+					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid"
+					." INNER JOIN vtiger_vehiculeactivityrel ON vtiger_vehiculeactivityrel.activityid = vtiger_activity.activityid"
+					;
+
+		$query .= " WHERE vtiger_crmentity.deleted=0"
+			." AND (vtiger_activity.date_start <= (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
+			." AND (vtiger_activity.due_date >= (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
+			;	
+
+		$params = array($mgtransportId,$mgtransportId);
+
+		$result = $db->pquery($query, $params);
+		$numOfRows = $db->num_rows($result);
+
+		for($i=0; $i<$numOfRows; $i++) {
+			$row = $db->query_result_rowdata($result, $i);
+			$eventhref = "index.php?module=Calendar".
+					"&view=Detail&record=".$row['crmid'] ;
+					
+			$temparray = array('modulename'=>'Calendar',
+					'label'=>$row['subject'],
+					'type'=>$row['activitytype'],
+					'href'=>$eventhref
+					);
+			
+			if (!$busyList[$row['vehiculeid']]) {	
+			$busyList[$row['vehiculeid']]=array($row['crmid']=> $temparray);
+			}
+			
+			else {				
+			$busyList[$row['vehiculeid']][$row['crmid']] = $temparray ;
+			}		
+					
+		}
+		
+		return $busyList;	
+	}
 	
 	// Function returns the Busylist on the date of the mgtransport
 	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
@@ -77,13 +147,14 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 	public function getBusylistOnTransports($mgtransportId) {
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$user = $currentUser->getId();
-		
+		$busyList = array();
 		$db = PearDatabase::getInstance();
 		
 		
-		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
+		$query = "SELECT vtiger_crmentity.crmid, vtiger_mgtransports.subject, vtiger_mgtransports.mgtypetransport, vtiger_crmentityrel.relcrmid as vehiculeid, vtiger_crmentityrel.relmodule  FROM vtiger_mgtransports"
 					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid"
-					." INNER JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid";
+					." LEFT JOIN vtiger_crmentityrel ON vtiger_crmentityrel.crmid = vtiger_mgtransports.mgtransportsid"
+					;
 
 		$query .= " WHERE vtiger_crmentity.deleted=0"
 			." AND (vtiger_mgtransports.datetransport = (SELECT vtiger_mgtransports.datetransport FROM vtiger_mgtransports WHERE vtiger_mgtransports.mgtransportsid = ?))"
@@ -95,102 +166,61 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		$result = $db->pquery($query, $params);
 		$numOfRows = $db->num_rows($result);
 
-		//$activities = array();
 		for($i=0; $i<$numOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
 					"&view=Detail&record=".$row['crmid'] ;
-			$busyList[$row['vehiculeid']]= array('modulename'=>'MGTransports',
-							     'transportid'=>$row['crmid'],
-							     'transportlabel'=>$row['subject'],
-							     'transporthref'=>$transporthref
-							     );
+					
+			$temparray = array('modulename'=>'MGTransports',
+					'label'=>$row['subject'],
+					'type'=>$row['mgtypetransport'],
+					'href'=>$transporthref
+					);
+			
+			if (!$busyList[$row['vehiculeid']]) {	
+			$busyList[$row['vehiculeid']]=array($row['crmid']=> $temparray);
+			}
+			
+			else {				
+			$busyList[$row['vehiculeid']][$row['crmid']] = $temparray ;
+			}
+			
+			
 		}
 		
 		return $busyList;	
 	}
 	
 	
-	
-	
-	/*
-	//SG copy from Contacts
-	// Function returns the Calendar Events for the module
-	// @param <Vtiger_Paging_Model> $pagingModel
-	// @return <Array>
-	
-	public function getCalendarActivities($mode, $pagingModel, $user, $recordId = false) {
-		$currentUser = Users_Record_Model::getCurrentUserModel();
-		$db = PearDatabase::getInstance();
+     //Function that returns related list header fields that will be showed in the Related List View
+     // @return <Array> returns related fields list.
+    //
+	public function getRelatedListFields() {
+		
+	$relatedListFields = parent::getRelatedListFields();
 
-		if (!$user) {
-			$user = $currentUser->getId();
-		}
+		$temp = array();
 
-		$nowInUserFormat = Vtiger_Datetime_UIType::getDisplayDateValue(date('Y-m-d H:i:s'));
-		$nowInDBFormat = Vtiger_Datetime_UIType::getDBDateTimeValue($nowInUserFormat);
-		list($currentDate, $currentTime) = explode(' ', $nowInDBFormat);
-
-		$query = "SELECT vtiger_crmentity.crmid, vtiger_crmentity.smownerid, vtiger_crmentity.setype, vtiger_activity.* FROM vtiger_activity"
-					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid"
-					." INNER JOIN vtiger_vehiculeactivityrel ON vtiger_vehiculeactivityrel.activityid = vtiger_activity.activityid"
-	//				INNER JOIN vtiger_crmentity AS crmentity2 ON vtiger_cntactivityrel.contactid = crmentity2.crmid AND crmentity2.deleted = 0 AND crmentity2.setype = ?
-					." LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid";
-
-		$query .= Users_Privileges_Model::getNonAdminAccessControlQuery('Calendar');
-
-		$query .= " WHERE vtiger_crmentity.deleted=0
-					AND (vtiger_activity.activitytype NOT IN ('Emails'))
-					AND (vtiger_activity.status is NULL OR vtiger_activity.status NOT IN ('Completed', 'Deferred'))
-					AND (vtiger_activity.eventstatus is NULL OR vtiger_activity.eventstatus NOT IN ('Held'))";
-
-		if ($recordId) {
-			$query .= " AND vtiger_cntactivityrel.contactid = ?";
-		} elseif ($mode === 'upcoming') {
-			$query .= " AND due_date >= '$currentDate'";
-		} elseif ($mode === 'overdue') {
-			$query .= " AND due_date < '$currentDate'";
-		}
-
-		$params = array($this->getName());
-		if ($recordId) {
-			array_push($params, $recordId);
-		}
-
-		if($user != 'all' && $user != '') {
-			if($user === $currentUser->id) {
-				$query .= " AND vtiger_crmentity.smownerid = ?";
-				array_push($params, $user);
-			}
-		}
-
-		$query .= " ORDER BY date_start, time_start LIMIT ". $pagingModel->getStartIndex() .", ". ($pagingModel->getPageLimit()+1);
-
-		$result = $db->pquery($query, $params);
-		$numOfRows = $db->num_rows($result);
-
-		$activities = array();
-		for($i=0; $i<$numOfRows; $i++) {
-			$row = $db->query_result_rowdata($result, $i);
-			$model = Vtiger_Record_Model::getCleanInstance('Calendar');
-			$model->setData($row);
-			$model->setId($row['crmid']);
-			$activities[] = $model;
-		}
-
-		$pagingModel->calculatePageRange($activities);
-		if($numOfRows > $pagingModel->getPageLimit()){
-			array_pop($activities);
-			$pagingModel->set('nextPageExists', true);
-		} else {
-			$pagingModel->set('nextPageExists', false);
-		}
-
-		return $activities;
+		$temp['full_vehicule_name'] = 'full_vehicule_name';
+		
+		$relatedListFields = array_merge($temp,$relatedListFields);
+		
+		
+        return $relatedListFields;
 	}
 
-	*/
-	
-	
+	public function getField($fieldName) {
+	if ($fieldName == 'full_vehicule_name') {
+		$field = new Vtiger_Field_Model();
+		
+		$field->set('name', 'full_vehicule_name');
+		$field->set('column', 'full_vehicule_name');
+		$field->set('label', 'LBL_FULL_VEHICULE_NAME');
+		
+		return $field;
+	}
+	else
+	return Vtiger_Field_Model::getInstance($fieldName,$this);
+	}
 
 }

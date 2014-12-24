@@ -9,168 +9,87 @@
 
 Vtiger_Detail_Js("MGTransports_Detail_Js",{},{
 	
-	////detailViewRecentTicketsTabLabel : 'Trouble Tickets',
-	////detailViewRecentTasksTabLabel : 'Project Tasks',
-	////detailViewRecentMileStonesLabel : 'Project Milestones',
-	//
-	///**
-	// * Function to register event for create related record
-	// * in summary view widgets
-	// */
-	//registerSummaryViewContainerEvents : function(summaryViewContainer){
-	//	this._super(summaryViewContainer);
-	//	this.registerStatusChangeEventForWidget();
-	//	this.registerEventForAddingModuleRelatedRecordFromSummaryWidget();
-	//	this.registerEventForSelectingModuleRelatedRecordFromSummaryWidget();
-	//},
-	//
-	///**
-	//* Function to get records according to ticket status
-	//*/
-	//registerStatusChangeEventForWidget : function(){
-	//	var thisInstance = this;
-	//	jQuery('[name="ticketstatus"],[name="projecttaskstatus"]').on('change',function(e){
-	//		var statusCondition = {};
-	//		var params = {};
-	//		var currentElement = jQuery(e.currentTarget);
-	//		var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-	//		var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-	//		var referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val();
-	//		var recordId = thisInstance.getRecordId();
-	//		var module = app.getModuleName();
-	//		var selectedStatus = currentElement.find('option:selected').text();
-	//		if(selectedStatus != "Select Status" && referenceModuleName == "HelpDesk"){
-	//			statusCondition['vtiger_troubletickets.status'] = selectedStatus;
-	//			params['whereCondition'] = statusCondition;
-	//		} else if(selectedStatus != "Select Status" && referenceModuleName == "ProjectTask"){
-	//			statusCondition['vtiger_projecttask.projecttaskstatus'] = selectedStatus;
-	//			params['whereCondition'] = statusCondition;
-	//		}
-	//		
-	//		params['record'] = recordId;
-	//		params['view'] = 'Detail';
-	//		params['module'] = module;
-	//		params['page'] = widgetDataContainer.find('[name="page"]').val();
-	//		params['limit'] = widgetDataContainer.find('[name="pageLimit"]').val();
-	//		params['relatedModule'] = referenceModuleName;
-	//		params['mode'] = 'showRelatedRecords';
-	//		AppConnector.request(params).then(
-	//			function(data) {
-	//				widgetDataContainer.html(data);
-	//			}
-	//		);
-	//   })
-	//},
-	//
-	///**
-	// * Function to add module related record from summary widget
-	// */
-	//registerEventForSelectingModuleRelatedRecordFromSummaryWidget : function(){
-	//	var thisInstance = this;
-	//	jQuery('.summaryWidgetContainer .selectButton').on('click',function(e){
-	//		var currentElement = jQuery(e.currentTarget);
-	//		var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-	//		var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-	//		var referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val();
-	//		var selectUrl = currentElement.data('url');
-	//		var parentId = thisInstance.getRecordId();
-	//		var selectParams = {};
-	//		var relatedField = currentElement.data('parentRelatedField');
-	//		var moduleName = currentElement.closest('.widget_header').find('[name="relatedModule"]').val();
-	//		var relatedParams = {};
-	//		relatedParams[relatedField] = parentId;
-	//		
-	//		var postSelectSave = function(data) {
-	//			thisInstance.postSummaryWidgetAddRecord(data,currentElement);
-	//			thisInstance.loadModuleSummary();
-	//		}
-	//		
-	//		if(typeof relatedField != "undefined"){
-	//			selectParams['data'] = relatedParams;
-	//		}
-	//		selectParams['noCache'] = true;
-	//		selectParams['callbackFunction'] = postSelectSave;
-	//		var progress = jQuery.progressIndicator();
-	//		var headerInstance = new Vtiger_Header_Js();
-	//		headerInstance.getSelectForm(selectUrl, moduleName,selectParams).then(function(data){
-	//			headerInstance.handleSelectData(data,selectParams);
-	//			progress.progressIndicator({'mode':'hide'});
-	//		});
-	//	})
-	//},
-	//
-	///**
-	// * Function to add module related record from summary widget
-	// */
-	//registerEventForAddingModuleRelatedRecordFromSummaryWidget : function(){
-	//	var thisInstance = this;
-	//	jQuery('.summaryWidgetContainer .addButton').on('click',function(e){
-	//		var currentElement = jQuery(e.currentTarget);
-	//		var summaryWidgetContainer = currentElement.closest('.summaryWidgetContainer');
-	//		var widgetDataContainer = summaryWidgetContainer.find('.widget_contents');
-	//		var referenceModuleName = widgetDataContainer.find('[name="relatedModule"]').val();
-	//		var quickcreateUrl = currentElement.data('url');
-	//		var parentId = thisInstance.getRecordId();
-	//		var quickCreateParams = {};
-	//		var relatedField = currentElement.data('parentRelatedField');
-	//		var moduleName = currentElement.closest('.widget_header').find('[name="relatedModule"]').val();
-	//		var relatedParams = {};
-	//		relatedParams[relatedField] = parentId;
-	//		
-	//		var postQuickCreateSave = function(data) {
-	//			thisInstance.postSummaryWidgetAddRecord(data,currentElement);
-	//			thisInstance.loadModuleSummary();
-	//		}
-	//		
-	//		if(typeof relatedField != "undefined"){
-	//			quickCreateParams['data'] = relatedParams;
-	//		}
-	//		quickCreateParams['noCache'] = true;
-	//		quickCreateParams['callbackFunction'] = postQuickCreateSave;
-	//		var progress = jQuery.progressIndicator();
-	//		var headerInstance = new Vtiger_Header_Js();
-	//		headerInstance.getQuickCreateForm(quickcreateUrl, moduleName,quickCreateParams).then(function(data){
-	//			headerInstance.handleQuickCreateData(data,quickCreateParams);
-	//			progress.progressIndicator({'mode':'hide'});
-	//		});
-	//	})
-	//},
-	//
-	///**
-	// * Function to load module summary of Projects
-	// */
-	//loadModuleSummary : function(){
-	//	var summaryParams = {};
-	//	summaryParams['module'] = app.getModuleName();
-	//	summaryParams['view'] = "Detail";
-	//	summaryParams['mode'] = "showModuleSummaryView";
-	//	summaryParams['record'] = jQuery('#recordId').val();
-	//	
-	//	AppConnector.request(summaryParams).then(
-	//		function(data) {
-	//			jQuery('.summaryView').html(data);
-	//		}
-	//	);
-	//},
-	//
-	////registerEvents : function(){
-	////	var detailContentsHolder = this.getContentHolder();
-	////	var thisInstance = this;
-	////	this._super();
-	////	
-	////	detailContentsHolder.on('click','.moreRecentMilestones', function(){
-	////		var recentMilestonesTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentMileStonesLabel);
-	////		recentMilestonesTab.trigger('click');
-	////	});
-	////	
-	////	detailContentsHolder.on('click','.moreRecentTickets', function(){
-	////		var recentTicketsTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTicketsTabLabel);
-	////		recentTicketsTab.trigger('click');
-	////	});
-	////	
-	////	detailContentsHolder.on('click','.moreRecentTasks', function(){
-	////		var recentTasksTab = thisInstance.getTabByLabel(thisInstance.detailViewRecentTasksTabLabel);
-	////		recentTasksTab.trigger('click');
-	////	});
-	////}
+        setTextColorForColorTag : function(){
+		var listviewEntriesTable = jQuery('table.listViewEntriesTable');
+		
+		listviewEntriesTable.find('tr.listViewEntries div.colortag').each(function(index,element) {
+			var colordiv = jQuery(element);
+			if ((colordiv.data('color'))) {
+				var thiscolor = colordiv.data('color');
+				var colorContrast = app.getColorContrast(thiscolor.slice(1));
+				if(colorContrast == 'light') {
+					var textColor = 'black'
+					}
+				else {
+					var textColor = 'white'
+				}
+				colordiv.css({'background-color':thiscolor,'color':textColor});
+				colordiv.find('a').css({'background-color':thiscolor,'color':textColor});
+			}
+		}
+		);	
+	},
+
+        fixLastThColspan : function() {
+		var listviewEntriesTable = jQuery('table.listViewEntriesTable');
+		listviewEntriesTable.find('tr.listViewHeaders th:last').attr('colspan',2);
+		
+	},
+        
+        loadContents : function(url,data) {
+		var thisInstance = this;
+		var aDeferred = jQuery.Deferred();
+
+		var detailContentsHolder = this.getContentHolder();
+		var params = url;
+		if(typeof data != 'undefined'){
+			params = {};
+			params.url = url;
+			params.data = data;
+		}
+		AppConnector.requestPjax(params).then(
+			function(responseData){
+				detailContentsHolder.html(responseData);
+				responseData = detailContentsHolder.html();
+				//thisInstance.triggerDisplayTypeEvent();
+				thisInstance.registerBlockStatusCheckOnLoad();
+				//Make select box more usability
+				app.changeSelectElementView(detailContentsHolder);
+				
+				//SG1412
+				thisInstance.setTextColorForColorTag();
+				//thisInstance.fixLastThColspan();
+				//Attach date picker event to date fields
+				app.registerEventForDatePickerFields(detailContentsHolder);
+				app.registerEventForTextAreaFields(jQuery(".commentcontent"));
+				jQuery('.commentcontent').autosize();
+				thisInstance.getForm().validationEngine();
+				jQuery('.pageNumbers',detailContentsHolder).tooltip();
+				aDeferred.resolve(responseData);
+			},
+			function(){
+
+			}
+		);
+
+		return aDeferred.promise();
+	},
+        loadRelatedList : function(pageNumber){
+                var thisInstance = this;
+		var relatedListInstance = new Vtiger_RelatedList_Js(this.getRecordId(), app.getModuleName(), this.getSelectedTab(), this.getRelatedModuleName());
+		var params = {'page':pageNumber};
+		relatedListInstance.loadRelatedList(params);
+                //SG1412
+				thisInstance.setTextColorForColorTag();
+				//thisInstance.fixLastThColspan();
+                
+	},
+        
+        registerEvents: function(){
+		this._super();
+		this.setTextColorForColorTag();
+               // this.fixLastThColspan();
+	}
+	
+       
 })

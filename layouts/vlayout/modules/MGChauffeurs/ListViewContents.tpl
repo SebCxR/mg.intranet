@@ -65,14 +65,10 @@
 				</th>
 				{foreach item=LISTVIEW_HEADER key=LISTVIEW_HEADER_KEY from=$LISTVIEW_HEADERS}
 				
-				{if ($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')}
+				{if ($LISTVIEW_HEADER_KEY neq 'uicolor' && $LISTVIEW_HEADER_KEY neq 'name')}
 				<th {if $LISTVIEW_HEADER@last} colspan="2" {/if} class="{$WIDTHTYPE}">
 					<a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
-						{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
-							<img class="sortImage" src="{vimage_path( $SORT_IMAGE, $MODULE)}">
-						{else}
-							<img class="hide sortingImage" src="{vimage_path( 'downArrowSmall.png', $MODULE)}">
-						{/if}
+						{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}<img class="sortImage" src="{vimage_path( $SORT_IMAGE, $MODULE)}">{else}<img class="hide sortingImage" src="{vimage_path( 'downArrowSmall.png', $MODULE)}">{/if}
 					</a>
 						
 				</th>				
@@ -83,38 +79,34 @@
 			</tr>
 		</thead>
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
-		{assign var=CALCOLOR value=$LISTVIEW_ENTRY->get('calcolor')}
-		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
-		    id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
-			<td  width="5%" class="{$WIDTHTYPE}" style="background-color: {$CALCOLOR};">
+		{*assign var=UICOLOR value=$LISTVIEW_ENTRY->get('uicolor')*}
+		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}'
+			data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
+			id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
+			<td  width="5%" class="{$WIDTHTYPE}">
 				<input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
 			</td>
 			
 			{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 				{assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}			
-				{if ($LISTVIEW_HEADERNAME neq 'isrented' && $LISTVIEW_HEADERNAME neq 'vehicule_name' && $LISTVIEW_HEADERNAME neq 'vehicule_owner' && $LISTVIEW_HEADERNAME neq 'calcolor')}	
+				{if ($LISTVIEW_HEADERNAME neq 'name' && $LISTVIEW_HEADERNAME neq 'uicolor')}	
 					<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}" data-field-name="{$LISTVIEW_HEADER->getFieldName()}" nowrap>	
 					{if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
 						<a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-					{else if $LISTVIEW_HEADER->get('uitype') eq '72'}
+						{else if $LISTVIEW_HEADER->get('uitype') eq '72'}
 						{assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
 						{if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
 						{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
 						{else}
 						{$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 						{/if}
-					{elseif $LISTVIEW_HEADERNAME eq 'full_vehicule_name'}
-						{if $LISTVIEW_ENTRY->get('calcolor')}
-							<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('calcolor')}" style="background-color : {$LISTVIEW_ENTRY->get('calcolor')}">{$LISTVIEW_ENTRY->get('vehicule_name')} 
-							{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
-							{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
-							{/if}
+						{else if $LISTVIEW_HEADERNAME eq 'colored_name'}
+						{if $LISTVIEW_ENTRY->get('uicolor')}
+							<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('uicolor')}" style="background-color : {$LISTVIEW_ENTRY->get('uicolor')}">{$LISTVIEW_ENTRY->get('name')}
 							</div>
 						{else}
-							{$LISTVIEW_ENTRY->get('vehicule_name')}
-							{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
-								{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
-							{/if}
+							{$LISTVIEW_ENTRY->get('name')}
+
 						{/if}		
 					{else}
 					{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}

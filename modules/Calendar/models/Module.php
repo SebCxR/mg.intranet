@@ -130,7 +130,8 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			array(
 				'linktype' => 'SIDEBARLINK',
 				'linklabel' => 'LBL_INVITED_CALENDAR_VIEW',
-				'linkurl' => $this->getInvitedCalendarViewUrl(),
+				//SGTODONOW old 'linkurl' => $this->getInvitedCalendarViewUrl(),
+				'linkurl' => $this->getMGChauffeursCalendarViewUrl(),
 				'linkicon' => '',
 			),
 			array(
@@ -168,6 +169,14 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 				'linktype' => 'SIDEBARWIDGET',
 				'linklabel' => 'LBL_INVITED_CALENDARS',
 				'linkurl' => 'module='.$this->get('name').'&view=ViewTypes&mode=getInvitedListForCalendar',
+				'linkicon' => ''
+			);
+		}
+		if ($linkParams['ACTION'] == 'MGChauffeursCalendar') {
+			$quickWidgets[] = array(
+				'linktype' => 'SIDEBARWIDGET',
+				'linklabel' => 'LBL_INVITED_CALENDARS',
+				'linkurl' => 'module='.$this->get('name').'&view=ViewTypes&mode=getMGChauffeursListForCalendar',
 				'linkicon' => ''
 			);
 		}
@@ -347,7 +356,34 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		}
 		return $vehiculeIds;
 	}
+	/**
+	* To get the list of chauffeurs
+	* @param $criteria --  not used yet
+	* @returns <Array> $vehiculeIds
+	*/
 	
+	public static function getMGChauffeursForCalendar($criteria) {			
+		$db = PearDatabase::getInstance();
+		$query = "SELECT vtiger_users.first_name,vtiger_users.last_name, vtiger_users.id as userid, vtiger_mgchauffeurs.uicolor
+			FROM vtiger_users
+			INNER JOIN vtiger_mgchauffeurs
+			ON vtiger_mgchauffeurs.userid=vtiger_users.id
+			AND vtiger_users.status='Active'
+			GROUP BY userid
+			";
+		$result = $db->query($query);
+		 $rows = $db->num_rows($result);
+
+		$mgchauffeursIds = Array();
+		for($i=0; $i<$rows; $i++){
+			$id = $db->query_result($result,$i,'userid');
+			$userColor = $db->query_result($result,$i,'uicolor');
+			$userName = $db->query_result($result,$i,'first_name').' '.$db->query_result($result,$i,'last_name');
+			$mgchauffeursIds[$id]['name'] =$userName;
+			$mgchauffeursIds[$id]['color'] =$userColor;
+		}
+		return $mgchauffeursIds;
+	}
 	/**
 	* To get the list of vehicules
 	* @param $criteria --  not used yet
@@ -358,7 +394,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		$query = "SELECT vtiger_users.first_name,vtiger_users.last_name, vtiger_users.id as userid
 			FROM vtiger_users
-			INNER JOIN vtiger_invitees ON vtiger_invitees.inviteeid=vtiger_users.id and status= 'Active'
+			INNER JOIN vtiger_invitees ON vtiger_invitees.inviteeid=vtiger_users.id and status='Active'
 			GROUP BY userid
 			";
 		$result = $db->query($query);
@@ -386,6 +422,13 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 */
 	public function getVehiculesCalendarViewUrl() {
 		return 'index.php?module=Calendar&view=VehiculesCalendar';
+	}
+	/**
+	 *  Function returns the url for Invited Users Calendar view
+	 * @return <String>
+	 */
+	public function getMGChauffeursCalendarViewUrl() {
+		return 'index.php?module=Calendar&view=MGChauffeursCalendar';
 	}
 	/**
 	 *  Function returns the url for Invited Users Calendar view

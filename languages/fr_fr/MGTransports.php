@@ -32,6 +32,7 @@ $languageStrings = array(
 	'VEHICULES' => 'Véhicules',
 	'CHAUFFEURS' => 'Chauffeurs',
 	'PRODUCTS' => 'Articles',
+        'LBL_THERE_IS_NO'  => 'Aucun'                          ,
 
 );
 

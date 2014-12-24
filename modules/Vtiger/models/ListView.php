@@ -145,6 +145,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			if($webserviceField && !in_array($webserviceField->getPresence(), array(0,2))) continue;
 			$headerFieldModels[$fieldName] = Vtiger_Field_Model::getInstance($fieldName,$module);
 		}
+		
 		return $headerFieldModels;
 	}
 
@@ -342,7 +343,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			}
 		}
 		$controller = new ListViewController($db, $currentUser, $queryGenerator);
-
+			
 		return $instance->set('module', $moduleModel)->set('query_generator', $queryGenerator)->set('listview_controller', $controller);
 	}
 

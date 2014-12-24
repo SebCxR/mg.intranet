@@ -396,6 +396,7 @@ jQuery.Class("Vtiger_Popup_Js",{
 				'enabled' : true
 			}
 		});
+		
 		Vtiger_BaseList_Js.getPageRecords(params).then(
 				function(data){
 					jQuery('#popupContents').html(data);

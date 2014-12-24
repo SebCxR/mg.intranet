@@ -258,7 +258,9 @@ jQuery.Class("Vtiger_Detail_Js",{
 		AppConnector.request(params).then(
 			function(data){
 				contentContainer.progressIndicator({'mode': 'hide'});
+				
 				contentContainer.html(data);
+				
 				app.registerEventForTextAreaFields(jQuery(".commentcontent"))
 				contentContainer.trigger(thisInstance.widgetPostLoad,{'widgetName' : relatedModuleName})
 			},
@@ -754,18 +756,25 @@ jQuery.Class("Vtiger_Detail_Js",{
 		 */
 		detailContentsHolder.on('click', 'button.selectRelation', function(e){
 			var selectedTabElement = thisInstance.getSelectedTab();
-			/* ED141101
+			/* ED141101 SG1412 Debug Ok
 			 * Bug in case of summary widget header button : get last RelatedModule name
 			 */
 			var widgetHolder = $(this).parents('.summaryWidgetContainer:first');
 			if (widgetHolder.length === 0) 
 			    widgetHolder = false;
 			var relatedModuleName = thisInstance.getRelatedModuleName(widgetHolder);
+			
 			var relatedController = new Vtiger_RelatedList_Js(thisInstance.getRecordId(), app.getModuleName(), selectedTabElement, relatedModuleName);
 			relatedController.showSelectRelationPopup().then(function(data){
+			    	
+				if (widgetHolder) {						    
+						widgetHolder.find('.widget_contents').html('');
+						thisInstance.loadWidget(widgetHolder.find('div[data-url]'));
+				}
+						    
 				var emailEnabledModule = jQuery(data).find('[name="emailEnabledModules"]').val();
 				if(emailEnabledModule){
-					thisInstance.registerEventToEditRelatedStatus();
+					thisInstance.registerEventToEditRelatedStatus();	   
 				}
 			});
 		});
@@ -798,13 +807,17 @@ jQuery.Class("Vtiger_Detail_Js",{
 					
 					var relatedController = new Vtiger_RelatedList_Js(thisInstance.getRecordId(), app.getModuleName(), selectedTabElement, relatedModuleName);
 					relatedController.deleteRelation([relatedRecordid]).then(function(response){
-						/* ED141101
-						 */
-						if (widgetHolder) {
-						    selectedTabElement.click(); //TODO reload widget only ?
+						/* ED141101 SG1412 Reload Widget only
+						*/
+						if (widgetHolder) {						    
+						widgetHolder.find('.widget_contents').html('');
+						instance.loadWidget(widgetHolder.find('div[data-url]'));
+						   //TODO reload widget only ?
+						   //old  selectedTabElement.click();	    						    
 						}
 						else
 						    relatedController.loadRelatedList();
+						    
 					});
 				},
 				function(error, err){
@@ -1851,7 +1864,8 @@ jQuery.Class("Vtiger_Detail_Js",{
 		thisInstance.getForm().validationEngine(app.validationEngineOptions);
 
 		thisInstance.loadWidgets();
-
+		
+		
 		app.registerEventForTextAreaFields(jQuery('.commentcontent'));
 		this.registerEventForTotalRecordsCount();
 		jQuery('.pageNumbers',detailContentsHolder).tooltip();
