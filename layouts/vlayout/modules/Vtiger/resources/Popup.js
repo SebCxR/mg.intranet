@@ -481,6 +481,13 @@ jQuery.Class("Vtiger_Popup_Js",{
 				thisInstance.updatePagination();
 			});
 		});
+		/* ED141224 */
+		jQuery('#searchvalue').on('keyup',function(e){
+			if (e.keyCode == 13) {
+				jQuery('#popupSearchButton').click();
+			}
+		});
+		
 	},
 
 	/**

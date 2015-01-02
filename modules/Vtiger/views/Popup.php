@@ -165,7 +165,7 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 		$viewer->assign('CURRENCY_ID', $currencyId);
 
 		$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+		$viewer->assign('RECORD_STRUCTURE', $this->getOrderedStructure($moduleName, $recordStructureInstance));
 
 		$viewer->assign('PAGING_MODEL', $pagingModel);
 		$viewer->assign('PAGE_NUMBER',$pageNumber);
@@ -191,6 +191,36 @@ class Vtiger_Popup_View extends Vtiger_Footer_View {
 
 		$viewer->assign('MULTI_SELECT', $multiSelectMode);
 		$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
+	}
+	
+	/* ED141224
+	 * tri des champs selon CRMEntity::$search_fields_name
+	 * liste utilisée pour la recherche dans les popups
+	 * TODO : reorder blocks
+	 */
+	function getOrderedStructure($focus, $recordStructureInstance){
+		$blocks = $recordStructureInstance->getStructure();
+		
+		if(is_string($focus))
+			$focus = CRMEntity::getInstance($focus);
+		$sortedFields = $focus->search_fields_name;
+		if(is_array($sortedFields))
+			foreach($blocks as $blockkey => $fields){
+				$newfields = null;
+				foreach($sortedFields as $fieldkey => $fieldname){
+					if(isset( $fields[$fieldname] )){
+						$field = $fields[$fieldname];
+						unset($fields[$fieldname]);
+						if($newfields === null) $newfields = array();
+						$newfields[$fieldname] = $field;
+						unset($sortedFields[$fieldkey]);
+					}
+				}
+				if($newfields !== null) 
+					// passent en tête de liste
+					$blocks[$blockkey] = array_merge($newfields, $fields);
+			}
+		return $blocks;
 	}
 	
 	/**
