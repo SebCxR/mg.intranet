@@ -253,7 +253,7 @@ class Vtiger_Util_Helper {
         }
         $db = PearDatabase::getInstance();
 
-        $query = 'SELECT '.$fieldName.', * FROM vtiger_'.$fieldName.' order by sortorderid';
+        $query = 'SELECT * FROM vtiger_'.$fieldName.' order by sortorderid';//ED150104 '.$fieldName.' need also uicolor if exists
 	$values = array();
         $result = $db->pquery($query, array());
         $num_rows = $db->num_rows($result);
