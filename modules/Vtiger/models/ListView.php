@@ -137,8 +137,8 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 	 * @return <Array> - List of Vtiger_Field_Model instances
 	 */
 	public function getListViewHeaders() {
-        $listViewContoller = $this->get('listview_controller');
-        $module = $this->getModule();
+		$listViewContoller = $this->get('listview_controller');
+		$module = $this->getModule();
 		$headerFieldModels = array();
 		$headerFields = $listViewContoller->getListViewHeaderFields();
 		foreach($headerFields as $fieldName => $webserviceField) {
@@ -171,7 +171,7 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			$queryGenerator->addUserSearchConditions(array('search_field' => $searchKey, 'search_text' => $searchValue, 'operator' => $operator));
 		}
 
-        $orderBy = $this->getForSql('orderby');
+		$orderBy = $this->getForSql('orderby');
 		$sortOrder = $this->getForSql('sortorder');
 
 		//List view will be displayed on recently created/modified records
@@ -180,17 +180,17 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 			$sortOrder = 'DESC';
 		}
 
-        if(!empty($orderBy)){
-            $columnFieldMapping = $moduleModel->getColumnFieldMapping();
-            $orderByFieldName = $columnFieldMapping[$orderBy];
-            $orderByFieldModel = $moduleModel->getField($orderByFieldName);
-            if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE){
-                //IF it is reference add it in the where fields so that from clause will be having join of the table
-                $queryGenerator = $this->get('query_generator');
-                $queryGenerator->addWhereField($orderByFieldName);
-                //$queryGenerator->whereFields[] = $orderByFieldName;
-            }
-        }
+		if(!empty($orderBy)){
+		    $columnFieldMapping = $moduleModel->getColumnFieldMapping();
+		    $orderByFieldName = $columnFieldMapping[$orderBy];
+		    $orderByFieldModel = $moduleModel->getField($orderByFieldName);
+		    if($orderByFieldModel && $orderByFieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE){
+			//IF it is reference add it in the where fields so that from clause will be having join of the table
+			$queryGenerator = $this->get('query_generator');
+			$queryGenerator->addWhereField($orderByFieldName);
+			//$queryGenerator->whereFields[] = $orderByFieldName;
+		    }
+		}
 		$listQuery = $this->getQuery();
 
 		$sourceModule = $this->get('src_module');
@@ -207,27 +207,27 @@ class Vtiger_ListView_Model extends Vtiger_Base_Model {
 		$pageLimit = $pagingModel->getPageLimit();
 
 		if(!empty($orderBy)) {
-            if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
-                $referenceModules = $orderByFieldModel->getReferenceList();
-                $referenceNameFieldOrderBy = array();
-                foreach($referenceModules as $referenceModuleName) {
-                    $referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
-                    $referenceNameFields = $referenceModuleModel->getNameFields();
-                    $columnList = array();
-                    foreach($referenceNameFields as $nameField) {
-                        $fieldModel = $referenceModuleModel->getField($nameField);
-                        $columnList[] = $fieldModel->get('table').$orderByFieldModel->getName().'.'.$fieldModel->get('column');
-                    }
-                    if(count($columnList) > 1) {
-                        $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users').' '.$sortOrder;
-                    } else {
-                        $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
-                    }
-                }
-                $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
-            }else{
-                $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
-            }
+			if($orderByFieldModel && $orderByFieldModel->isReferenceField()){
+			    $referenceModules = $orderByFieldModel->getReferenceList();
+			    $referenceNameFieldOrderBy = array();
+			    foreach($referenceModules as $referenceModuleName) {
+				$referenceModuleModel = Vtiger_Module_Model::getInstance($referenceModuleName);
+				$referenceNameFields = $referenceModuleModel->getNameFields();
+				$columnList = array();
+				foreach($referenceNameFields as $nameField) {
+				    $fieldModel = $referenceModuleModel->getField($nameField);
+				    $columnList[] = $fieldModel->get('table').$orderByFieldModel->getName().'.'.$fieldModel->get('column');
+				}
+				if(count($columnList) > 1) {
+				    $referenceNameFieldOrderBy[] = getSqlForNameInDisplayFormat(array('first_name'=>$columnList[0],'last_name'=>$columnList[1]),'Users').' '.$sortOrder;
+				} else {
+				    $referenceNameFieldOrderBy[] = implode('', $columnList).' '.$sortOrder ;
+				}
+			    }
+			    $listQuery .= ' ORDER BY '. implode(',',$referenceNameFieldOrderBy);
+			}else{
+			    $listQuery .= ' ORDER BY '. $orderBy . ' ' .$sortOrder;
+			}
 		}
 
 		$viewid = ListViewSession::getCurrentView($moduleName);

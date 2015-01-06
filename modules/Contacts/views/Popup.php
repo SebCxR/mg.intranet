@@ -19,12 +19,12 @@ class Contacts_Popup_View extends Vtiger_Popup_View {
 		$sourceField = $request->get('src_field');
 
 		if(($moduleName === 'Calendar' || in_array($sourceModule, getInventoryModules())) && $sourceField == 'contact_id') {
-            $relatedParentModule = $request->get('related_parent_module');
+			$relatedParentModule = $request->get('related_parent_module');
 			$relatedParentId = $request->get('related_parent_id');
 
-            if(empty($relatedParentModule)) {
-                return parent::initializeListViewContents($request, $viewer);
-            }
+			if(empty($relatedParentModule)) {
+			    return parent::initializeListViewContents($request, $viewer);
+			}
 
 			$cvId = $request->get('cvid');
 			$pageNumber = $request->get('page');
@@ -107,7 +107,7 @@ class Contacts_Popup_View extends Vtiger_Popup_View {
 			$viewer->assign('CURRENCY_ID', $currencyId);
 
 			$viewer->assign('RECORD_STRUCTURE_MODEL', $recordStructureInstance);
-			$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
+			$viewer->assign('RECORD_STRUCTURE', $this->getOrderedStructure($moduleName, $recordStructureInstance));
 
 			$viewer->assign('PAGING_MODEL', $pagingModel);
 			$viewer->assign('PAGE_NUMBER',$pageNumber);
@@ -134,7 +134,7 @@ class Contacts_Popup_View extends Vtiger_Popup_View {
 			$viewer->assign('MULTI_SELECT', $multiSelectMode);
 			$viewer->assign('CURRENT_USER_MODEL', Users_Record_Model::getCurrentUserModel());
 		} else {
-			return parent::initializeListViewContents($request, $viewer);
+			parent::initializeListViewContents($request, $viewer);
 		}
 	}
 }

@@ -68,7 +68,11 @@
 				{if ($LISTVIEW_HEADER_KEY neq 'isrented' && $LISTVIEW_HEADER_KEY neq 'vehicule_name' && $LISTVIEW_HEADER_KEY neq 'vehicule_owner' && $LISTVIEW_HEADER_KEY neq 'calcolor')}
 				<th {if $LISTVIEW_HEADER@last} colspan="2" {/if} class="{$WIDTHTYPE}">
 					<a href="javascript:void(0);" class="listViewHeaderValues" data-nextsortorderval="{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}{$NEXT_SORT_ORDER}{else}ASC{/if}" data-columnname="{$LISTVIEW_HEADER->get('column')}">{vtranslate($LISTVIEW_HEADER->get('label'), $MODULE)}
-						{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}<img class="sortImage" src="{vimage_path( $SORT_IMAGE, $MODULE)}">{else}<img class="hide sortingImage" src="{vimage_path( 'downArrowSmall.png', $MODULE)}">{/if}
+						{if $ORDER_BY eq $LISTVIEW_HEADER->get('column')}
+							<img class="sortImage" src="{vimage_path( $SORT_IMAGE, $MODULE)}">
+						{else}
+							<img class="hide sortingImage" src="{vimage_path( 'downArrowSmall.png', $MODULE)}">
+						{/if}
 					</a>
 						
 				</th>				
@@ -80,10 +84,9 @@
 		</thead>
 		{foreach item=LISTVIEW_ENTRY from=$LISTVIEW_ENTRIES name=listview}
 		{assign var=CALCOLOR value=$LISTVIEW_ENTRY->get('calcolor')}
-		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}'
-			data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
-			id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
-			<td  width="5%" class="{$WIDTHTYPE}">
+		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
+		    id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
+			<td  width="5%" class="{$WIDTHTYPE}" style="background-color: {$CALCOLOR};">
 				<input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
 			</td>
 			

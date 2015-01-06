@@ -126,9 +126,10 @@ class ListViewController {
 		$meta = $this->queryGenerator->getMeta($this->queryGenerator->getModule());
 
 		$moduleFields = $meta->getModuleFields();
+		//var_dump($moduleFields);
 		$accessibleFieldList = array_keys($moduleFields);
 		$listViewFields = array_intersect($fields, $accessibleFieldList);
-
+		
 		$referenceFieldList = $this->queryGenerator->getReferenceFieldList();
 		foreach ($referenceFieldList as $fieldName) {
 			if (in_array($fieldName, $listViewFields)) {

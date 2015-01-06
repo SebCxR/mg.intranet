@@ -1,11 +1,6 @@
 <?php
 /*+***********************************************************************************
- * The contents of this file are subject to the vtiger CRM Public License Version 1.0
- * ("License"); You may not use this file except in compliance with the License
- * The Original Code is:  vtiger CRM Open Source
- * The Initial Developer of the Original Code is vtiger.
- * Portions created by vtiger are Copyright (C) vtiger.
- * All Rights Reserved.
+ * 
  *************************************************************************************/
 
 /**
@@ -20,6 +15,9 @@ class Vehicules_ListView_Model extends Vtiger_ListView_Model {
 	public function getListViewHeaders() {
 		$headerFieldModels = parent::getListViewHeaders();
 
+		$module = $this->getModule();
+		$headerFields['calcolor'] = Vtiger_Field_Model::getInstance('calcolor', $module);
+	
 		$temp = array();
 		$field1 = new Vtiger_Field_Model();
 		
@@ -34,23 +32,25 @@ class Vehicules_ListView_Model extends Vtiger_ListView_Model {
 		return $headerFieldModels;
 	}
 
-
-
 	/**
 	 * Function to get the list view entries
 	 * @param Vtiger_Paging_Model $pagingModel
 	 * @return <Array> - Associative array of record id mapped to Vtiger_Record_Model instance.
 	 */
 	public function getListViewEntries($pagingModel) {
+		$queryGenerator = $this->get('query_generator');
+		$listFields = $queryGenerator->getFields();
+		$listFields[] = 'calcolor';
+		$queryGenerator->setFields($listFields);		
 		
-		$listViewRecordModels = parent::getListViewEntries($pagingModel);		
-		
-		return $listViewRecordModels;
+		return parent::getListViewEntries($pagingModel);
 	}
 
 	function getQuery() {
 		$queryGenerator = $this->get('query_generator');
 		$listQuery = $queryGenerator->getQuery();
+		// ajout de la colonne calcolor
+		$listQuery = preg_replace('/^SELECT\s/', 'SELECT vtiger_vehicules.calcolor, ', $listQuery);
 		return $listQuery;
 	}
 
