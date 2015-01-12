@@ -102,6 +102,43 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 			//die();
 		}
 	
+	else if ($functionName === 'get_related_list' && ($relatedModuleName == 'Contacts')) {
+			
+			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+
+			$query = "SELECT vtiger_crmentity.crmid, vtiger_contactdetails.firstname, vtiger_contactdetails.lastname, vtiger_contactdetails.phone, vtiger_contactdetails.accountid, vtiger_contactdetails.title, vtiger_contactdetails.email,
+				vtiger_crmentity.smownerid, vtiger_contactaddress.mailingcity, vtiger_contactaddress.mailingcountry
+				FROM vtiger_contactdetails
+				INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid
+				LEFT JOIN vtiger_crmentityrel ON ((vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid AND vtiger_crmentityrel.crmid = ".$recordId.")
+					OR (vtiger_crmentityrel.crmid = vtiger_crmentity.crmid AND vtiger_crmentityrel.relcrmid = ".$recordId."))
+				LEFT JOIN vtiger_mgtransports ON vtiger_mgtransports.mgtransportsid = ".$recordId." 
+				LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.accountid
+				LEFT JOIN vtiger_contactaddress ON vtiger_contactaddress.contactaddressid = vtiger_contactdetails.contactid
+				LEFT JOIN vtiger_contactsubdetails ON vtiger_contactsubdetails.contactsubscriptionid = vtiger_contactdetails.contactid
+				LEFT JOIN vtiger_customerdetails ON vtiger_customerdetails.customerid = vtiger_contactdetails.contactid
+				LEFT JOIN vtiger_contactscf ON vtiger_contactscf.contactid = vtiger_contactdetails.contactid
+				LEFT JOIN vtiger_users cur_user ON cur_user.id = vtiger_crmentity.smownerid
+				LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+				WHERE vtiger_crmentity.deleted = 0
+				AND ((vtiger_crmentityrel.crmid = ".$recordId." AND vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid)
+				OR (vtiger_crmentityrel.relcrmid = ".$recordId." AND vtiger_crmentityrel.crmid = vtiger_crmentity.crmid)
+				OR vtiger_crmentity.crmid = vtiger_mgtransports.contactid)
+				";	
+
+			$relatedModuleName = $relatedModule->getName();
+			
+			$query .= $this->getSpecificRelationQuery($relatedModuleName);
+			
+			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
+			
+			if ($nonAdminQuery) {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+			}
+			//echo $query;
+			//die();
+		}
+	
 		else {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
 		}
@@ -112,3 +149,6 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 	
 	
 }
+
+//SELECT vtiger_crmentity.crmid,vtiger_contactdetails.firstname, vtiger_contactdetails.lastname, vtiger_contactdetails.phone, vtiger_contactdetails.accountid, vtiger_contactdetails.title, vtiger_contactdetails.email, vtiger_crmentity.smownerid, vtiger_contactaddress.mailingcity, vtiger_contactaddress.mailingcountry FROM vtiger_contactdetails INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_contactdetails.contactid INNER JOIN vtiger_crmentityrel ON (vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid OR vtiger_crmentityrel.crmid = vtiger_crmentity.crmid) LEFT JOIN vtiger_account ON vtiger_account.accountid = vtiger_contactdetails.accountid LEFT JOIN vtiger_contactaddress ON vtiger_contactaddress.contactaddressid = vtiger_contactdetails.contactid LEFT JOIN vtiger_contactsubdetails ON vtiger_contactsubdetails.contactsubscriptionid = vtiger_contactdetails.contactid LEFT JOIN vtiger_customerdetails ON vtiger_customerdetails.customerid = vtiger_contactdetails.contactid LEFT JOIN vtiger_contactscf ON vtiger_contactscf.contactid = vtiger_contactdetails.contactid LEFT JOIN vtiger_users cur_user ON cur_user.id = vtiger_crmentity.smownerid LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid WHERE vtiger_crmentity.deleted = 0 AND (vtiger_crmentityrel.crmid = 34134 OR vtiger_crmentityrel.relcrmid = 34134)
+

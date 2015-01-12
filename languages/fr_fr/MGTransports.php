@@ -32,6 +32,8 @@ $languageStrings = array(
 	'VEHICULES' => 'Véhicules',
 	'CHAUFFEURS' => 'Chauffeurs',
 	'PRODUCTS' => 'Articles',
+        'LBL_UNKNOWN' => 'Non renseigné',
+        'LBL_MAINCONTACT' => 'Contact principal',
         'LBL_THERE_IS_NO'  => 'Aucun'                          ,
 
 );

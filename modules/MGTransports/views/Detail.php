@@ -66,6 +66,11 @@ class MGTransports_Detail_View extends Vtiger_Detail_View {
 		$viewer->assign('BUSYLIST' , $basebusyList);
 		
 		}
+		//SG1501
+		if ($relatedModuleName == 'Contacts') {				
+		$mainContactId = getSingleFieldValue('vtiger_mgtransports','contactid','mgtransportsid',$parentId);		
+		$viewer->assign('MAINCONTACT',$mainContactId);	
+		}
 		
 		return $viewer->view('SummaryWidgets.tpl', $moduleName, 'true');
 	}
