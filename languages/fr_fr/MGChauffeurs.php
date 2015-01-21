@@ -21,7 +21,7 @@ $languageStrings = array(
 	'LBL_MGTYPECHAUFFEUR' => 'Type',
 	'LBL_USERID' => 'Utilisateur',
 	'TRANSPORTS' => 'Transports',
-	'EVENTS' => 'Evénements',
+	'EVENTS' => 'Activités',
 	'TASKS' => 'Tâches',
         'LBL_GET_TO_MGTRANSPORT' => 'Editer ce transport',
 	'LBL_NO_ENGAGEMENT' => 'Disponible',
@@ -35,6 +35,7 @@ $languageStrings = array(
         'LBL_SELECTUSER'=> 'Selectionner un compte utilisateur existant',
         'LBL_CLEARUSER'=> 'Effacer la selection',
         'Start Date & Time' => 'Date de début',
+        'Start Date &amp; Time'        => 'Date et heure de début'      ,
         
 );
 
