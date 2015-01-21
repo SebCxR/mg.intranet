@@ -75,7 +75,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
         foreach ($list_fields as $key => $fieldInfo) {
             foreach ($fieldInfo as $columnName) {
                 if(array_key_exists($key, $list_fields_name)){
-                    if($columnName == 'lastname' || $columnName == 'activity' || $columnName == 'due_date' || $columnName == 'time_end') continue;
+                    if($columnName == 'activity' || $columnName == 'due_date' || $columnName == 'time_end') continue;
 					if ($columnName == 'status') $relatedListFields[$columnName] = 'taskstatus';
 					else $relatedListFields[$columnName] = $list_fields_name[$key];
                 }
@@ -595,7 +595,21 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		}
 		return $settingLinks;
 	}
-	
+
+	public function getField($fieldName) {
+	if ($fieldName == 'lastname') {
+		$field = new Vtiger_Field_Model();
+		
+		$field->set('name', 'lastname');
+		$field->set('column', 'lastname');
+		$field->set('label', 'Contact Name');
+		
+		return $field;
+	}
+	else
+	return Vtiger_Field_Model::getInstance($fieldName,$this);
+	}
+
 	/**
 	 * Function to get orderby sql from orderby field
 	 */

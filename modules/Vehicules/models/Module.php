@@ -26,7 +26,7 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-						vtiger_vehiculeactivityrel.vehiculeid,
+						vtiger_vehiculeactivityrel.vehiculeid, vtiger_contactdetails.lastname,
 						vtiger_crmentity.*, vtiger_activity.activitytype, vtiger_activity.subject, vtiger_activity.date_start, vtiger_activity.time_start,
 						vtiger_activity.recurringtype, vtiger_activity.due_date, vtiger_activity.time_end, vtiger_cntactivityrel.contactid,
 						CASE WHEN (vtiger_activity.activitytype = 'Task') THEN (vtiger_activity.status) ELSE (vtiger_activity.eventstatus) END AS eventstatus
@@ -35,7 +35,7 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 						
 						LEFT JOIN vtiger_vehiculeactivityrel ON vtiger_vehiculeactivityrel.activityid = vtiger_activity.activityid
 						LEFT JOIN vtiger_cntactivityrel ON vtiger_cntactivityrel.activityid = vtiger_activity.activityid
-
+						LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_cntactivityrel.contactid
 						LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
 						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
 						
@@ -55,8 +55,7 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		}
 		else {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
-		}
-		
+		}		
 		return $query;
 	}
 	

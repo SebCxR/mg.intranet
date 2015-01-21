@@ -158,7 +158,46 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		
 		return $busyList;	
 	}
+	public function getRelationQuery($recordId, $functionName, $relatedModule) {
+		
+		$relatedModuleName = $relatedModule->getName();
+		// this gets only activity, no tasks
+		if ($functionName === 'get_related_list' && ($relatedModuleName == 'Events')) {
+			
+			$chauffeuruserId = getSingleFieldValue('vtiger_mgchauffeurs','userid','mgchauffeursid',$recordId);
+			
+			$query = "SELECT vtiger_activity.*, vtiger_crmentity.smownerid, vtiger_contactdetails.lastname,
+			vtiger_seactivityrel.crmid as parent_id, vtiger_invitees.inviteeid, vtiger_crmentity.crmid
+			FROM vtiger_activity
+			INNER JOIN vtiger_crmentity ON vtiger_activity.activityid = vtiger_crmentity.crmid
+			LEFT JOIN vtiger_recurringevents ON vtiger_activity.activityid = vtiger_recurringevents.activityid
+			LEFT JOIN vtiger_invitees ON vtiger_activity.activityid = vtiger_invitees.activityid
+			LEFT JOIN vtiger_cntactivityrel ON vtiger_activity.activityid = vtiger_cntactivityrel.activityid
+			LEFT JOIN vtiger_seactivityrel ON vtiger_activity.activityid = vtiger_seactivityrel.activityid
+			LEFT JOIN vtiger_contactdetails ON vtiger_contactdetails.contactid = vtiger_cntactivityrel.contactid
+			WHERE vtiger_crmentity.deleted=0 AND vtiger_activity.activityid > 0
+			AND vtiger_activity.activitytype NOT IN ('Emails','Task')
+			AND vtiger_invitees.inviteeid = ".$chauffeuruserId;
+
+			//vtiger_vehiculeactivityrel.vehiculeid,
+			//LEFT JOIN vtiger_vehiculeactivityrel ON vtiger_activity.activityid = vtiger_vehiculeactivityrel.activityid
+			$relatedModuleName = $relatedModule->getName();
+			
+			$query .= $this->getSpecificRelationQuery($relatedModuleName);
+			
+			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
+			
+			if ($nonAdminQuery) {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+			}
+		}
 	
+		else {
+			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
+		}
+		return $query;
+	}
+
 	/**
 	 * Function to get list view query for popup window
 	 * @param <String> $sourceModule Parent module
@@ -168,15 +207,10 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> Listview Query
 	 */
 	public function getQueryByModuleField($sourceModule, $field, $record, $listQuery) {
-		if ($sourceModule == 'MGTransports' && $record) {
-		
-		
-		
+		if ($sourceModule == 'MGTransports' && $record) {	
 				$joinusers = " INNER JOIN vtiger_users ON vtiger_users.id = vtiger_mgchauffeurs.userid";
 				$condition = "vtiger_users.status = 'Active'";
-			
-				//$condition = " vtiger_account.accountid != '$record'";
-			
+				//$condition = " vtiger_account.accountid != '$record'";			
 			$position = stripos($listQuery, 'where');
 			if($position) {
 				$split = spliti('where', $listQuery);
@@ -184,13 +218,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 			} else {
 				$overRideQuery = $listQuery. $joinusers . ' WHERE ' . $condition;
 			}
-			
-			return $overRideQuery;
-			
+			return $overRideQuery;	
 		}
-
 	}
-
-	
-
 }

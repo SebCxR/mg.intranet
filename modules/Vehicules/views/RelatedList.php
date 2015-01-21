@@ -45,6 +45,14 @@ class Vehicules_RelatedList_View extends Vtiger_Index_View {
 			$nextSortOrder = 'ASC';
 			$sortImage = 'icon-chevron-up';
 			}
+			else if ($relatedModuleName == "Events"){
+			$relationListView->set('orderby', 'date_start');
+			$relationListView->set('sortorder','DESC');
+			$orderBy = 'date_start';
+			$sortOrder = 'DESC';
+			$nextSortOrder = 'ASC';
+			$sortImage = 'icon-chevron-up';
+			}
 		}
 		$models = $relationListView->getEntries($pagingModel);
 		$links = $relationListView->getLinks();
