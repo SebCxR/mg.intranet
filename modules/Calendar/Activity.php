@@ -66,19 +66,19 @@ class Activity extends CRMEntity {
 	var $customFieldTable = Array('vtiger_activitycf', 'activityid');
 
 	// This is the list of vtiger_fields that are in the lists.
-	// here the related module in crmentityrel is Vehicule
+	// here the related module in crmentityrel is Vehicules
 	var $list_fields = Array(
 		'Close'=>Array('activity'=>'status'),
-		'Type'=>Array('activity'=>'activitytype'),
 		'Subject'=>Array('activity'=>'subject'),
-		'Related to'=>Array('seactivityrel'=>'parent_id'),
+		'Type'=>Array('activity'=>'activitytype'),
 		'Start Date'=>Array('activity'=>'date_start'),
 		'Start Time'=>Array('activity','time_start'),
+		'Related to'=>Array('seactivityrel'=>'parent_id'),		
 		'End Date'=>Array('activity'=>'due_date'),
 		'End Time'=>Array('activity','time_end'),
 		'Recurring Type'=>Array('recurringevents'=>'recurringtype'),
-		'Assigned To'=>Array('crmentity'=>'smownerid'),
 		'Contact Name'=>Array('contactdetails'=>'lastname'),
+		'Assigned To'=>Array('crmentity'=>'smownerid'),		
 		'Véhicules'=>Array('vehiculeactivityrel'=>'vehiculeid')
        );
 	var $list_fields_name = Array(
@@ -87,9 +87,8 @@ class Activity extends CRMEntity {
 		'Start Date & Time'=>'date_start',
 		'Recurring Type'=>'recurringtype',	
 		'Related to'=>'parent_id',
-		'Véhicules'=>'vehiculeid',
+		//'Véhicules'=>'vehiculeid',
 		'Type'=>'activitytype',
-		    
 		//'Assigned To'=>'assigned_user_id',
 		'Start Date'=>'date_start',
 		'Start Time'=>'time_start',

@@ -60,7 +60,7 @@
             <div class="row-fluid">
                 <span class="actions span6">&nbsp;
                     {if $MULTI_SELECT}
-                    {if !empty($LISTVIEW_ENTRIES)}<button class="select btn"><strong>{vtranslate('LBL_SELECT', $MODULE)}</strong></button>{/if}
+                    <button class="select btn"><strong>{vtranslate('LBL_SELECT', $MODULE)}</strong></button>
                 {/if}
             </span>
             <span class="span6">

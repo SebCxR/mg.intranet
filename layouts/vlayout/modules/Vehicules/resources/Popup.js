@@ -41,7 +41,16 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 			}
 		);		
 	},
-	
+	setSelectButton : function(){
+		var popupPageContainer = jQuery('#popupPageContainer');
+		var noOfEntries = popupPageContainer.find('input#noOfEntries').val();
+		if (noOfEntries > 0) {
+			popupPageContainer.find('div.popupPaging button.select').show();
+		}
+		else {
+			popupPageContainer.find('div.popupPaging button.select').hide();
+		}
+	},
 	disableBusyVehicules : function(){
 		var srcrcrd = (this.sourceRecord == false) ? this.getSourceRecord() : this.sourceRecord;
 		var popupPageContainer = jQuery('#popupPageContainer');
@@ -113,6 +122,7 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 					thisInstance.disableBusyVehicules();
 					thisInstance.setTextColorForColorTag();
 					thisInstance.setTextColorForBusyVehicule();
+					thisInstance.setSelectButton();
 					thisInstance.registerEventForListEntryValueLink();
 					progressIndicatorElement.progressIndicator({
 						'mode' : 'hide'
@@ -195,6 +205,7 @@ Vtiger_Popup_Js("Vehicules_Popup_Js",{
 		this.disableBusyVehicules();
 		this.setTextColorForColorTag();
 		this.setTextColorForBusyVehicule();
+		this.setSelectButton();
 		this.registerEventForListEntryValueLink();
 	}
 	

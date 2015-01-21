@@ -15,7 +15,7 @@ $languageStrings = array(
 	'LBL_ADD_TASK'                 => 'Ajouter tâche'                    , 
 	'LBL_ADD_EVENT'                => 'Ajouter activité'           , 
 	'LBL_RECORDS_LIST'             => 'Liste'                       , 
-	'LBL_EVENTS'                   => 'Evènements'                 , 
+	'LBL_EVENTS'                   => 'Activités'                 , 
 	'LBL_TODOS'                    => 'Tâches'                     , 
 	'LBL_CALENDAR_SETTINGS'        => 'Configuration du calendrier'           ,
 	'LBL_CALENDAR_SHARING'         => 'Partage du calendrier'            ,
@@ -32,7 +32,8 @@ $languageStrings = array(
 	'Activity Type'                => 'Type'                        , 
 	'Send Notification'            => 'Envoyer notification'        , 
 	'Location'                     => 'Localisation'                , 
-	'End Date & Time'              => 'Date et heure de fin'        , 
+	'End Date & Time'              => 'Date et heure de fin'        ,
+        'End Date &amp; Time'        => 'Date et heure de fin'      ,
 	'LBL_ACTIVITY_TYPES'           => 'Types d\'activité'              , 
 	'LBL_CONTACTS_SUPPORT_END_DATE' => 'Fin de support'              , 
 	'LBL_CONTACTS_BIRTH_DAY'       => 'Date de naissance'               , 
@@ -90,7 +91,7 @@ $languageStrings = array(
 	'Not Held'                     => 'N\'a pas eu lieu'            ,
         
         
-        'LBL_VEHICULE_ACTIVITIES_RELLIST' => 'Activités du véhicule.',
+        'LBL_VEHICULE_ACTIVITIES_RELLIST' => 'Activités',
 
 );
 $jsLanguageStrings = array(
