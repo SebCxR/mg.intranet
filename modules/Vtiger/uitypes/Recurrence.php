@@ -26,6 +26,23 @@ class Vtiger_Recurrence_UIType extends Vtiger_Date_UIType {
 		return 'uitypes/RecurrenceDetailView.tpl';
 	}
     
+	/**
+	 * Function to get the Display Value, for the current field type with given DB Insert Value
+	 * @param <Object> $value
+	 * @return <Object>
+	 */
+	public function getDisplayValue($value) {
+		if(empty($value)){
+			return $value;
+		} else {
+			$displayValue = vtranslate($value);
+		}
+
+		return $displayValue;
+		
+	}
+    
+    
     /**
 	 * Function to get the display value in edit view
 	 * @param $value
