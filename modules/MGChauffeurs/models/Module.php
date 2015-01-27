@@ -130,7 +130,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$numOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
-					"&view=Detail&record=".$row['crmid'] ;
+					"&view=Detail&record=".$row['trsprtid'] ;
 					
 			$temparray = array('modulename'=>'MGTransports',
 					'label'=>$row['subject'],

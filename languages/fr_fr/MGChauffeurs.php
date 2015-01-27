@@ -34,6 +34,7 @@ $languageStrings = array(
         'LBL_EDITUSER'=> 'Editer ce compte utilisateur',
         'LBL_SELECTUSER'=> 'Selectionner un compte utilisateur existant',
         'LBL_CLEARUSER'=> 'Effacer la selection',
+         'LBL_CONFLICT_WITH' => 'Ce chauffeur est pris ailleurs à la même date',
         'Start Date & Time' => 'Date de début',
         'Start Date &amp; Time'        => 'Date et heure de début'      ,
         
