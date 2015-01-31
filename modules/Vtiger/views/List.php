@@ -129,7 +129,6 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$pageNumber = '1';
 		}
 
-
 		$listViewModel = Vtiger_ListView_Model::getInstance($moduleName, $cvId);
 
 		$linkParams = array('MODULE'=>$moduleName, 'ACTION'=>$request->get('view'), 'CVID'=>$cvId);
@@ -142,6 +141,15 @@ class Vtiger_List_View extends Vtiger_Index_View {
 			$listViewModel->set('orderby', $orderBy);
 			$listViewModel->set('sortorder',$sortOrder);
 		}
+		//SG1501 trier par date pour les transports
+		elseif ($moduleName == "MGTransports") {
+			$listViewModel->set('orderby', 'datetransport');
+			$listViewModel->set('sortorder','DESC');
+			$orderBy = 'datetransport';
+			$sortOrder = 'DESC';
+			$nextSortOrder = 'ASC';
+			$sortImage = 'icon-chevron-up';
+			}		
 
 		$searchKey = $request->get('search_key');
 		$searchValue = $request->get('search_value');
