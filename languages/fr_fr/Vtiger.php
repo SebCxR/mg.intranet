@@ -23,7 +23,8 @@ $languageStrings = array(
 	'LBL_CANCEL'                   => 'Annuler'                     , 
 	'LBL_BACK'                     => 'Retour'                      , 
 	'LBL_IMPORT'                   => 'Importer'                    , 
-	'LBL_EXPORT'                   => 'Exporter'                    , 
+	'LBL_EXPORT'                   => 'Exporter'                    ,
+        'LBL_PRINT'                   => 'Imprimer'                    ,
 	'LBL_FIND_DUPLICATES'          => 'Trouver les doublons'        , 
 	'LBL_MORE'                     => 'Plus'                        , 
 	'LBL_ACTIONS'                  => 'Actions'                     , 
@@ -42,7 +43,7 @@ $languageStrings = array(
 	'LBL_CLEAR'                    => 'Effacer'                     , 
 	'LBL_YES'                      => 'Oui'                         , 
 	'LBL_NO'                       => 'Non'                         , 
-	'LBL_SHOW_COMPLETE_DETAILS'    => 'Compléter les détails'            , 
+	'LBL_SHOW_COMPLETE_DETAILS'    => 'Voir les détails'            , 
 	'LBL_MASS_EDITING'             => 'Edition en masse'                , 
 	'LBL_DESELECT_ALL_RECORDS'     => 'Desélectionner tous les enregistrements'        , 
 	'LBL_QUICK_CREATE'             => 'Création rapide : '            , 
@@ -353,9 +354,16 @@ $languageStrings = array(
 	'Open Tickets'                 => 'Tickets ouverts'                ,
 	'LBL_EXPORT_ALL_DATA'          => 'Exporter toutes les données', 
 	'LBL_EXPORT_DATA_IN_CURRENT_PAGE' => 'Exporter les données de la page courante', 
-	'LBL_EXPORT_SELECTED_RECORDS'  => 'Exporter les enregistrements sélectionnés'     , 
-	'LBL_EXPORT_RECORDS'           => 'Exporter les types d\'enregistrement', 
-	'LBL_NO_RECORD_SELECTED'       => 'Aucun enregistrement sélectionné.'         , 
+	'LBL_EXPORT_SELECTED_RECORDS'  => 'Exporter les enregistrements sélectionnés'     ,
+        'LBL_EXPORT_RECORDS'           => 'Exporter les types d\'enregistrement',
+        'LBL_PRINT_ALL_DATA'          => 'Imprimer toutes les données', 
+	'LBL_PRINT_DATA_IN_CURRENT_PAGE' => 'Imprimer les données de la page courante', 
+	'LBL_PRINT_SELECTED_RECORDS'  => 'Imprimer les enregistrements sélectionnés'     ,
+        
+	'LBL_PRINT_RECORDS'           => 'Impression de la liste d\'enregistrements', 
+	'LBL_NO_RECORD_SELECTED'       => 'Aucun enregistrement sélectionné.'
+        
+        , 
 	'LBL_CAN_NOT_REMOVE_DEFAULT_WIDGET' => 'Impossible de supprimer ce widget par défaut', 
 	'LBL_CUSTOM_VIEW_NAME_DUPLICATES_EXIST' => 'filtre déjà existant'       , 
 	'LBL_ADD_MANAGE_MODULES'       => 'Ajouter / Gérer Modules'        , 
@@ -647,11 +655,13 @@ $languageStrings = array(
 	'LBL_LAST_SAVED_ON' => 'Dernier enregistrement',
 	'Notebook' => 'Post-it',
 	
-	
+        'LBL_IGNORE_EMPTY_VALUES' =>'Ignorer les valeurs vides',
+	'LBL_ACTION' => 'Action',
 	'LBL_OPERATION_NOT_PERMITTED' => 'Operation non permise',
     'LBL_MERGE' => 'Fusion',
 	'LBL_MERGING_CRITERIA_SELECTION' => 'Sélection des critères de fusion',
 	'LBL_AVAILABLE_FIELDS' => 'Champs disponibles',
+        'LBL_MERGE' => 'Fusionner',
 	'LBL_MERGE_RECORDS_DESCRIPTION' => 'Le 1er enregistrement sera gardé après la fusion. Vous pouvez sélectionner une colonne pour garder les valeurs.
 										L\'autre enregistrement sera supprimé mais toutes ses informations liées seront fusionnées.',
 	'LBL_MERGE_RECORDS_IN' => 'Fusionner les enregistrements dans',
