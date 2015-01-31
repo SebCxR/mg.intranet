@@ -318,6 +318,15 @@ class Vtiger_Module_Model extends Vtiger_Module {
 	}
 
 	/**
+	 * Function to get the url for the Printlist action of the module
+	 * @return <String> - url
+	 */
+	public function getPrintListUrl() {
+		return 'index.php?module='.$this->get('name').'&view=PrintList';
+	}
+	
+	
+	/**
 	 * Function to get the url for the Find Duplicates action of the module
 	 * @return <String> - url
 	 */
