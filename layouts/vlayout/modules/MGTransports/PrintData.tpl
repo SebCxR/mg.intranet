@@ -16,9 +16,7 @@
 		<link rel="stylesheet" media="print" href="print.css" type="text/css">
 		<title>{'LBL_PRINT_REPORT'|@vtranslate:$MODULE}</title>
 	</head>
-	<body marginheight="0" marginwidth="0" leftmargin="0" topmargin="0" onLoad="JavaScript:window.print()">
-		{*var_dump ($PRINTLIST_HEADERS)}
-		{var_dump ($PRINTLIST_ENTRIES)*}
+	<body marginheight="0" marginwidth="0" leftmargin="0" topmargin="0" onLoad="JavaScript:window.print();window.location.href = 'index.php?module={$MODULE}&view=List'">
 		<table width="80%" border="0" cellpadding="5" cellspacing="0" align="center">
 			<tr>
 				<td align="left" valign="top" style="border:0px solid #000000;">
