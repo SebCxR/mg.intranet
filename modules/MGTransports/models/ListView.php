@@ -157,10 +157,30 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 					foreach($relatedTabs as $module => $infos){
 						$str = '';
 						foreach($relatedRecords[$recordId] as $row){
+							//SG1501
+							
+							
 							if($row['related_module'] == $module){
-								if($str)
-									$str .= '<br>';
-								$str .= $row['label'];
+								if ($module == 'Vehicules') {						
+									$vehicInstance = VTiger_Record_Model::getInstanceById($row['relcmrid'],$module);
+									$vname = $vehicInstance->get('vehicule_name');							
+									if ($vehicInstance->get('isrented')=='yes'  || $vehicInstance->get('isrented')=='1') {
+										
+									
+									$vowner = $vehicInstance->get('vehicule_owner');
+
+									$oname = getEntityName('Vendors',$vowner);
+									//var_dump($oname);
+									$vname .= vtranslate('LBL_VEHIC_ISRENTED_TO', $module) . $oname[$vowner];
+										//$vehicInstance->getDisplayValue('vehicule_owner');
+									}
+									if($str) $str .= '<br>';
+									$str .= $vname;
+								}
+								else {
+									if($str) $str .= '<br>';
+									$str .= $row['label'];
+								}
 							}
 						}
 						$record->set($infos['dest_field'], $str);

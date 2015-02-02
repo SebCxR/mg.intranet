@@ -25,6 +25,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	}
 
 	function postProcess(Vtiger_Request $request) {
+		
 		return false;
 	}
 	
@@ -85,8 +86,6 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 
 		$filteredEntries = array();
 		
-		//var_dump($rawEntries);
-		
 		switch($mode) {
 			case 'ExportAllData' :	return $rawEntries;			
 						break;
@@ -103,6 +102,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 							$currentPageEnd = $currentPageStart + $limit;
 							$index = 0;
 							foreach ($rawEntries as $recordId=>$recordData) {
+								
 								if (($index >= $currentPageStart) && ($index <= $currentPageEnd)) {									
 									$filteredEntries[$recordId] = $recordData;	
 								}
@@ -136,11 +136,16 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 
 		$listName = $this->getPrintListName($request);
 		$moduleName = $request->getModule();			
-
+		
+		$printMode = $request->get('printmode');
+		$viewer->assign('PRINTLIST_MODE', $printMode);
+		
 		$viewer->assign('REPORT_NAME', $listName);
+		$viewer->assign('PRINTLIST_HEADERS', $headers);
+		$viewer->assign('PRINTLIST_ENTRIES', $entries);
 		$viewer->assign('PRINT_DATA', $printData[0]);
 		$viewer->assign('MODULE', $moduleName);
-		$viewer->assign('ROW', $printData[1]);
+		$viewer->assign('ROW', count($entries));
 
 		$viewer->view('PrintData.tpl', $moduleName);
 	}
