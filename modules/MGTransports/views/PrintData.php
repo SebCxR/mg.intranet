@@ -24,8 +24,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		return false;
 	}
 
-	function postProcess(Vtiger_Request $request) {
-		
+	function postProcess(Vtiger_Request $request) {		
 		return false;
 	}
 	
@@ -33,8 +32,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	 * Function is called by the controller
 	 * @param Vtiger_Request $request
 	 */
-	function process(Vtiger_Request $request) {
-		
+	function process(Vtiger_Request $request) {		
 		$this->PrintData($request);
 	}
 
@@ -56,17 +54,11 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 			$listViewInstance->set('orderby', $orderBy);
 			$listViewInstance->set('sortorder',$sortOrder);
 		}
-		
-		
+				
 		$headers = $listViewInstance->getListViewHeaders();
 		$allEntries = $listViewInstance->getListViewEntries($pagingModel);
-		//SG15
-		//var_dump($headers);
-		//var_dump($allEntries);
-		$selectedEntries = $this->getFilteredEntries($request,$allEntries);
 		
-		//var_dump($selectedEntries);
-		//die();
+		$selectedEntries = $this->getFilteredEntries($request,$allEntries);
 		
 		$this->GetPrintList($request, $headers, $selectedEntries);
 	}
@@ -75,10 +67,9 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	 * Function that generates list of entries to be printed based on the mode
 	 * @param Vtiger_Request $request
 	 * @param Array $entries
-	 * @return <String> export query
+	 * @return <Array>  ( TransportId1=>TransportRecord1 , TransportId2=>TransportRecord2 , ... )
 	 */
-	function getFilteredEntries($request,$rawEntries) {
-				
+	function getFilteredEntries($request,$rawEntries) {				
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$mode = $request->getMode();
 		$cvId = $request->get('viewname');
@@ -119,8 +110,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 								foreach ($idList as $selectedkey) {
 									$filteredEntries[$selectedkey] = $rawEntries[$selectedkey];	
 								}
-							}
-							
+							}							
 							return $filteredEntries;
 						break;
 
@@ -129,17 +119,38 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		}
 	}
 	
+	/**
+	 * @param Vtiger_Request $request
+	 * @param Array $selectedentries
+	 * @return <Array> ("date_tranport1"=>BusyArray1 , "date_transport2"=>BusyArray2 , ... )
+	*/
+	function getBusyMGChauffeursArrays($entries) {
+		$busyarrays = array();		
+		foreach ($entries as $id => $record) {
+			$date = $record->get('datetransport');
+			
+			if (!array_key_exists($date,$busyarrays)) {
+				$modulemodel=Vtiger_Module_Model::getInstance('MGChauffeurs');
+				$busyarrays[$date] = $modulemodel->getBusyInActivityTypeArray($id);;				
+			}
+		}	
+		return $busyarrays;
+	}
+	 	
 	 //Function displays the report in printable format	 
 	function GetPrintList(Vtiger_Request $request, $headers, $entries) {
-		$printData = $this->getPrintListHTMLDataArray($request, $headers, $entries);		
+		$printData = $this->getPrintListDataArrayInHTML($request, $headers, $entries);		
 		$viewer = $this->getViewer($request);
 
 		$listName = $this->getPrintListName($request);
 		$moduleName = $request->getModule();			
 		
 		$printMode = $request->get('printmode');
-		$viewer->assign('PRINTLIST_MODE', $printMode);
 		
+		$busyArrays = $this->getBusyMGChauffeursArrays($entries);
+		
+		$viewer->assign('PRINTLIST_MODE', $printMode);
+		$viewer->assign('BUSY_MGCHAUFFEURS_ARRAYS',$busyArrays);
 		$viewer->assign('REPORT_NAME', $listName);
 		$viewer->assign('PRINTLIST_HEADERS', $headers);
 		$viewer->assign('PRINTLIST_ENTRIES', $entries);
@@ -150,25 +161,22 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		$viewer->view('PrintData.tpl', $moduleName);
 	}
 
-	//Function to get html template of printable list
-	function getPrintListHTMLDataArray($request, $headers, $entries) {
+	//Function to get html of printable list
+	function getPrintListDataArrayInHTML($request, $headers, $entries) {
 		$modname = $request->getModule();
 		$headertpl = "";
 		$valtpl = "";
 		foreach ($headers as $header) {
 			$headertpl .= '<td class="rptCellLabel">' . vtranslate($header->get('label'),$modname) . '</td>';			
-		}
-		
+		}		
 		foreach ($entries as $recordModel) {
 			$valtpl .= "<tr>";
 			foreach ($headers as $header) {
 				$headername = $header->get('name');
 				$valtpl .= "<td>" . $recordModel->get($headername). "</td>";
-			}
-			
+			}		
 			$valtpl .= "</tr><tr></tr>";
-		}
-		
+		}		
 		$sHTML = '<tr>'.$headertpl.'</tr>'.$valtpl;
 		$return_data[] = $sHTML;
 		$return_data[] = count($entries);
@@ -189,9 +197,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 				case 'ExportSelectedRecords' : $cvlabel = getSingleFieldValue('vtiger_customview','viewname','cvid',$cvId);
 							$translatedlbl = vtranslate("LBL_SELECTED_FROM",$modname) . ' '. vtranslate($cvlabel,$modname);
 							break;
-		}
-		
-		
+		}		
 		return $translatedlbl;
 	}
 	

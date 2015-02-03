@@ -42,6 +42,7 @@ $languageStrings = array(
         'LBL_DATETRANSPORT'  => 'Date' ,
         'LBL_SUBJECT'  => 'Nom' ,
         'LBL_CONTACT'  => 'Contact' ,
+        'LBL_BUSY_MGCHAUFFEURS_ARRAY' => 'Tableau d\'occupation des chauffeurs du '
 );
 
 ?>
