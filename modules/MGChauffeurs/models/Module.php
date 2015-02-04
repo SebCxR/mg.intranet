@@ -130,7 +130,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		for($i=0; $i<$numOfRows; $i++) {
 			$row = $db->query_result_rowdata($result, $i);
 			$transporthref = "index.php?module=MGTransports".
-					"&view=Detail&record=".$row['crmid'] ;
+					"&view=Detail&record=".$row['trsprtid'] ;
 					
 			$temparray = array('modulename'=>'MGTransports',
 					'label'=>$row['subject'],
@@ -158,6 +158,42 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		
 		return $busyList;	
 	}
+	
+	
+	// @param <int> $mgtransportId : id of the transport considered, needed to get the date
+	// a skiplist is defined in the function to skip activitytypes we don't want to appear in the return array
+	// returns array ("activitytype1"=>array(chauffeurid1=>chauffeurname1,chauffeurid2=>chauffeurname2,...),"activitytype2"=>array(chauffeurid1=>chauffeurname1,chauffeurid2=>chauffeurname2,...))
+
+	function getBusyInActivityTypeArray($mgtid) {
+	     $moduleName = $this->getName();
+	   
+	    $busylist = $this->getBusyList($mgtid);
+	    
+	    $activitytypes = Vtiger_Util_Helper::getPickListValues('activitytype');
+	    
+	    $skiplist = array('Call','Meeting');	    
+	    
+	    $output = array();
+				
+	    foreach ($activitytypes as $activitytype) {
+			if(!in_array($activitytype, $skiplist)) {	    				    
+				    $output[$activitytype]=array();				    
+				    foreach ($busylist as $mgcid => $activities) {						
+						$mgcInstance = VTiger_Record_Model::getInstanceById($mgcid,$moduleName);						
+						$mgcName = $mgcInstance->get('name');
+						
+						foreach ($activities  as $activityid => $activityinfo) {						
+						if ($activityinfo['type'] == $activitytype) {
+							    if (!$output[$activitytype][$mgcid]) $output[$activitytype][$mgcid] = $mgcName;
+						}						
+						}	    
+				    }	    				    
+			}			
+	    }
+	    return $output;
+	}
+
+	
 	public function getRelationQuery($recordId, $functionName, $relatedModule) {
 		
 		$relatedModuleName = $relatedModule->getName();

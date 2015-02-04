@@ -157,12 +157,13 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
             if($currentUserModel->get('default_record_view') === 'Detail') {
                 $selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
             } else{
-                if($moduleModel->isSummaryViewSupported()) {
+		//SG1501 Ajout de la condition sur requestMode pour avoir une concordance entre l'onglet selectionné et la vue effective
+                if($moduleModel->isSummaryViewSupported() && $request->get('requestMode')!='full') {
                     $selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_SUMMARY', $moduleName);
                 } else {
                     $selectedTabLabel = vtranslate('SINGLE_'.$moduleName, $moduleName).' '. vtranslate('LBL_DETAILS', $moduleName);
                 }
-            } 
+            }
         }
 
 		$viewer = $this->getViewer($request);
@@ -199,9 +200,11 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 	}
 
 	function showDetailViewByMode($request) {
+		$moduleName = $request->getModule();
+		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
 		$requestMode = $request->get('requestMode');
 		if($requestMode == 'full') {
-			return $this->showModuleDetailView($request);
+			 return $this->showModuleDetailView($request);
 		}
 		return $this->showModuleBasicView($request);
 	}

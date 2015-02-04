@@ -34,8 +34,15 @@ $languageStrings = array(
 	'PRODUCTS' => 'Articles',
         'LBL_UNKNOWN' => 'Non renseigné',
         'LBL_MAINCONTACT' => 'Contact principal',
-        'LBL_THERE_IS_NO'  => 'Aucun'                          ,
-
+        'LBL_THERE_IS_NO'  => 'Aucun' ,
+        'LBL_PRINT_REPORT'  => 'Impression Transports' ,
+        'LBL_RECORDS'  => 'transports' ,
+        'LBL_SELECTED_FROM'  => 'Extrait de :' ,
+        'LBL_PAGE_FROM'  => 'Extrait de :' ,
+        'LBL_DATETRANSPORT'  => 'Date' ,
+        'LBL_SUBJECT'  => 'Nom' ,
+        'LBL_CONTACT'  => 'Contact' ,
+        'LBL_BUSY_MGCHAUFFEURS_ARRAY' => 'Tableau d\'occupation des chauffeurs du '
 );
 
 ?>

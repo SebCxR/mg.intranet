@@ -37,7 +37,7 @@ class Vehicules_RelatedList_View extends Vtiger_Index_View {
 			$relationListView->set('orderby', $orderBy);
 			$relationListView->set('sortorder',$sortOrder);
 		}
-		else { if ($relatedModuleName == "MGTransports") {
+		elseif ($relatedModuleName == "MGTransports") {
 			$relationListView->set('orderby', 'datetransport');
 			$relationListView->set('sortorder','DESC');
 			$orderBy = 'datetransport';
@@ -45,15 +45,15 @@ class Vehicules_RelatedList_View extends Vtiger_Index_View {
 			$nextSortOrder = 'ASC';
 			$sortImage = 'icon-chevron-up';
 			}
-			else if ($relatedModuleName == "Events"){
+		else if ($relatedModuleName == "Events"){
 			$relationListView->set('orderby', 'date_start');
 			$relationListView->set('sortorder','DESC');
 			$orderBy = 'date_start';
 			$sortOrder = 'DESC';
 			$nextSortOrder = 'ASC';
 			$sortImage = 'icon-chevron-up';
-			}
 		}
+		
 		$models = $relationListView->getEntries($pagingModel);
 		$links = $relationListView->getLinks();
 		$header = $relationListView->getHeaders();

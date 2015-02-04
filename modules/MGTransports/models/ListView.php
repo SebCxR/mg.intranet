@@ -14,6 +14,57 @@
 class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 
 
+/*
+	 * Function to give advance links of a module
+	 *	@RETURN array of advanced links
+	 */
+	public function getAdvancedLinks(){
+		$moduleModel = $this->getModule();
+		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+		$advancedLinks = array();
+		$importPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Import');
+		if($importPermission && $createPermission) {
+			$advancedLinks[] = array(
+							'linktype' => 'LISTVIEW',
+							'linklabel' => 'LBL_IMPORT',
+							'linkurl' => $moduleModel->getImportUrl(),
+							'linkicon' => ''
+			);
+		}
+
+		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+		if($exportPermission) {
+			$advancedLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_EXPORT',
+					'linkurl' => 'javascript:Vtiger_List_Js.triggerExportAction("'.$this->getModule()->getExportUrl().'")',
+					'linkicon' => ''
+				);
+		}
+		$exportPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'Export');
+		if($exportPermission) {
+			$advancedLinks[] = array(
+					'linktype' => 'LISTVIEW',
+					'linklabel' => 'LBL_PRINT',
+					'linkurl' => 'javascript:Vtiger_List_Js.triggerPrintList("'.$this->getModule()->getPrintListUrl().'")',
+					'linkicon' => ''
+				);
+		}
+
+		$duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
+		if($duplicatePermission) {
+			$advancedLinks[] = array(
+				'linktype' => 'LISTVIEWMASSACTION',
+				'linklabel' => 'LBL_FIND_DUPLICATES',
+				'linkurl' => 'Javascript:Vtiger_List_Js.showDuplicateSearchForm("index.php?module='.$moduleModel->getName().
+								'&view=MassActionAjax&mode=showDuplicatesSearchForm")',
+				'linkicon' => ''
+			);
+		}
+
+		return $advancedLinks;
+	}
+
 	/**
 	 * Function to get the list view header
 	 * @return <Array> - List of Vtiger_Field_Model instances
@@ -100,15 +151,36 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 				else
 					$relatedRecords[$row['crmid']][] = $row;
 			}
+			
 			foreach($listViewRecordModels as $recordId => $record) {
 				if(array_key_exists($recordId, $relatedRecords)){
 					foreach($relatedTabs as $module => $infos){
 						$str = '';
 						foreach($relatedRecords[$recordId] as $row){
+							//SG1501
+							
+							
 							if($row['related_module'] == $module){
-								if($str)
-									$str .= '<br>';
-								$str .= $row['label'];
+								if ($module == 'Vehicules') {						
+									$vehicInstance = VTiger_Record_Model::getInstanceById($row['relcmrid'],$module);
+									$vname = $vehicInstance->get('vehicule_name');							
+									if ($vehicInstance->get('isrented')=='yes'  || $vehicInstance->get('isrented')=='1') {
+										
+									
+									$vowner = $vehicInstance->get('vehicule_owner');
+
+									$oname = getEntityName('Vendors',$vowner);
+									//var_dump($oname);
+									$vname .= vtranslate('LBL_VEHIC_ISRENTED_TO', $module) . $oname[$vowner];
+										//$vehicInstance->getDisplayValue('vehicule_owner');
+									}
+									if($str) $str .= '<br>';
+									$str .= $vname;
+								}
+								else {
+									if($str) $str .= '<br>';
+									$str .= $row['label'];
+								}
 							}
 						}
 						$record->set($infos['dest_field'], $str);
@@ -116,6 +188,7 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 				}
 			}
 		}
+		
 		return $listViewRecordModels;
 	}
 
