@@ -63,7 +63,7 @@
 					<div class="row-fluid" style="height:30px">
 						<div class="span6 textAlignRight row-fluid">
 							<div class="span8">{vtranslate('LBL_PRINT_MODE_0',$MODULE)}&nbsp;</div>
-							<div class="span3"><input type="radio" name="printmode" value="MGOldSchool" checked="checked"/></div>
+							<div class="span3"><input type="radio" name="printmode" value="LBL_PRINT_MODE_0" checked="checked"/></div>
 						</div>
 					</div>
 					<div class="row-fluid" style="height:30px">

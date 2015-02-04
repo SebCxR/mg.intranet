@@ -28,7 +28,7 @@
 	</tr>
 	<tr>
 		<td style="border:0px solid #000000;" colspan="2">
-		{if $PRINTLIST_MODE eq 'MGOldSchool'}
+		{if $PRINTLIST_MODE eq 'LBL_PRINT_MODE_0'}
 		{assign var=COLSPAN value=count($PRINTLIST_HEADERS)-3}
 		
 		<table width="100%" border="0" cellpadding="5" cellspacing="0" align="center" valign="bottom" class="printReport" >
