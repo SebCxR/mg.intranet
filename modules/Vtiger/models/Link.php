@@ -202,6 +202,7 @@ class Vtiger_Link_Model extends Vtiger_Link {
 			if($relationModel->isDirectRelation()){
 				$fieldList = $relatedModuleModel->getFields();
 				foreach($fieldList as $fieldName=>$fieldModel) {
+					
 					if($fieldModel->getFieldDataType() == Vtiger_Field_Model::REFERENCE_TYPE) {
 						$referenceList = $fieldModel->getReferenceList();
 						if(in_array($sourceModuleModel->get('name'), $referenceList)) {
