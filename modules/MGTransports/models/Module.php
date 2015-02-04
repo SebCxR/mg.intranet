@@ -30,6 +30,15 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 		return $parentQuickLinks;
 	}
 	
+	/**
+	 * Function to get the url for the Printlist action of the module
+	 * @return <String> - url
+	 */
+	public function getQuickPrintListUrl() {
+		return 'index.php?module='.$this->get('name').'&view=PrintData&source_module='.$this->get('name').'&mode=ExportAllData&printmode=LBL_PRINT_MODE_0';
+	}
+	
+		
 	/*
 	 * Function to get relation query for particular module with function name
 	 * @param <record> $recordId

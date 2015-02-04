@@ -50,7 +50,7 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 					'linkicon' => ''
 				);
 		}
-
+		/*
 		$duplicatePermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'DuplicatesHandling');
 		if($duplicatePermission) {
 			$advancedLinks[] = array(
@@ -61,10 +61,35 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 				'linkicon' => ''
 			);
 		}
-
+		*/
 		return $advancedLinks;
 	}
 
+	/*
+	 * Function to get Basic links
+	 * @return array of Basic links
+	 */
+	public function getBasicLinks(){
+		$basicLinks = array();
+		$moduleModel = $this->getModule();
+		$createPermission = Users_Privileges_Model::isPermitted($moduleModel->getName(), 'EditView');
+		if($createPermission) {
+			$basicLinks[] = array(
+					'linktype' => 'LISTVIEWBASIC',
+					'linklabel' => 'LBL_ADD_RECORD',
+					'linkurl' => $moduleModel->getCreateRecordUrl(),
+					'linkicon' => ''
+			);
+			$basicLinks[] = array(
+					'linktype' => 'LISTVIEWBASIC',
+					'linklabel' => 'LBL_QUICK_PRINT',
+					'linkurl' => 'javascript:Vtiger_List_Js.triggerQuickPrintList("'.$this->getModule()->getQuickPrintListUrl().'")',
+					'linkicon' => 'print.png'
+			);
+		}
+		return $basicLinks;
+	}
+	
 	/**
 	 * Function to get the list view header
 	 * @return <Array> - List of Vtiger_Field_Model instances

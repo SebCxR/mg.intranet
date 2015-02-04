@@ -408,6 +408,7 @@ jQuery.Class("Vtiger_List_Js",{
         }
         window.location.href = exportActionUrl;
 	},
+	
 	     /*
 	 * function to trigger print action
 	 * returns UI
@@ -432,6 +433,33 @@ jQuery.Class("Vtiger_List_Js",{
         }
         window.location.href = printListUrl;
 	},
+	
+	     /*
+	 * function to trigger quick print action.
+	 * Identical with triggerPrintList here but can be customised (maybe to change cvId ?)
+	 * returns UI
+	 */
+	triggerQuickPrintList :function(printListUrl){
+		var listInstance = Vtiger_List_Js.getInstance();
+		// Compute selected ids, excluded ids values, along with cvid value and pass as url parameters
+		var selectedIds = listInstance.readSelectedIds(true);
+		var excludedIds = listInstance.readExcludedIds(true);
+		var cvId = listInstance.getCurrentCvId();
+		var orderBy = jQuery('#orderBy').val();
+		var sortOrder = jQuery("#sortOrder").val();
+		var pageNumber = jQuery('#pageNumber').val();
+
+        printListUrl += '&selected_ids='+selectedIds+'&excluded_ids='+excludedIds+'&viewname='+cvId+'&page='+pageNumber+'&orderby='+orderBy+'&sortorder='+sortOrder;
+
+        var listViewInstance = Vtiger_List_Js.getInstance();
+        var searchValue = listViewInstance.getAlphabetSearchValue();
+
+		if((typeof searchValue != "undefined") && (searchValue.length > 0)) {
+            printListUrl += '&search_key='+listViewInstance.getAlphabetSearchField()+'&search_value='+searchValue+'&operator=s';
+        }
+        window.location.href = printListUrl;
+	},
+	
 	/**
 	 * Function to reload list
 	 */
