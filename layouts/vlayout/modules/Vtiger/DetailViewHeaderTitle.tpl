@@ -13,6 +13,9 @@
 	<span class="span10 margin0px">
 		<span class="row-fluid">
 			<span class="recordLabel font-x-x-large textOverflowEllipsis span pushDown" title="{$RECORD->getName()}">
+				{if $RECORD->get('uicolor')}
+					<div class="picklistvalue-uicolor" style="background-color:{$RECORD->get('uicolor')}">&nbsp;</div>
+				{/if}
 				{foreach item=NAME_FIELD from=$MODULE_MODEL->getNameFields()}{*$NAME_FIELD*}
 					{assign var=FIELD_MODEL value=$MODULE_MODEL->getField($NAME_FIELD)}
 					{if $FIELD_MODEL->getPermissions()}

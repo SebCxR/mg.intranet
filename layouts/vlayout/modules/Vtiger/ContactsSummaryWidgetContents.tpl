@@ -15,7 +15,7 @@
 			<ul class="unstyled">
 				<li>
 					<div class="row-fluid">
-						<div class="textOverflowEllipsis">
+						<div class="">
 							<a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('lastname')}">
 								{$RELATED_RECORD->getDisplayValue('lastname')}
 							</a>

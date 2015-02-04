@@ -1,3 +1,21 @@
 .clearfix {
 	clear: both;
 }
+
+/* ED150204 */
+/* carré de couleur */
+.picklistvalue-uicolor {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+	margin-bottom: 4px;
+	margin-right: 4px;
+	border-radius: 1px;
+}
+
+/* triangle d'alerte de surcharge d'occupation des véhicules ou chauffeurs */
+.listViewEntries .busyState .ui-icon {
+	display : inline-block;
+	vertical-align: bottom;
+}

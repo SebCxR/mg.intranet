@@ -119,40 +119,28 @@
 			    {if (($RELATED_HEADERNAME eq 'folderid')) && ($UICOLOR neq null) && ($UICOLOR neq '')}/* ED141018 TODO elargir 'folderid' */
 				style="background-color: {$UICOLOR};"
 			    {/if}>
-			    
                             {if $HEADER_FIELD->isNameField() eq true or $HEADER_FIELD->get('uitype') eq '4'}
-				{if ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs') and ($UICOLOR neq null) and ($UICOLOR neq '')}
-				<div class="colortag" data-color="{$RELATED_RECORD->get('uicolor')}" style="background-color : {$RELATED_RECORD->get('uicolor')}">
-				 {/if}
-                            <a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
-				{if ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs') and ($UICOLOR neq null) and ($UICOLOR neq '')}
-				</div>
-				 {/if}
+				{if $UICOLOR}
+					<div class="picklistvalue-uicolor" style="background-color:{$UICOLOR}">&nbsp;</div>
+				{/if}
+				<a href="{$RELATED_RECORD->getDetailViewUrl()}">{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME)}</a>
 				
                             {elseif $RELATED_HEADERNAME eq 'access_count'}
                                 {$RELATED_RECORD->getAccessCountValue($PARENT_RECORD->getId())}
 			    {elseif $RELATED_HEADERNAME eq 'full_vehicule_name'}
 			    
-						{if $RELATED_RECORD->get('calcolor')}
-							<div class="colortag" data-color="{$RELATED_RECORD->get('calcolor')}" style="background-color : {$RELATED_RECORD->get('calcolor')}">{$RELATED_RECORD->get('vehicule_name')} 
-							{if ($RELATED_RECORD->get('isrented') eq 'yes') or ($RELATED_RECORD->get('isrented') eq '1')}
-							{vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE->get('name'))} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
-							{/if}
-							</div>
-						{else}
-							{$RELATED_RECORD->get('vehicule_name')}
-							{if ($RELATED_RECORD->get('isrented') eq 'yes') or ($RELATED_RECORD->get('isrented') eq '1')}
-								{vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE->get('name'))} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
-							{/if}
-						{/if}
+				<div class="picklistvalue-uicolor" style="background-color:{$CALCOLOR}">&nbsp;</div>
+			
+				{$RELATED_RECORD->get('vehicule_name')}
+				{if ($RELATED_RECORD->get('isrented') eq 'yes') or ($RELATED_RECORD->get('isrented') eq '1')}
+					{vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE->get('name'))} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
+				{/if}
+				
 			    {elseif ($RELATED_HEADERNAME eq 'name') and ($RELATED_MODULE->get('name') eq 'MGChauffeurs')}
-			    
-						{if $RELATED_RECORD->get('uicolor')}
-							<div class="colortag" data-color="{$RELATED_RECORD->get('uicolor')}" style="background-color : {$RELATED_RECORD->get('uicolor')}">{$RELATED_RECORD->get('name')}
-							</div>
-						{else}
-							{$RELATED_RECORD->get('name')}
-						{/if}
+				{if $UICOLOR}
+				    <div class="picklistvalue-uicolor" style="background-color:{$UICOLOR}">&nbsp;</div>
+				{/if}
+				{$RELATED_RECORD->getDisplayValue($RELATED_HEADERNAME, false, $UNKNOWN_FIELD_RETURNS_VALUE)}
 						
                             {elseif $RELATED_HEADERNAME eq 'time_start'}
                             {elseif empty($UNKNOWN_FIELD_RETURNS_VALUE)}{*ED140907*}

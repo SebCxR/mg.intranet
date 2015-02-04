@@ -86,14 +86,14 @@
 		{assign var=CALCOLOR value=$LISTVIEW_ENTRY->get('calcolor')}
 		<tr class="listViewEntries" data-id='{$LISTVIEW_ENTRY->getId()}' data-recordUrl='{$LISTVIEW_ENTRY->getDetailViewUrl()}'
 		    id="{$MODULE}_listView_row_{$smarty.foreach.listview.index+1}">
-			<td  width="5%" class="{$WIDTHTYPE}" style="background-color: {$CALCOLOR};">
+			<td  width="5%" class="{$WIDTHTYPE}">
 				<input type="checkbox" value="{$LISTVIEW_ENTRY->getId()}" class="listViewEntriesCheckBox"/>
 			</td>
 			
 			{foreach item=LISTVIEW_HEADER from=$LISTVIEW_HEADERS}
 				{assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}			
 				{if ($LISTVIEW_HEADERNAME neq 'isrented' && $LISTVIEW_HEADERNAME neq 'vehicule_name' && $LISTVIEW_HEADERNAME neq 'vehicule_owner' && $LISTVIEW_HEADERNAME neq 'calcolor')}	
-					<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}" data-field-name="{$LISTVIEW_HEADER->getFieldName()}" nowrap>	
+					<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}" data-field-name="{$LISTVIEW_HEADER->getFieldName()}" nowrap>
 					{if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
 						<a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
 					{else if $LISTVIEW_HEADER->get('uitype') eq '72'}
@@ -104,20 +104,13 @@
 						{$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 						{/if}
 					{elseif $LISTVIEW_HEADERNAME eq 'full_vehicule_name'}
-						{if $LISTVIEW_ENTRY->get('calcolor')}
-							<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('calcolor')}" style="background-color : {$LISTVIEW_ENTRY->get('calcolor')}">{$LISTVIEW_ENTRY->get('vehicule_name')} 
-							{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
+						<div class="picklistvalue-uicolor" style="background-color:{$CALCOLOR}">&nbsp;</div>
+						{$LISTVIEW_ENTRY->get('vehicule_name')}
+						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
 							{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
-							{/if}
-							</div>
-						{else}
-							{$LISTVIEW_ENTRY->get('vehicule_name')}
-							{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
-								{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
-							{/if}
 						{/if}		
 					{else}
-					{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
+						{$LISTVIEW_ENTRY->getDisplayValue($LISTVIEW_HEADERNAME)}
 					{/if}				
 					</td>
 				{/if}

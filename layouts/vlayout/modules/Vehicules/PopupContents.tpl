@@ -98,17 +98,18 @@
 					
 				{elseif $LISTVIEW_HEADER_KEY eq 'full_vehicule_name'}
 					<td class="listViewEntryValue {$WIDTHTYPE}">			
-						<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('calcolor')}" style="background-color : {$LISTVIEW_ENTRY->get('calcolor')}">{$LISTVIEW_ENTRY->get('vehicule_name')} 
+						<div class="picklistvalue-uicolor colortag" style="background-color:{$LISTVIEW_ENTRY->get('calcolor')}" data-color="{$LISTVIEW_ENTRY->get('calcolor')}">&nbsp;</div>
+						{$LISTVIEW_ENTRY->get('vehicule_name')} 
 						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
-						{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
-						{/if}
-						</div>						
+							{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
+						{/if}						
 					</td>
 									
 				{else}
 					{assign var=LISTVIEW_HEADERNAME value=$LISTVIEW_HEADER->get('name')}
 					<td class="listViewEntryValue {$WIDTHTYPE}">						
-						{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}					
+						{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
+						{if ($LISTVIEW_HEADER_KEY eq 'tare') && (trim($LISTVIEW_ENTRY->get($LISTVIEW_HEADER_KEY)) neq "")} Kg{/if}
 					</td>
 				{/if}
 			{/if}

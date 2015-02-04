@@ -109,12 +109,14 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 				'id_field' => 'mgchauffeursid',
 				'label_field' => 'name',
 				'dest_field' => 'related_mgchauffeurs',
+				'uicolor_field' => 'uicolor',
 				),
 			'Vehicules'=> array(
 				'table' => 'vtiger_vehicules',
 				'id_field' => 'vehiculesid',
 				'label_field' => 'vehicule_name',
 				'dest_field' => 'related_vehicules',
+				'uicolor_field' => 'calcolor',
 				),
 		);
 		foreach($relatedTabs as $module => $infos){
@@ -123,7 +125,10 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 			";
 			$sql .= "SELECT '$module' AS related_module, IFNULL(related_left.relcrmid, related_right.crmid) AS crmid
 			, ". $infos['table'] . ".". $infos['id_field'] . " AS relcmrid , ". $infos['label_field'] . " AS label
+			, ". $infos['table'] . ".". $infos['uicolor_field'] . "
 			FROM ". $infos['table'] . "
+			"/*LEFT JOIN ". $infos['table'] . "cf
+				ON ". $infos['table'] . ".". $infos['id_field'] . " = ". $infos['table'] . "cf.". $infos['id_field'] . "*/."
 			LEFT JOIN vtiger_crmentityrel related_left
 				ON ". $infos['table'] . ".". $infos['id_field'] . " = related_left.crmid
 				AND related_left.relcrmid IN (" . generateQuestionMarks($ids) . ")
@@ -139,7 +144,8 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 		";
 		/*echo('<br><br><br><br>');
 		echo('<br><br><br><br>');
-		echo('<br><br><br><br>');*/
+		echo('<br><br><br><br>');
+		print_r("<pre>$sql</pre>");*/
 		
 		$result = $adb->pquery($sql, $params);
 		$noofrows = $adb->num_rows($result);
@@ -157,30 +163,39 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 					foreach($relatedTabs as $module => $infos){
 						$str = '';
 						foreach($relatedRecords[$recordId] as $row){
-							//SG1501
-							
 							
 							if($row['related_module'] == $module){
-								if ($module == 'Vehicules') {						
-									$vehicInstance = VTiger_Record_Model::getInstanceById($row['relcmrid'],$module);
-									$vname = $vehicInstance->get('vehicule_name');							
-									if ($vehicInstance->get('isrented')=='yes'  || $vehicInstance->get('isrented')=='1') {
-										
+								//SG1501
+								if($str) $str .= '<br>';
+								
+								//ED150204
+								$relatedInstance = VTiger_Record_Model::getInstanceById($row['relcmrid'],$module);
 									
-									$vowner = $vehicInstance->get('vehicule_owner');
-
-									$oname = getEntityName('Vendors',$vowner);
-									//var_dump($oname);
-									$vname .= vtranslate('LBL_VEHIC_ISRENTED_TO', $module) . $oname[$vowner];
-										//$vehicInstance->getDisplayValue('vehicule_owner');
+								$str .= '<a href="'
+									. $relatedInstance->getDetailViewUrl()
+									.'">';
+								
+								if($row['uicolor']){
+									$str .= '<div class="picklistvalue-uicolor" style="background-color:'. htmlentities($row['uicolor']) . '">&nbsp;</div>';
+								}
+								if ($module == 'Vehicules') {						
+									$vname = $relatedInstance->get('vehicule_name');							
+									if ($relatedInstance->get('isrented')=='yes'  || $relatedInstance->get('isrented')=='1') {
+										$vowner = $relatedInstance->get('vehicule_owner');
+	
+										$oname = getEntityName('Vendors',$vowner);
+										//var_dump($oname);
+										$vname .= vtranslate('LBL_VEHIC_ISRENTED_TO', $module) . $oname[$vowner];
+											//$vehicInstance->getDisplayValue('vehicule_owner');
 									}
-									if($str) $str .= '<br>';
 									$str .= $vname;
 								}
 								else {
-									if($str) $str .= '<br>';
-									$str .= $row['label'];
+									$str .= htmlentities($row['label']);
 								}
+								
+								$str .= '</a>';
+								
 							}
 						}
 						$record->set($infos['dest_field'], $str);
