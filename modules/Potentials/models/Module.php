@@ -250,8 +250,21 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 			}
 		} else {
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
+			if ($functionName === 'get_contacts') {
+				
+				// j'ai bien l'impression que c'est crade...
+				$query = preg_replace('/^SELECT\s/', 'SELECT DISTINCT ',
+					str_replace('inner join vtiger_contpotentialrel on vtiger_contpotentialrel.potentialid = vtiger_potential.potentialid inner join vtiger_contactdetails on vtiger_potential.contact_id = vtiger_contactdetails.contactid',
+						     'left join vtiger_contpotentialrel on vtiger_contpotentialrel.potentialid = vtiger_potential.potentialid
+							inner join vtiger_contactdetails on vtiger_potential.contact_id = vtiger_contactdetails.contactid
+								OR vtiger_contpotentialrel.contactid = vtiger_contactdetails.contactid
+					', $query));
+				/*echo_callstack();
+				var_dump($recordId, $functionName);
+				print_r("<pre>$query</pre>");*/
+			}
 		}
-
+			
 		return $query;
 	}
 	

@@ -703,8 +703,11 @@ $languageStrings = array(
 	'MGChauffeurs' => 'Chauffeurs',
 	'TRANSPORTS' => 'Transports',
 	'LBL_TRANSPORTS' => 'Transports',
+        'MGTransports' => 'Transports',
 	'EVENTS' => 'Activités',
+        'Events' => 'Activités',
 	'TASKS' => 'Tâches',
+	'LBL_FILTER_ISNOTRENTED' => 'Nos véhicules (non loués)',
 	
 );
 $jsLanguageStrings = array(

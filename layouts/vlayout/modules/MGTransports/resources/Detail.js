@@ -9,6 +9,7 @@
 
 Vtiger_Detail_Js("MGTransports_Detail_Js",{},{
 	
+	/* choisit la couleur du texte en fonction de la couleur du fond */
         setTextColorForColorTag : function(){
 		var listviewEntriesTable = jQuery('table.listViewEntriesTable');
 		

@@ -1319,12 +1319,13 @@ class Vtiger_Module_Model extends Vtiger_Module {
 			$queryGenerator = new QueryGenerator($relatedModuleName, $currentUser);
 			$queryGenerator->setFields($relatedListFields);
 			$selectColumnSql = $queryGenerator->getSelectClauseColumnSQL();
-			$newQuery = spliti('FROM ', $query); /* TODO regex */
-			$selectColumnSql = 'SELECT vtiger_crmentity.crmid,'.$selectColumnSql;
+			$newQuery = preg_split('/\sFROM\s/i', $query); /* TODO regex */
+			//ED150204 : conserve le DISTINCT si il existe
+			$selectColumnSql = (stripos($newQuery[0], 'SELECT DISTINCT ') !== FALSE ? 'SELECT DISTINCT ' : 'SELECT ')
+				. ' vtiger_crmentity.crmid,'.$selectColumnSql;
 			$newQuery[0] = $selectColumnSql.' '; /* ED141012 */
 			$query = implode('FROM ', $newQuery);
 		}
-
 		if ($nonAdminQuery) {
 			$query = appendFromClauseToQuery($query, $nonAdminQuery);
 		}

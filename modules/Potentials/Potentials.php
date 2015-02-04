@@ -200,10 +200,10 @@ class Potentials extends CRMEntity {
 		$log->debug("Entering get_contacts(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -232,13 +232,18 @@ class Potentials extends CRMEntity {
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
 							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
-		$query = 'select case when (vtiger_users.user_name not like "") then '.$userNameSql.' else vtiger_groups.groupname end as user_name,
+		/* ED150204 : DISTINCT + OR vtiger_potential.contact_id = vtiger_contactdetails.contactid
+		 * TODO jointure fausse
+		 */
+		$query = 'select DISTINCT case when (vtiger_users.user_name not like "") then '.$userNameSql.' else vtiger_groups.groupname end as user_name,
 					vtiger_contactdetails.accountid,vtiger_potential.potentialid, vtiger_potential.potentialname, vtiger_contactdetails.contactid,
 					vtiger_contactdetails.lastname, vtiger_contactdetails.firstname, vtiger_contactdetails.title, vtiger_contactdetails.department,
 					vtiger_contactdetails.email, vtiger_contactdetails.phone, vtiger_crmentity.crmid, vtiger_crmentity.smownerid,
-					vtiger_crmentity.modifiedtime , vtiger_account.accountname from vtiger_potential
-					inner join vtiger_contpotentialrel on vtiger_contpotentialrel.potentialid = vtiger_potential.potentialid
-					inner join vtiger_contactdetails on vtiger_contpotentialrel.contactid = vtiger_contactdetails.contactid
+					vtiger_crmentity.modifiedtime , vtiger_account.accountname
+					FROM vtiger_potential
+					left join vtiger_contpotentialrel on vtiger_contpotentialrel.potentialid = vtiger_potential.potentialid
+					inner join vtiger_contactdetails on vtiger_potential.contact_id = vtiger_contactdetails.contactid
+						OR vtiger_contpotentialrel.contactid = vtiger_contactdetails.contactid
 					INNER JOIN vtiger_contactaddress ON vtiger_contactdetails.contactid = vtiger_contactaddress.contactaddressid
 					INNER JOIN vtiger_contactsubdetails ON vtiger_contactdetails.contactid = vtiger_contactsubdetails.contactsubscriptionid
 					INNER JOIN vtiger_customerdetails ON vtiger_contactdetails.contactid = vtiger_customerdetails.customerid
@@ -248,9 +253,11 @@ class Potentials extends CRMEntity {
 					left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
 					left join vtiger_users on vtiger_crmentity.smownerid=vtiger_users.id
 					where vtiger_potential.potentialid = '.$id.' and vtiger_crmentity.deleted=0';
-
+		//print_r($query);
+		//echo_callstack();
 		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
-
+		//print_r($return_value);
+		
 		if($return_value == null) $return_value = Array();
 		$return_value['CUSTOM_BUTTON'] = $button;
 

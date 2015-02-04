@@ -93,23 +93,20 @@
 					<td class="listViewEntryValue {$WIDTHTYPE}" data-field-type="{$LISTVIEW_HEADER->getFieldDataType()}" data-field-name="{$LISTVIEW_HEADER->getFieldName()}" nowrap>	
 					{if $LISTVIEW_HEADER->isNameField() eq true or $LISTVIEW_HEADER->get('uitype') eq '4'}
 						<a href="{$LISTVIEW_ENTRY->getDetailViewUrl()}">{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}</a>
-						{else if $LISTVIEW_HEADER->get('uitype') eq '72'}
+					{else if $LISTVIEW_HEADER->get('uitype') eq '72'}
 						{assign var=CURRENCY_SYMBOL_PLACEMENT value={$CURRENT_USER_MODEL->get('currency_symbol_placement')}}
 						{if $CURRENCY_SYMBOL_PLACEMENT eq '1.0$'}
-						{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
+							{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}{$LISTVIEW_ENTRY->get('currencySymbol')}
 						{else}
-						{$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
+							{$LISTVIEW_ENTRY->get('currencySymbol')}{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 						{/if}
-						{else if $LISTVIEW_HEADERNAME eq 'colored_name'}
+					{else if $LISTVIEW_HEADERNAME eq 'colored_name'}
 						{if $LISTVIEW_ENTRY->get('uicolor')}
-							<div class="colortag" data-color="{$LISTVIEW_ENTRY->get('uicolor')}" style="background-color : {$LISTVIEW_ENTRY->get('uicolor')}">{$LISTVIEW_ENTRY->get('name')}
-							</div>
-						{else}
-							{$LISTVIEW_ENTRY->get('name')}
-
-						{/if}		
+							 <div class="picklistvalue-uicolor" style="background-color:{$LISTVIEW_ENTRY->get('uicolor')}">&nbsp;</div>
+						{/if}
+						{$LISTVIEW_ENTRY->get('name')}
 					{else}
-					{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
+						{$LISTVIEW_ENTRY->get($LISTVIEW_HEADERNAME)}
 					{/if}				
 					</td>
 				{/if}

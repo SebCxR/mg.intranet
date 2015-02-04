@@ -14,6 +14,7 @@
 		<tr class="listViewEntries {if $BUSYLIST[$VEHICULEID]} inBusyConflict{/if}" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 			<td class="span3 textOverflowEllipsis" nowrap>
 			    <a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="Tel : {$RELATED_RECORD->getDisplayValue('phone_mobile')}">
+				<div class="picklistvalue-uicolor" style="background-color:{$RELATED_RECORD->get('uicolor')}">&nbsp;</div>
 				{$RELATED_RECORD->getDisplayValue('name')}
 			    </a>
 			</td>

@@ -62,10 +62,13 @@
 				<div class="widgetContainer_products" data-url="{$PRODUCT_WIDGET_MODEL->getUrl()}" data-name="{$PRODUCT_WIDGET_MODEL->getLabel()}">
 					<div class="widget_header row-fluid">
 						<input type="hidden" name="relatedModule" value="{$PRODUCT_WIDGET_MODEL->get('linkName')}" />
-						<span class="span9 margin0px"><h4>{vtranslate($PRODUCT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
-						<span class="span3">
+						<span class="span5 margin0px"><h4>{vtranslate($PRODUCT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
+						<span class="span7">
 							<span class="pull-right">
 								{if $PRODUCT_WIDGET_MODEL->get('action')}
+									<button class="btn addButton selectRecord" type="button" data-url="{$PRODUCT_WIDGET_MODEL->get('selectURL')}">
+										<strong>{vtranslate('LBL_SELECT',$MODULE_NAME)}</strong>
+									</button>&nbsp;
 									<button class="btn addButton createRecord" type="button" data-url="{$PRODUCT_WIDGET_MODEL->get('actionURL')}">
 										<strong>{vtranslate('LBL_ADD',$MODULE_NAME)}</strong>
 									</button>
@@ -92,11 +95,15 @@
 			<div class="summaryWidgetContainer">
 				<div class="widgetContainer_contacts" data-url="{$CONTACT_WIDGET_MODEL->getUrl()}" data-name="{$CONTACT_WIDGET_MODEL->getLabel()}">
 					<div class="widget_header row-fluid">
-						<input type="hidden" name="relatedModule" value="{$CONTACT_WIDGET_MODEL->get('linkName')}" />
-						<span class="span9 margin0px"><h4>{vtranslate($CONTACT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
-						<span class="span3">
+						<input type="hidden" class="relatedModuleName" name="relatedModule" value="{$CONTACT_WIDGET_MODEL->get('linkName')}" />
+						
+						<span class="span5 margin0px"><h4>{vtranslate($CONTACT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
+						<span class="span7">
 							<span class="pull-right">
 								{if $CONTACT_WIDGET_MODEL->get('action')}
+									<button class="btn addButton selectRelation" type="button" data-url="{$CONTACT_WIDGET_MODEL->get('selectURL')}">
+										<strong>{vtranslate('LBL_SELECT',$MODULE_NAME)}</strong>
+									</button>&nbsp;
 									<button class="btn addButton createRecord" type="button" data-url="{$CONTACT_WIDGET_MODEL->get('actionURL')}">
 										<strong>{vtranslate('LBL_ADD',$MODULE_NAME)}</strong>
 									</button>
@@ -117,10 +124,13 @@
 				<div class="widgetContainer_documents" data-url="{$DOCUMENT_WIDGET_MODEL->getUrl()}" data-name="{$DOCUMENT_WIDGET_MODEL->getLabel()}">
 					<div class="widget_header row-fluid">
 						<input type="hidden" name="relatedModule" value="{$DOCUMENT_WIDGET_MODEL->get('linkName')}" />
-						<span class="span9 margin0px"><h4>{vtranslate($DOCUMENT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
-						<span class="span3">
+						<span class="span5 margin0px"><h4>{vtranslate($DOCUMENT_WIDGET_MODEL->getLabel(),$MODULE_NAME)}</h4></span>
+						<span class="span7">
 							<span class="pull-right">
 								{if $DOCUMENT_WIDGET_MODEL->get('action')}
+									<button class="btn addButton selectRecord" type="button" data-url="{$CONTACT_WIDGET_MODEL->get('selectURL')}">
+										<strong>{vtranslate('LBL_SELECT',$MODULE_NAME)}</strong>
+									</button>&nbsp;
 									<button class="btn pull-right addButton createRecord" type="button" data-url="{$DOCUMENT_WIDGET_MODEL->get('actionURL')}">
 										<strong>{vtranslate('LBL_ADD',$MODULE_NAME)}</strong>
 									</button>

@@ -13,6 +13,7 @@
 		
 		<tr class="listViewEntries {if $BUSYLIST[$VEHICULEID]} inBusyConflict{/if}" data-id='{$RELATED_RECORD->getId()}' data-recordUrl='{$RELATED_RECORD->getDetailViewUrl()}'>
 			<td class="span3 textOverflowEllipsis" nowrap>
+				<div class="picklistvalue-uicolor" style="background-color:{$RELATED_RECORD->get('calcolor')}">&nbsp;</div>
 				<a href="{$RELATED_RECORD->getDetailViewUrl()}" id="{$MODULE}_{$RELATED_MODULE}_Related_Record_{$RELATED_RECORD->get('id')}" title="{$RELATED_RECORD->getDisplayValue('vehicule_name')}">
 					{$RELATED_RECORD->getDisplayValue('vehicule_name')}
 					{if $RELATED_RECORD->get('isrented') eq '1'} {vtranslate('LBL_VEHIC_ISRENTED_TO', $RELATED_MODULE)} {$RELATED_RECORD->getDisplayValue('vehicule_owner')}
@@ -20,17 +21,17 @@
 				</a>
 			</td>
 			{if $BUSYLIST[$VEHICULEID]}				
-						<td class="span3 rowfluid busyState">
-						    
-							<span class="ui-icon ui-icon-alert" title="{vtranslate('LBL_CONFLICT_WITH', {$RELATED_MODULE})}"></span>
-							{foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$VEHICULEID] name=eventinfolist}
-							
-							<a href='{$EVENTINFO['href']}' title='{vtranslate($EVENTINFO['type'], $EVENTINFO['modulename'])}' style='color: red'>{$EVENTINFO['label']}
-							    {if $smarty.foreach.eventinfolist.last}. {else}, {/if}
-							</a>
-							
-							{/foreach}
-						</td>
+			    <td class="span3 rowfluid busyState">
+				
+				    <span class="ui-icon ui-icon-alert" title="{vtranslate('LBL_CONFLICT_WITH', {$RELATED_MODULE})}"></span>
+				    {foreach key=EVENTID item=EVENTINFO from=$BUSYLIST[$VEHICULEID] name=eventinfolist}
+				    
+				    <a href='{$EVENTINFO['href']}' title='{vtranslate($EVENTINFO['type'], $EVENTINFO['modulename'])}' style='color: red'>{$EVENTINFO['label']}
+					{if $smarty.foreach.eventinfolist.last}. {else}, {/if}
+				    </a>
+				    
+				    {/foreach}
+			    </td>
 			{else}
 			<td class="span3">
 				
