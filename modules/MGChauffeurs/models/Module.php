@@ -167,7 +167,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 	function getBusyInActivityTypeArray($mgtid) {
 	     $moduleName = $this->getName();
 	   
-	    $busylist = $this->getBusyList($mgtid);
+	    $busylist = $this->getBusyListOnEvents($mgtid);
 	    
 	    $activitytypes = Vtiger_Util_Helper::getPickListValues('activitytype');
 	    
