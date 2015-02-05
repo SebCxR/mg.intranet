@@ -190,8 +190,11 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 		$orderBy = $this->getForSql('orderby');
 		$sortOrder = $this->getForSql('sortorder');
-		if($orderBy) {
-
+		if($orderBy) {			
+			//SG1502 manage full_vehicule_name for sorting 
+			if ($orderBy == 'full_vehicule_name') {
+				$orderBy = 'vehicule_name';
+			}		
 			$orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);
 			if($orderByFieldModuleModel && $orderByFieldModuleModel->isReferenceField()) {
 				//If reference field then we need to perform a join with crmentity with the related to field
@@ -207,7 +210,7 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			} elseif($orderByFieldModuleModel && $orderByFieldModuleModel->isOwnerField()) {
 				$query .= ' ORDER BY CONCAT(vtiger_users.first_name, " ", vtiger_users.last_name) '.$sortOrder;
 			} else {
-				// Qualify the the column name with table to remove ambugity
+				// Qualify the column name with table to remove ambugity
 				$qualifiedOrderBy = $orderBy;
 				$orderByField = $relationModule->getFieldByColumn($orderBy);
 				if ($orderByField) {
