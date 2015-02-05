@@ -708,6 +708,7 @@ $languageStrings = array(
         'Events' => 'Activités',
 	'TASKS' => 'Tâches',
 	'LBL_FILTER_ISNOTRENTED' => 'Nos véhicules (non loués)',
+	'Is Converted From Lead' => 'Fiche issue d\'un prospect'
 	
 );
 $jsLanguageStrings = array(
