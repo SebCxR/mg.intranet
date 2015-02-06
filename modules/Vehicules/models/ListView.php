@@ -22,7 +22,10 @@ class Vehicules_ListView_Model extends Vtiger_ListView_Model {
 		$field1 = new Vtiger_Field_Model();
 		
 		$field1->set('name', 'full_vehicule_name');
-		$field1->set('column', 'full_vehicule_name');
+		
+		//"column" is used for orderby in query
+		$field1->set('column', 'vehicule_name');
+		
 		$field1->set('label', 'LBL_VEHIC_POPUP_NAME_HEADER');
 
 		$temp['full_vehicule_name'] = $field1;

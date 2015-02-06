@@ -24,7 +24,10 @@ class MGChauffeurs_ListView_Model extends Vtiger_ListView_Model {
 		$field1 = new Vtiger_Field_Model();
 		
 		$field1->set('name', 'colored_name');
-		$field1->set('column', 'colored_name');
+		
+		// 'column' is the name used for orderby query
+		$field1->set('column', 'name');
+		
 		$field1->set('label', 'LBL_CHAUFFEUR_COLORED_NAME_HEADER');
 
 		$temp['colored_name'] = $field1;
