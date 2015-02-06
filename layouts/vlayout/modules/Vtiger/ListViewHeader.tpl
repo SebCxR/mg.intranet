@@ -35,7 +35,7 @@
 					{foreach item=LISTVIEW_BASICACTION from=$LISTVIEW_LINKS['LISTVIEWBASIC']}
 						<span class="btn-group">
 							<button id="{$MODULE}_listView_basicAction_{Vtiger_Util_Helper::replaceSpaceWithUnderScores($LISTVIEW_BASICACTION->getLabel())}"
-								class="btn addButton"
+								class="btn addButton" title="{vtranslate('LBL_CREATE_NEW_RECORD', $MODULE)}"
 								{if stripos($LISTVIEW_BASICACTION->getUrl(), 'javascript:')===0}
 								onclick='{$LISTVIEW_BASICACTION->getUrl()|substr:strlen("javascript:")};'
 								{else} onclick='window.location.href="{$LISTVIEW_BASICACTION->getUrl()}"'{/if}>
