@@ -36,6 +36,7 @@ $languageStrings = array(
         'LBL_BUILDING_VEHICULES_LIST' => 'Constitution de la liste des véhicules : ',
         'LBL_THERE_IS_NO'  => 'Aucun',
         'LBL_FULL_VEHICULE_NAME' => 'Véhicule',
+        'LBL_ADD_RECORD'               => 'Nouveau véhicule'                   ,
 );
 
 ?>

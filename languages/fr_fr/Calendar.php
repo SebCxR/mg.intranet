@@ -12,8 +12,8 @@
  ******************************************************************/
 $languageStrings = array(
 	'SINGLE_Calendar'              => 'Tâche'                      , 
-	'LBL_ADD_TASK'                 => 'Ajouter tâche'                    , 
-	'LBL_ADD_EVENT'                => 'Ajouter activité'           , 
+	'LBL_ADD_TASK'                 => 'Nouvelle tâche'                    , 
+	'LBL_ADD_EVENT'                => 'Nouvelle activité'           , 
 	'LBL_RECORDS_LIST'             => 'Liste'                       , 
 	'LBL_EVENTS'                   => 'Activités'                 , 
 	'LBL_TODOS'                    => 'Tâches'                     , 

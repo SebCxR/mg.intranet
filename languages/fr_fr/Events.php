@@ -13,7 +13,7 @@
 $languageStrings = array(
 	'Events'                       => 'Activités'                  , 
 	'SINGLE_Events'                => 'Activité'                  , 
-	'LBL_ADD_RECORD'               => 'Ajouter activité'                   , 
+	'LBL_ADD_RECORD'               => 'Nouvelle activité'                   , 
 	'LBL_RECORDS_LIST'             => 'Liste des activités'                   , 
 	'LBL_EVENTS'                   => 'Activités'                  , 
 	'LBL_TODOS'                    => 'Tâche'                      , 

@@ -11,6 +11,7 @@
 $languageStrings = array(
 	'MGChauffeurs' => 'Chauffeurs',
 	'SINGLE_MGChauffeurs' => 'Chauffeur',
+        'LBL_ADD_RECORD' => 'Nouveau chauffeur'                   ,
 	'LBL_BLOCK_GENERAL_INFORMATION' => 'Général',
 	'LBL_BLOCK_SYSTEM_INFORMATION' => 'Informations système',
 	'LBL_NAME' => 'Nom',
