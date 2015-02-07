@@ -40,7 +40,7 @@ class Vtiger_RelatedList_View extends Vtiger_Index_View {
 		$links = $relationListView->getLinks();
 		$header = $relationListView->getHeaders();
 		$noOfEntries = count($models);
-
+		
 		$relationModel = $relationListView->getRelationModel();
 		$relatedModuleModel = $relationModel->getRelationModuleModel();
 		$relationField = $relationModel->getRelationField();

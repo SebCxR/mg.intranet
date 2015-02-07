@@ -29,20 +29,21 @@ Class Vtiger_Edit_View extends Vtiger_Index_View {
 		$viewer = $this->getViewer ($request);
 		$moduleName = $request->getModule();
 		$record = $request->get('record');
-        if(!empty($record) && $request->get('isDuplicate') == true) {
-            $recordModel = $this->record?$this->record:Vtiger_Record_Model::getInstanceById($record, $moduleName);
-            $viewer->assign('MODE', '');
-        }else if(!empty($record)) {
-            $recordModel = $this->record?$this->record:Vtiger_Record_Model::getInstanceById($record, $moduleName);
-            $viewer->assign('RECORD_ID', $record);
-            $viewer->assign('MODE', 'edit');
-        } else {
-            $recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
-            $viewer->assign('MODE', '');
-        }
-        if(!$this->record){
-            $this->record = $recordModel;
-        }
+		if(!empty($record) && $request->get('isDuplicate') == true) {
+			$recordModel = $this->record ? $this->record : Vtiger_Record_Model::getInstanceById($record, $moduleName);
+			$viewer->assign('IS_DUPLICATE_FROM', $record);
+			$viewer->assign('MODE', '');
+		}else if(!empty($record)) {
+			$recordModel = $this->record?$this->record:Vtiger_Record_Model::getInstanceById($record, $moduleName);
+			$viewer->assign('RECORD_ID', $record);
+			$viewer->assign('MODE', 'edit');
+		} else {
+			$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+			$viewer->assign('MODE', '');
+		}
+		if(!$this->record){
+			$this->record = $recordModel;
+		}
         
 		$moduleModel = $recordModel->getModule();
 		$fieldList = $moduleModel->getFields();

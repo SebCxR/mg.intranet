@@ -275,10 +275,10 @@ class Potentials extends CRMEntity {
 		$log->debug("Entering get_activities(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/Activity.php");
 		$other = new Activity();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -345,10 +345,10 @@ class Potentials extends CRMEntity {
 		$log->debug("Entering get_products(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -496,10 +496,10 @@ class Potentials extends CRMEntity {
 		$log->debug("Entering get_quotes(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -553,10 +553,10 @@ class Potentials extends CRMEntity {
 		$log->debug("Entering get_salesorder(".$id.") method ...");
 		$this_module = $currentModule;
 
-        $related_module = vtlib_getModuleNameById($rel_tab_id);
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
 		require_once("modules/$related_module/$related_module.php");
 		$other = new $related_module();
-        vtlib_setup_modulevars($related_module, $other);
+		vtlib_setup_modulevars($related_module, $other);
 		$singular_modname = vtlib_toSingular($related_module);
 
 		$parenttab = getParentTab();
@@ -603,6 +603,53 @@ class Potentials extends CRMEntity {
 		return $return_value;
 	}
 
+	
+	/* ED150207
+	  * Function to get Potential related MGTransports
+	  * @param  integer   $id  - potentialid
+	  * returns related MGTransports record in array format
+	  */
+	function get_mgtransports($id, $cur_tab_id, $rel_tab_id, $actions=false) {
+		global $log, $singlepane_view,$currentModule,$current_user;
+		$log->debug("Entering get_mgtransports(".$id.") method ...");
+		$this_module = $currentModule;
+
+		$related_module = vtlib_getModuleNameById($rel_tab_id);
+		require_once("modules/$related_module/$related_module.php");
+		$other = new $related_module();
+		vtlib_setup_modulevars($related_module, $other);
+		$singular_modname = vtlib_toSingular($related_module);
+
+		$parenttab = getParentTab();
+
+		if($singlepane_view == 'true')
+			$returnset = '&return_module='.$this_module.'&return_action=DetailView&return_id='.$id;
+		else
+			$returnset = '&return_module='.$this_module.'&return_action=CallRelatedList&return_id='.$id;
+
+		$button = '';
+
+		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>
+							'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
+		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name,
+					vtiger_crmentity.*, vtiger_mgtransports.*
+					FROM vtiger_potential
+					inner join vtiger_mgtransports on vtiger_potential.potentialid=vtiger_mgtransports.potentialid
+					inner join vtiger_crmentity on vtiger_crmentity.crmid=vtiger_mgtransports.mgtransportsid
+					left join vtiger_groups on vtiger_groups.groupid=vtiger_crmentity.smownerid
+					left join vtiger_users on vtiger_users.id=vtiger_crmentity.smownerid
+					where vtiger_crmentity.deleted=0
+					and vtiger_potential.potentialid=".$id;
+
+		$return_value = GetRelatedList($this_module, $related_module, $other, $query, $button, $returnset);
+		if($return_value == null) $return_value = Array();
+		$return_value['CUSTOM_BUTTON'] = $button;
+
+		$log->debug("Exiting get_mgtransports method ...");
+		return $return_value;
+	}
+
+	
 	/**
 	 * Move the related records of the specified list of id's to the given record.
 	 * @param String This module name
