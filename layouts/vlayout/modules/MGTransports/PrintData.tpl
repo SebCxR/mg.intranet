@@ -100,34 +100,45 @@
 					{/if}
 				{/foreach}
 				</tr>
-				{if $PRINTLIST_ENTRY@last && $CHAUFFEURS_EXISTS}
-					<tr class="busy-chauffeurs">
-					<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">
-						<table width="100%" border="1" cellpadding="5" cellspacing="0" align="center" valign="bottom">
-						<caption style="caption-side:top">{'LBL_BUSY_MGCHAUFFEURS_ARRAY'|@vtranslate:$MODULE}{$ENTRY_DATE}</caption>
-						<thead>
-							<tr>
-							{foreach item=MGCHAUFFEURS key=ACTIVITY_TYPE from=$BUSY_MGCHAUFFEURS_ARRAYS[$ENTRY_DATE]}
-								<th>
-								{$ACTIVITY_TYPE}
-								</th>
-							{/foreach}
-							</tr>	
-						</thead>
-						<tbody>
-						<tr>
-						{foreach item=MGCHAUFFEURS key=ACTIVITY_TYPE from=$BUSY_MGCHAUFFEURS_ARRAYS[$ENTRY_DATE]}	
-							<td>
+				{if $PRINTLIST_ENTRY@last}
+					{if !$CHAUFFEURS_EXISTS}
+						{foreach item=MGCHAUFFEURS key=ACTIVITY_TYPE from=$BUSY_MGCHAUFFEURS_ARRAYS[$PREVIOUS_DATE]}	
 							{foreach item=MGCHAUFFEUR from=$MGCHAUFFEURS}
-								{$MGCHAUFFEUR} <br/>
+								{assign var=CHAUFFEURS_EXISTS value=true}
+								{break}
 							{/foreach}
-							</td>
-						{/foreach}	
+							{if $CHAUFFEURS_EXISTS}{break}{/if}
+						{/foreach}
+					{/if}
+					{if $CHAUFFEURS_EXISTS}
+						<tr class="busy-chauffeurs">
+						<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">
+							<table width="100%" border="1" cellpadding="5" cellspacing="0" align="center" valign="bottom">
+							<caption style="caption-side:top">{'LBL_BUSY_MGCHAUFFEURS_ARRAY'|@vtranslate:$MODULE}{$ENTRY_DATE}</caption>
+							<thead>
+								<tr>
+								{foreach item=MGCHAUFFEURS key=ACTIVITY_TYPE from=$BUSY_MGCHAUFFEURS_ARRAYS[$ENTRY_DATE]}
+									<th>
+									{$ACTIVITY_TYPE}
+									</th>
+								{/foreach}
+								</tr>	
+							</thead>
+							<tbody>
+							<tr>
+							{foreach item=MGCHAUFFEURS key=ACTIVITY_TYPE from=$BUSY_MGCHAUFFEURS_ARRAYS[$ENTRY_DATE]}	
+								<td>
+								{foreach item=MGCHAUFFEUR from=$MGCHAUFFEURS}
+									{$MGCHAUFFEUR} <br/>
+								{/foreach}
+								</td>
+							{/foreach}	
+							</tr>
+							</tbody>						
+							</table>
+						</td>
 						</tr>
-						</tbody>						
-						</table>
-					</td>
-					</tr>
+					{/if}
 				{/if}
 				{assign var=PREVIOUS_DATE value=$ENTRY_DATE}
 			{/foreach}		

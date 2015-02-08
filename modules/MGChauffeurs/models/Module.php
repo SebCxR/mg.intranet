@@ -165,31 +165,34 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 	// returns array ("activitytype1"=>array(chauffeurid1=>chauffeurname1,chauffeurid2=>chauffeurname2,...),"activitytype2"=>array(chauffeurid1=>chauffeurname1,chauffeurid2=>chauffeurname2,...))
 
 	function getBusyInActivityTypeArray($mgtid) {
-	     $moduleName = $this->getName();
-	   
-	    $busylist = $this->getBusyListOnEvents($mgtid);
-	    
-	    $activitytypes = Vtiger_Util_Helper::getPickListValues('activitytype');
-	    
-	    $skiplist = array('Call','Meeting');	    
-	    
-	    $output = array();
-				
-	    foreach ($activitytypes as $activitytype) {
-			if(!in_array($activitytype, $skiplist)) {	    				    
-				    $output[$activitytype]=array();				    
-				    foreach ($busylist as $mgcid => $activities) {						
+		$moduleName = $this->getName();
+		
+		$busylist = $this->getBusyListOnEvents($mgtid);
+		
+		$activitytypes = Vtiger_Util_Helper::getPickListValues('activitytype');
+		
+		$skiplist = array('Call','Meeting');	    
+		
+		$output = array();
+				   
+		foreach ($activitytypes as $activitytype) {
+			if(!in_array($activitytype, $skiplist)) {
+					$output[$activitytype]=array();				    
+					foreach ($busylist as $mgcid => $activities) {						
 						$mgcInstance = VTiger_Record_Model::getInstanceById($mgcid,$moduleName);						
 						$mgcName = $mgcInstance->get('name');
 						
-						foreach ($activities  as $activityid => $activityinfo) {						
-						if ($activityinfo['type'] == $activitytype) {
-							    if (!$output[$activitytype][$mgcid]) $output[$activitytype][$mgcid] = $mgcName;
-						}						
+						foreach ($activities as $activityid => $activityinfo) {
+							//var_dump('', $mgcName, html_entity_decode( $activityinfo['type'] ),  $activitytype, html_entity_decode( $activityinfo['type'] ) ==  $activitytype );
+							if (html_entity_decode( $activityinfo['type'] ) == $activitytype) {
+								    if (!$output[$activitytype][$mgcid])
+									$output[$activitytype][$mgcid] = $mgcName;
+							}						
 						}	    
 				    }	    				    
 			}			
 	    }
+	    //var_dump($output);
 	    return $output;
 	}
 

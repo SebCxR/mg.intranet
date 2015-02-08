@@ -129,7 +129,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		foreach ($entries as $id => $record) {
 			$date = $record->get('datetransport');
 			
-			if (!array_key_exists($date,$busyarrays)) {
+			if (!array_key_exists($date, $busyarrays)) {
 				$modulemodel=Vtiger_Module_Model::getInstance('MGChauffeurs');
 				$busyarrays[$date] = $modulemodel->getBusyInActivityTypeArray($id);;				
 			}
