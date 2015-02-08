@@ -48,6 +48,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 	protected function triggerCheckPermission($handler, $request) {
 		$moduleName = $request->getModule();
 		$moduleModel = Vtiger_Module_Model::getInstance($moduleName);
+
 		if (empty($moduleModel)) {
 			throw new AppException(vtranslate('LBL_HANDLER_NOT_FOUND'));
 		}
@@ -164,6 +165,7 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 				if(!in_array($module, $skipList) && stripos($qualifiedModuleName, 'Settings') === false) {
 					$this->triggerCheckPermission($handler, $request);
 				}
+
 				// Every settings page handler should implement this method
 				if(stripos($qualifiedModuleName, 'Settings') === 0) {
 					$handler->checkPermission($request);
@@ -197,7 +199,10 @@ class Vtiger_WebUI extends Vtiger_EntryPoint {
 		}
 
 		if ($response) {
-			$response->emit();
+			if(is_object($response)) /*ED150124, added */
+				$response->emit();
+			/* no need else 
+				var_dump($response); */
 		}
 	}
 }

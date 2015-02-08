@@ -357,11 +357,22 @@ function getTaxDetailsForProduct($productid, $available='all')
 		}
 		if($available != 'all' && $available == 'available_associated')
 		{
-			$query = "SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.* FROM vtiger_inventorytaxinfo left JOIN vtiger_producttaxrel ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid WHERE vtiger_producttaxrel.productid = ? or vtiger_inventorytaxinfo.deleted=0 GROUP BY vtiger_inventorytaxinfo.taxid";
+			$query = "SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.*
+				FROM vtiger_inventorytaxinfo
+				LEFT JOIN vtiger_producttaxrel
+					ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid
+				WHERE vtiger_producttaxrel.productid = ?
+				OR vtiger_inventorytaxinfo.deleted=0
+				GROUP BY vtiger_inventorytaxinfo.taxid";
 		}
 		else
 		{
-			$query = "SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.* FROM vtiger_inventorytaxinfo INNER JOIN vtiger_producttaxrel ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid WHERE vtiger_producttaxrel.productid = ? $where";
+			$query = "SELECT vtiger_producttaxrel.*, vtiger_inventorytaxinfo.*
+				FROM vtiger_inventorytaxinfo
+				INNER JOIN vtiger_producttaxrel
+					ON vtiger_inventorytaxinfo.taxid = vtiger_producttaxrel.taxid
+				WHERE vtiger_producttaxrel.productid = ?
+				$where";
 		}
 		$params = array($productid);
 
@@ -773,6 +784,10 @@ function getInventoryCurrencyInfo($module, $id)
 	$inv_id_array = Array('PurchaseOrder'=>'purchaseorderid','SalesOrder'=>'salesorderid','Quotes'=>'quoteid','Invoice'=>'invoiceid');
 
 	$inventory_table = $inv_table_array[$module];
+	/* ED 140922 */
+	if(!$inventory_table)
+		return false;
+
 	$inventory_id = $inv_id_array[$module];
 	$res = $adb->pquery("select currency_id, $inventory_table.conversion_rate as conv_rate, vtiger_currency_info.* from $inventory_table
 						inner join vtiger_currency_info on $inventory_table.currency_id = vtiger_currency_info.id

@@ -171,7 +171,7 @@ jQuery.Class("Calendar_CalendarView_Js",{
 				// http://stackoverflow.com/a/3596096
 				disabledOnes = jQuery.grep(disabledOnes, function(value){return value != type;});
 				app.cacheSet('calendar.feeds.disabled', disabledOnes);
-				
+
 				thisInstance.getCalendarView().fullCalendar('addEventSource', thisInstance.calendarfeedDS[type]);
 			} else {
 				// NOTE: We are getting cache data fresh - as it shared between browser tabs
@@ -222,6 +222,8 @@ jQuery.Class("Calendar_CalendarView_Js",{
 	},
 
 	registerCalendar : function(customConfig) {
+	    
+	    
 		var thisInstance = this;
 		var calendarview = this.getCalendarView();
 

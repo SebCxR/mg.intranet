@@ -20,10 +20,10 @@
             <input type="hidden" value="{$SORT_ORDER}" id="sortOrder">
             <input type="hidden" value="{$RELATED_ENTIRES_COUNT}" id="noOfEntries">
             <input type='hidden' value="{$PAGING->getPageLimit()}" id='pageLimit'>
-            <input type="hidden" id="recordsCount" value=""/>
             <input type="hidden" id="selectedIds" name="selectedIds" data-selected-ids={ZEND_JSON::encode($SELECTED_IDS)} />
             <input type="hidden" id="excludedIds" name="excludedIds" data-excluded-ids={ZEND_JSON::encode($EXCLUDED_IDS)} />
-            <input type="hidden" id="recordsCount" name="recordsCount" />
+			<input type="hidden" id="recordsCount" value="" name="recordsCount" />
+            
             <input type='hidden' value="{$TOTAL_ENTRIES}" id='totalCount'>
             <div class="relatedHeader">
                 <div class="btn-toolbar row-fluid">
@@ -33,23 +33,24 @@
                                 {assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
                                 {assign var=IS_SEND_EMAIL_BUTTON value={$RELATED_LINK->get('_sendEmail')}}
                                 <button type="button" class="btn addButton
-                                {if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
-                            {if $IS_SELECT_BUTTON eq true} data-moduleName='{$RELATED_LINK->get('_module')->get('name')}' {/if}
-                        {if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
-                {if $IS_SEND_EMAIL_BUTTON eq true}	onclick="{$RELATED_LINK->getUrl()}" {else} data-url="{$RELATED_LINK->getUrl()}"{/if}
-                {if ($IS_SELECT_BUTTON eq false) and ($IS_SEND_EMAIL_BUTTON eq false)}
-                    name="addButton"><i class="icon-plus icon-white"></i>
-                {else}
-                    > {* closing the button tag *}
-                {/if}&nbsp;<strong>{$RELATED_LINK->getLabel()}</strong>
-            </button>
-        </div>
-    {/foreach}
+				    {if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
+				    {if $IS_SELECT_BUTTON eq true} data-moduleName='{$RELATED_LINK->get('_module')->get('name')}' {/if}
+				    {if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
+				    {if $IS_SEND_EMAIL_BUTTON eq true}	onclick="{$RELATED_LINK->getUrl()}" {else} data-url="{$RELATED_LINK->getUrl()}"{/if}
+				    {if ($IS_SELECT_BUTTON eq false) and ($IS_SEND_EMAIL_BUTTON eq false)}
+					name="addButton"><i class="icon-plus icon-white"></i>
+				    {else}
+					> {* closing the button tag *}
+				    {/if}&nbsp;<strong>{$RELATED_LINK->getLabel()}</strong>
+				</button>
+			    </div>
+			{/foreach}
     &nbsp;
 </div>
 <div class="span3">
     <span class="customFilterMainSpan row-fluid">
-        {if $CUSTOM_VIEWS|@count gt 0}
+        {* ED141222 : trop dangereux : ajoute tous les éléments correspondant à la recherche *}
+	{if false && $CUSTOM_VIEWS|@count gt 0}
             <select id="recordsFilter" class="span12" data-placeholder="{vtranslate('LBL_SELECT_TO_LOAD_LIST', $RELATED_MODULE_NAME)}">
                 <option></option>
                 {foreach key=GROUP_LABEL item=GROUP_CUSTOM_VIEWS from=$CUSTOM_VIEWS}
@@ -70,7 +71,14 @@
     <span class="row-fluid">
         <span class="span5 pushDown">
             <span class="pull-right pageNumbers alignTop" data-placement="bottom" data-original-title="" style="margin-top: -5px">
-            {if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if}
+            {*ED140907 if !empty($RELATED_RECORDS)} {$PAGING->getRecordStartRange()} {vtranslate('LBL_to', $RELATED_MODULE->get('name'))} {$PAGING->getRecordEndRange()}{/if*}
+	    {if !empty($RELATED_RECORDS)}
+		{assign var=START_RANGE value=$PAGING->getRecordStartRange()}
+		{if $START_RANGE gt 1}
+		    {$START_RANGE}&nbsp;{vtranslate('LBL_to', $RELATED_MODULE->get('name'))}&nbsp;
+		{/if}
+		{$PAGING->getRecordEndRange()}
+	    {/if}
         </span>
     </span>
     <span class="span7 pull-right">
@@ -113,11 +121,11 @@
 </div>
 <div class="relatedContents contents-bottomscroll">
     <div class="bottomscroll-div">
-			{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
+	{assign var=WIDTHTYPE value=$USER_MODEL->get('rowheight')}
         <table class="table table-bordered listViewEntriesTable">
             <thead>
                 <tr class="listViewHeaders">
-						<th width="4%" class="{$WIDTHTYPE}">
+		    <th width="4%" class="{$WIDTHTYPE}">
                         <input type="checkbox" id="listViewEntriesMainCheckBox"/>
                     </th>
                     {foreach item=HEADER_FIELD from=$RELATED_HEADERS}

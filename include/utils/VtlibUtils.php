@@ -510,13 +510,13 @@ function vtlib_getPicklistValues_AccessibleToAll($field_columnname) {
 /**
  * Get all picklist values for a non-standard picklist type.
  */
-function vtlib_getPicklistValues($field_columnname) {
+function vtlib_getPicklistValues($field_columnname, &$picklistvaluesdata = FALSE) {
 	global $adb;
 
 	$columnname =  $adb->sql_escape_string($field_columnname);
 	$tablename = "vtiger_$columnname";
 
-	$picklistres = $adb->query("SELECT $columnname as pickvalue FROM $tablename");
+	$picklistres = $adb->query("SELECT $columnname as pickvalue, * FROM $tablename");
 
 	$picklistresCount = $adb->num_rows($picklistres);
 
@@ -525,6 +525,10 @@ function vtlib_getPicklistValues($field_columnname) {
 		for($index = 0; $index < $picklistresCount; ++$index) {
 			$picklistvalues[] = $adb->query_result($picklistres, $index, 'pickvalue');
 		}
+		if(is_array($picklistvaluesdata))
+		    for($index = 0; $index < $picklistresCount; ++$index) {
+			    $picklistvaluesdata[] = array('uicolor'=>$adb->query_result($picklistres, $index, 'uicolor'));
+		    }
 	}
 	return $picklistvalues;
 }

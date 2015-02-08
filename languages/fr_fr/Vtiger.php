@@ -255,7 +255,7 @@ $languageStrings = array(
 	'LBL_ON'                       => 'sur'                          , 
 	'LBL_OF'                       => 'de'                          , 
 	'LBL_BY'                       => 'par'                          , 
-	'LBL_ADDED'                    => 'ajouté'                       , 
+	'LBL_ADDED'                    => 'ajouter'                       , 
 	'LBL_FOR'                      => 'pour'                        , 
 	'LBL_CREATED'                  => 'Créé il y a'                   , 
 	'LBL_DELETED'                  => 'Supprimé'                     , 
@@ -276,7 +276,7 @@ $languageStrings = array(
 	'LBL_HOUR'                     => 'heure'                        , 
 	'LBL_HOURS'                    => 'heures'                       , 
 	'LBL_MINUTE'                   => 'minute'                      , 
-	'LBL_MINUTES'                  => 'minutes'                     , 
+	'LBL_MINUTES'                  => 'Minutes'                     , 
 	'LBL_SECOND'                   => 'seconde'                      , 
 	'LBL_SECONDS'                  => 'secondes'                     , 
 	'LBL_JUSTNOW'                  => 'maintenant'                    , 
@@ -670,9 +670,8 @@ $languageStrings = array(
 	'LBL_TRANSFER_OWNERSHIP' => 'Modifier l\'assignation',
 	'LBL_ASSIGNED_TO' 		=> 'Assigné à',
 	'LBL_VIEW_DETAILS' 		=> 'Afficher les détails',
-    
-	'LBL_to' => 'à' ,
-	'LBL_IS_EMPTY'=> 'is empty',
+        'LBL_to' => 'à' ,
+	'LBL_IS_EMPTY'=> '(est vide)',
         
         
 	'LBL_NOTEPAD' => 'Post-it',

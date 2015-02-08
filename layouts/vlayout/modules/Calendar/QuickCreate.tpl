@@ -92,7 +92,6 @@
 							{else if $smarty.request.contact_id neq ''}
 								<input type="hidden" name="contact_id" value="{$smarty.request.contact_id}" />
 							{/if}
-
 						</table>
 					</div>
 				</div>

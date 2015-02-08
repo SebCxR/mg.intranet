@@ -8,6 +8,14 @@
  *************************************************************************************/
 
 Vtiger_Detail_Js("Contacts_Detail_Js",{},{
+		
+	
+	loadRelatedList : function(pageNumber){
+		var relatedListInstance = new Contacts_RelatedList_Js(this.getRecordId(), app.getModuleName(), this.getSelectedTab(), this.getRelatedModuleName());
+		var params = {'page':pageNumber};
+		this.clearSelectedRecords();
+		relatedListInstance.loadRelatedList(params);
+	},
 	
 	/**
 	 * Function to register recordpresave event

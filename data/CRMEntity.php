@@ -609,14 +609,13 @@ class CRMEntity {
 	 * @param $table_name -- table name:: Type varchar
 	 * The function will delete a record .The id is obtained from the class variable $this->id and the columnname got from $this->tab_name_index[$table_name]
 	 */
-	//SG changed condition from $num_rows == 1 to $num_rows >= 1 as there can be more then one relation with thisEntity
 	function deleteRelation($table_name) {
 		global $adb;
-		$check_query = "select * from $table_name where " . $this->tab_name_index[$table_name] . "=?";
+		$check_query = "select * from $table_name where " . $this->tab_name_index[$table_name] . "=? LIMIT 1";
 		$check_result = $adb->pquery($check_query, array($this->id));
 		$num_rows = $adb->num_rows($check_result);
 
-		if ($num_rows >= 1) {
+		if ($num_rows == 1) {
 			$del_query = "DELETE from $table_name where " . $this->tab_name_index[$table_name] . "=?";
 			$adb->pquery($del_query, array($this->id));
 		}
@@ -1229,8 +1228,25 @@ if($fileid == '') {
 	function unlinkRelationship($id, $return_module, $return_id) {
 		global $log, $currentModule;
 
-		$query = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
-		$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
+		/* ED150124 : enable deleting all relation */
+		if(is_numeric($id)){
+			if(is_numeric($return_id)){
+				/* original query */
+				$query = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=? AND relcrmid=?) OR (relcrmid=? AND module=? AND crmid=?)';
+				$params = array($id, $return_module, $return_id, $id, $return_module, $return_id);
+			}
+			else {
+				$query = 'DELETE FROM vtiger_crmentityrel WHERE (crmid=? AND relmodule=?) OR (relcrmid=? AND module=?)';
+				$params = array($id, $return_module, $id, $return_module);
+			}
+		}
+		elseif(is_numeric($return_id)){
+			$query = 'DELETE FROM vtiger_crmentityrel WHERE (relmodule=? AND relcrmid=?) OR (module=? AND crmid=?)';
+			$params = array($return_module, $return_id, $return_module, $return_id);
+		}
+		else
+			return false;
+		
 		$this->db->pquery($query, $params);
 
 		$fieldRes = $this->db->pquery('SELECT tabid, tablename, columnname FROM vtiger_field WHERE fieldid IN (
@@ -1244,8 +1260,25 @@ if($fileid == '') {
 			$relatedModule = vtlib_getModuleNameById($tabId);
 			$focusObj = CRMEntity::getInstance($relatedModule);
 
-			$updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName=? AND $focusObj->table_index=?";
-			$updateParams = array(null, $return_id, $id);
+			/* ED150124 : enable deleting all relation
+			 * ici on modifie les enregistrements de la table liée en passant à null le champ
+			 * A surveiller avec la nouvelle possibilité de supprimer avec un jocker
+			*/
+			if(is_numeric($id)){
+				if(is_numeric($return_id)){
+					/* original query */
+					$updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName=? AND $focusObj->table_index=?";
+					$updateParams = array(null, $return_id, $id);
+				}
+				else {
+					$updateQuery = "UPDATE $tableName SET $columnName=? WHERE $focusObj->table_index=?";
+					$updateParams = array(null, $id);
+				}
+			}
+			elseif(is_numeric($return_id)){
+				$updateQuery = "UPDATE $tableName SET $columnName=? WHERE $columnName=?";
+				$updateParams = array(null, $return_id);
+			}
 			$this->db->pquery($updateQuery, $updateParams);
 		}
 	}
@@ -1530,13 +1563,16 @@ if($fileid == '') {
 			$returnset = "&return_module=$this_module&return_action=CallRelatedList&return_id=$id";
 
 		$userNameSql = getSqlForNameInDisplayFormat(array('first_name'=>'vtiger_users.first_name',
-														'last_name' => 'vtiger_users.last_name'), 'Users');
+			'last_name' => 'vtiger_users.last_name'), 'Users');
 		$query = "select case when (vtiger_users.user_name not like '') then $userNameSql else vtiger_groups.groupname end as user_name," .
 				"'Documents' ActivityType,vtiger_attachments.type  FileType,crm2.modifiedtime lastmodified,vtiger_crmentity.modifiedtime,
 				vtiger_seattachmentsrel.attachmentsid attachmentsid, vtiger_crmentity.smownerid smownerid, vtiger_notes.notesid crmid,
-				vtiger_notes.notecontent description,vtiger_notes.*
-				from vtiger_notes
+				vtiger_senotesrel.dateapplication, vtiger_senotesrel.data,
+				vtiger_notes.notecontent description,vtiger_notes.*,
+				vtiger_attachmentsfolder.foldername, vtiger_attachmentsfolder.uicolor
+				FROM vtiger_notes
 				inner join vtiger_senotesrel on vtiger_senotesrel.notesid= vtiger_notes.notesid
+				left join vtiger_attachmentsfolder on vtiger_attachmentsfolder.folderid = vtiger_notes.folderid
 				left join vtiger_notescf ON vtiger_notescf.notesid= vtiger_notes.notesid
 				inner join vtiger_crmentity on vtiger_crmentity.crmid= vtiger_notes.notesid and vtiger_crmentity.deleted=0
 				inner join vtiger_crmentity crm2 on crm2.crmid=vtiger_senotesrel.crmid

@@ -500,7 +500,7 @@ var app = {
 					var incr = elem.is(".decr-1day") ? -1 : 1;
 					var datePicker = elem.closest('.date').find('input.dateField');
 					var curDate = datePicker.DatePickerGetDate(false);
-					curDate.setDate(curDate.getDate() + incr);
+					curDate.setDate(curDate.getDate() + incr);	
 					datePicker.DatePickerSetDate(curDate);
 					datePicker.val(datePicker.DatePickerGetDate(true));
 					return false;
