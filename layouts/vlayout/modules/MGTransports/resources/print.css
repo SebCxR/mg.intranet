@@ -11,11 +11,13 @@ a {
 }
 
 .header-row > * {
-    border-bottom: 1px solid #AAAAAA;
+    /*border-bottom: 1px solid #AAAAAA;*/
     font-style: italic;
+    
+    padding-top: 8px;
 }
 .header-row + tr > *{
-    padding-top: 1em;
+    padding-top: 12px;
 }
 .report-name {
     font-size: smaller;
@@ -29,4 +31,23 @@ a {
     margin-left: 2em;
     padding: 2px 4px;
     border:1px solid black;
+}
+.busy-chauffeurs table td, .busy-chauffeurs table th {
+    border-color: #CCCCCC;
+}
+.busy-chauffeurs table * {
+    color: #333333;
+}
+
+.date-header {
+}
+.date-header > td {
+    border:none;
+    border-top: thin solid #CCCCCC;
+    border-bottom: thin solid #CCCCCC;
+    background-color: #EEEEEE;
+}
+.date-header span {
+    font-weight: bold;
+    font-size: larger;
 }

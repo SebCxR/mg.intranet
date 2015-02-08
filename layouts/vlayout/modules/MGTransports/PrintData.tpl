@@ -53,8 +53,8 @@
 						{if $CHAUFFEURS_EXISTS}{break}{/if}
 					{/foreach}
 					{if ($PREVIOUS_DATE neq 'init') && $CHAUFFEURS_EXISTS}
-						<tr>
-						<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">{count($BUSY_MGCHAUFFEURS_ARRAYS[$PREVIOUS_DATE])}
+						<tr class="busy-chauffeurs">
+						<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">
 							<table width="100%" border="1" cellpadding="5" cellspacing="0" align="center" valign="bottom">
 							<caption style="caption-side:top">{'LBL_BUSY_MGCHAUFFEURS_ARRAY'|@vtranslate:$MODULE}{$PREVIOUS_DATE}</caption>
 							<thead>
@@ -79,9 +79,9 @@
 						</td>
 						</tr>
 					{/if}
-					<tr>
-					<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">
-						<b>{$STRING_FULLDAY|@vtranslate:$MODULE} {$STRING_DAY|@vtranslate:$MODULE} {$STRING_FULLMONTH|@vtranslate:$MODULE} {$STRING_FULLYEAR}<b>	
+					<tr class="date-header">
+					<td align="left" valign="top" colspan="{$COLSPAN}">
+						<span>{$STRING_FULLDAY|@vtranslate:$MODULE} {$STRING_DAY|@vtranslate:$MODULE} {$STRING_FULLMONTH|@vtranslate:$MODULE} {$STRING_FULLYEAR}</span>
 					</td>
 					</tr>
 				{/if}		
@@ -101,7 +101,7 @@
 				{/foreach}
 				</tr>
 				{if $PRINTLIST_ENTRY@last && $CHAUFFEURS_EXISTS}
-					<tr>
+					<tr class="busy-chauffeurs">
 					<td align="left" valign="top" style="border:0px solid #000000;" colspan="{$COLSPAN}">
 						<table width="100%" border="1" cellpadding="5" cellspacing="0" align="center" valign="bottom">
 						<caption style="caption-side:top">{'LBL_BUSY_MGCHAUFFEURS_ARRAY'|@vtranslate:$MODULE}{$ENTRY_DATE}</caption>
