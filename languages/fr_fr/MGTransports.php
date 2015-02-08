@@ -43,8 +43,8 @@ $languageStrings = array(
         'LBL_SUBJECT'  => 'Nom' ,
         'LBL_CONTACT'  => 'Contact' ,
         'LBL_BUSY_MGCHAUFFEURS_ARRAY' => 'Tableau d\'occupation des chauffeurs du ',
-        'LBL_ADD_RECORD'               => 'Nouveau Transport'                  ,
-        'LBL_QUICK_PRINT'               => 'Imprimer'                  ,
+        'LBL_ADD_RECORD'               => 'Nouveau Transport',
+        'LBL_QUICK_PRINT'               => 'Imprimer',
 );
 
 ?>

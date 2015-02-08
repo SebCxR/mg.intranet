@@ -683,7 +683,7 @@ $languageStrings = array(
         'LBL_IGNORE_EMPTY_VALUES' =>'Ignorer les valeurs vides',
 	'LBL_ACTION' => 'Action',
 	'LBL_OPERATION_NOT_PERMITTED' => 'Operation non permise',
-    'LBL_MERGE' => 'Fusion',
+	'LBL_MERGE' => 'Fusion',
 	'LBL_MERGING_CRITERIA_SELECTION' => 'Sélection des critères de fusion',
 	'LBL_AVAILABLE_FIELDS' => 'Champs disponibles',
         'LBL_MERGE' => 'Fusionner',
@@ -709,7 +709,9 @@ $languageStrings = array(
         'Events' => 'Activités',
 	'TASKS' => 'Tâches',
 	'LBL_FILTER_ISNOTRENTED' => 'Nos véhicules (non loués)',
-	'Is Converted From Lead' => 'Fiche issue d\'un prospect'
+	'Is Converted From Lead' => 'Fiche issue d\'un prospect',
+        'yes'               => 'oui',
+        'no'               => 'non',
 	
 );
 $jsLanguageStrings = array(
