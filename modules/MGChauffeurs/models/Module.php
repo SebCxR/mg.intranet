@@ -177,17 +177,22 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 				   
 		foreach ($activitytypes as $activitytype) {
 			if(!in_array($activitytype, $skiplist)) {
-					$output[$activitytype]=array();				    
-					foreach ($busylist as $mgcid => $activities) {						
+					$output[$activitytype] = array();	
+					$activitytype_utf8decoded = utf8_decode($activitytype);				    
+					foreach ($busylist as $mgcid => $activities) {					
 						$mgcInstance = VTiger_Record_Model::getInstanceById($mgcid,$moduleName);						
 						$mgcName = $mgcInstance->get('name');
 						
 						foreach ($activities as $activityid => $activityinfo) {
-							//var_dump('', $mgcName, html_entity_decode( $activityinfo['type'] ),  $activitytype, html_entity_decode( $activityinfo['type'] ) ==  $activitytype );
-							if (html_entity_decode( $activityinfo['type'] ) == $activitytype) {
+							//var_dump('-------------------', $mgcName, html_entity_decode( $activityinfo['type'] ), $activitytype, $activitytype_utf8decoded );
+							if ($activityinfo['type'] == $activitytype
+							|| $activityinfo['type'] == $activitytype_utf8decoded
+							|| html_entity_decode( $activityinfo['type'] ) == $activitytype
+							|| html_entity_decode( $activityinfo['type'] ) == $activitytype_utf8decoded) {
 								    if (!$output[$activitytype][$mgcid])
-									$output[$activitytype][$mgcid] = $mgcName;
-							}						
+										$output[$activitytype][$mgcid] = $mgcName;
+							}
+							//else var_dump(false);
 						}	    
 				    }	    				    
 			}			

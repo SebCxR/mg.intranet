@@ -2,6 +2,11 @@
 	clear: both;
 }
 
+/* par exemple, éditeur de picklist values */
+.selectedListItem {
+  background-color: #c9c5a8 !important;
+}
+
 /* ED150204 */
 /* carré de couleur */
 .picklistvalue-uicolor {
