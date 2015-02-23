@@ -69,8 +69,7 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			}
 		}
 		//SG1411 On force le critère de recherche $sourceRecordInstance->get("mgtypetransport")à l'ouverture du popup
-		if((!empty($searchKey)) && (!empty($searchValue)))  {
-			
+		if((!empty($searchKey)) && (!empty($searchValue)))  {			
 			if ($searchValue == vtranslate('LBL_ALL') || $searchValue == strtolower(vtranslate('LBL_ALL'))) {
 				unset ($searchKey);
 				unset($searchValue);
@@ -87,27 +86,26 @@ class Vehicules_Popup_View extends Vtiger_Popup_View {
 			$listViewModel->set('search_value', $searchValue);
 		}
 
-		if(!$this->listViewHeaders){
-						
-			$temp = $listViewModel->getListViewHeaders();
-			
-			if (!empty($sourceModule) && !empty($sourceRecord) && $sourceModule == 'MGTransports') {
-			$customHeaders = array ();
-			$field1 = new Vtiger_Field_Model();		
-			$field1->set('name', 'engaged_for');
-			$field1->set('column', 'engagedfor');
-			$field1->set('label', 'LBL_VEHIC_ENGAGED_FOR');
-			$customHeaders['engagement'] = $field1;
+		if(!$this->listViewHeaders){									
+			if (!empty($sourceModule) && !empty($sourceRecord)) {			
+				if  ($sourceModule == 'MGTransports') {				
+					$temp = $listViewModel->getListViewHeaders();
+					
+					$customHeaders = array ();
+					$field1 = new Vtiger_Field_Model();		
+					$field1->set('name', 'engaged_for');
+					$field1->set('column', 'engagedfor');
+					$field1->set('label', 'LBL_VEHIC_ENGAGED_FOR');
+					$customHeaders['engagement'] = $field1;
 		    	
-			$this->listViewHeaders = array_slice($temp, 0, 1, true) + $customHeaders +  array_slice($temp, 1, null, true) ;
-	
-			}				
+					$this->listViewHeaders = array_slice($temp, 0, 1, true) + $customHeaders +  array_slice($temp, 1, null, true) ;					
+				}
+				else $this->listViewHeaders = $listViewModel->getListViewHeaders();
+			}	
 		}
-		
-		
+				
 		if(!$this->listViewEntries){
-			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);
-			
+			$this->listViewEntries = $listViewModel->getListViewEntries($pagingModel);			
 		}
 		
 		$basebusylist = $moduleModel->getBusylist($sourceRecord);
