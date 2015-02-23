@@ -10,6 +10,7 @@
 ********************************************************************************/
 -->*}
 {strip}
+    {assign var=HAS_ADD_BUTTON value=false}
     <div class="relatedContainer">
         <input type="hidden" name="currentPageNum" value="{$PAGING->getCurrentPage()}" />
         <input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE->get('name')}" />
@@ -27,18 +28,22 @@
                             {assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
                             <button type="button" class="btn addButton
                             {if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
-                        {if $IS_SELECT_BUTTON eq true} data-moduleName={$RELATED_LINK->get('_module')->get('name')} {/if}
-                        {if ($RELATED_LINK->isPageLoadLink())}
-                        {if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
-                        data-url="{$RELATED_LINK->getUrl()}"
-                    {/if}
-            {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
-		{if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}
-		&nbsp;<strong>{$RELATED_LINK->getLabel()}</strong></button>
-    </div>
-{/foreach}
-&nbsp;
-</div>
+			    {if $IS_SELECT_BUTTON eq true} data-moduleName={$RELATED_LINK->get('_module')->get('name')} {/if}
+			    {if ($RELATED_LINK->isPageLoadLink())}
+				{if $RELATION_FIELD} data-name="{$RELATION_FIELD->getName()}" {/if}
+				data-url="{$RELATED_LINK->getUrl()}"
+			    {/if}
+			    {if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
+			    {if $IS_SELECT_BUTTON eq false}<i class="icon-plus icon-white"></i>{/if}
+			    &nbsp;<strong>{$RELATED_LINK->getLabel()}</strong>
+			    </button>
+			</div>
+			{if $IS_SELECT_BUTTON neq true}
+			    {assign var=HAS_ADD_BUTTON value=true}
+			{/if}
+		    {/foreach}
+		    &nbsp;
+		</div>
 <div class="span4">
     <span class="row-fluid">
         <span class="span7 pushDown">
@@ -154,6 +159,9 @@
 			    </td><td nowrap class="{$WIDTHTYPE}">
                                 <div class="pull-right actions">
                                     <span class="actionImages">
+                                        {if $IS_EDITABLE && $HAS_ADD_BUTTON}{*ED150207*}
+                                            <a href='{$RELATED_RECORD->getDuplicateRecordUrl()}'><i title="{vtranslate('LBL_DUPLICATE', $MODULE)}" class="icon-plus alignMiddle"></i></a>
+                                        {/if}
                                         <a href="{$RELATED_RECORD->getFullDetailViewUrl()}"><i title="{vtranslate('LBL_SHOW_COMPLETE_DETAILS', $MODULE)}" class="icon-th-list alignMiddle"></i></a>&nbsp;
                                         {if $IS_EDITABLE}
                                             <a href='{$RELATED_RECORD->getEditViewUrl()}'><i title="{vtranslate('LBL_EDIT', $MODULE)}" class="icon-pencil alignMiddle"></i></a>

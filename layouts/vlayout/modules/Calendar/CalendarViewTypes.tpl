@@ -15,7 +15,6 @@
 		<label class="checkbox">
 			<input type="checkbox" data-calendar-sourcekey="Events" data-calendar-feed="Events" data-calendar-feed-css="fc-event-style1" > <span class="label fc-event-style1">{vtranslate('LBL_EVENTS', $MODULE)}</span>
 		</label>
-		
 		<label class="checkbox">
 			<input type="checkbox" data-calendar-sourcekey="Tasks" data-calendar-feed="Tasks" data-calendar-feed-css="fc-event-style2" > <span class="label fc-event-style2">{vtranslate('LBL_TODOS', $MODULE)}</span>
 		</label>

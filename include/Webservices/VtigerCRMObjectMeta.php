@@ -20,6 +20,11 @@ class VtigerCRMObjectMeta extends EntityMeta {
 	private $hasDeleteAccess;
 	private $assignUsers;
 	
+	/* ED141128
+	 * champ fournissant la couleur de l'entité
+	*/
+	private $uicolorField;
+	
 	function VtigerCRMObjectMeta($webserviceObject,$user){
 		
 		parent::__construct($webserviceObject,$user);
@@ -41,13 +46,22 @@ class VtigerCRMObjectMeta extends EntityMeta {
 		$this->baseTable = $instance->table_name;
 		$this->tableList = $instance->tab_name;
 		$this->tableIndexList = $instance->tab_name_index;
-		
-		if(in_array('vtiger_crmentity', $instance->tab_name)){
+		$this->uicolorField = $instance->uicolor_field;
+		if(in_array('vtiger_crmentity',$instance->tab_name)){
 			$this->defaultTableList = array('vtiger_crmentity');
 		}else{
 			$this->defaultTableList = array();
 		}
 		$this->tabId = null;
+	}
+
+	/**
+	 * returns uicolorField of the current object.
+	 * @return String
+	 * ED141128
+	 */
+	public function getUIColorField(){
+		return $this->uicolorField;
 	}
 
 	/**
@@ -338,7 +352,6 @@ class VtigerCRMObjectMeta extends EntityMeta {
 	}
 	
 	function retrieveMeta(){
-		
 		require_once('modules/CustomView/CustomView.php');
 		$current_user = vtws_preserveGlobal('current_user',$this->user);
 		$theme = vtws_preserveGlobal('theme',$this->user->theme);

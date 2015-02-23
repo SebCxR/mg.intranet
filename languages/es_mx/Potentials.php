@@ -39,7 +39,7 @@ $languageStrings = array(
 	'Existing Business'            => 'Negocio Existente'           , 
 	'New Business'                 => 'Nuevo Negocio'               , 
 	'LBL_EXPECTED_CLOSE_DATE_ON'   => 'Fecha esperada de cierre'    , 
-	'LBL_RELATED_CONTACTS'         => 'Contacts liés'            , // TODO: Review
+	'LBL_RELATED_CONTACTS'         => 'Related Contacts'            , // TODO: Review
 	'LBL_RELATED_PRODUCTS'         => 'Related Products'            , // TODO: Review
         'LBL_RELATED VEHICULES'         =>'Véhicules concernés'
 );

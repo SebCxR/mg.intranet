@@ -74,6 +74,10 @@ Vtiger_RelatedList_Js("Campaigns_RelatedList_Js",{
 	 */
 	
 	registerChangeCustomFilterEvent : function(){
+		
+		/* ED141222 : trop dangereux : ajoute tous les éléments correspondant à la recherche */
+		return;
+		
 		var filterSelectElement = jQuery('#recordsFilter');
 		filterSelectElement.change(function(e){
 			var element = jQuery(e.currentTarget);

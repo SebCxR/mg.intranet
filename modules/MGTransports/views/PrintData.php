@@ -58,7 +58,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		$headers = $listViewInstance->getListViewHeaders();
 		$allEntries = $listViewInstance->getListViewEntries($pagingModel);
 		
-		$selectedEntries = $this->getFilteredEntries($request,$allEntries);
+		$selectedEntries = $this->getFilteredEntries($request, $allEntries);
 		
 		$this->GetPrintList($request, $headers, $selectedEntries);
 	}
@@ -129,7 +129,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		foreach ($entries as $id => $record) {
 			$date = $record->get('datetransport');
 			
-			if (!array_key_exists($date,$busyarrays)) {
+			if (!array_key_exists($date, $busyarrays)) {
 				$modulemodel=Vtiger_Module_Model::getInstance('MGChauffeurs');
 				$busyarrays[$date] = $modulemodel->getBusyInActivityTypeArray($id);;				
 			}
@@ -139,7 +139,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	 	
 	 //Function displays the report in printable format	 
 	function GetPrintList(Vtiger_Request $request, $headers, $entries) {
-		$printData = $this->getPrintListDataArrayInHTML($request, $headers, $entries);		
+		$printData = $this->getPrintListDataArrayInHTML($request, $headers, $entries);	//utilisé si PRINTLIST_MODE !== 'LBL_PRINT_MODE_0'
 		$viewer = $this->getViewer($request);
 
 		$listName = $this->getPrintListName($request);
@@ -168,7 +168,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		$valtpl = "";
 		foreach ($headers as $header) {
 			$headertpl .= '<td class="rptCellLabel">' . vtranslate($header->get('label'),$modname) . '</td>';			
-		}		
+		}
 		foreach ($entries as $recordModel) {
 			$valtpl .= "<tr>";
 			foreach ($headers as $header) {

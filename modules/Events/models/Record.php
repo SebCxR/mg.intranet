@@ -50,7 +50,8 @@ class Events_Record_Model extends Calendar_Record_Model {
         $contactIdList = array();
         for($i=0; $i<$num_rows; $i++) {
             $row = $adb->fetchByAssoc($result, $i);
-            $contactIdList[$i] = $row['contactid'];
+	    if($row['contactid'])
+	            $contactIdList[] = $row['contactid'];
         }
         return $contactIdList;
     }
@@ -73,16 +74,18 @@ class Events_Record_Model extends Calendar_Record_Model {
         $num_rows = $adb->num_rows($result);
 
         $vehiculeIdList = array();
-        for($i=0; $i<$num_rows; $i++) {
-            $row = $adb->fetchByAssoc($result, $i);
-            $vehiculeIdList[$i] = $row['vehiculeid'];
-        }
+	if($num_rows)
+		for($i=0; $i<$num_rows; $i++) {
+			$row = $adb->fetchByAssoc($result, $i);
+			if($row['vehiculeid'])
+				$vehiculeIdList[] = $row['vehiculeid'];
+		}
         return $vehiculeIdList;
     }
 
     public function getRelatedVehiculeInfo() {
         $vehiculeIdList = $this->getRelatedToVehiculeIdList();
-        $relatedVehiculeInfo = array();
+	$relatedVehiculeInfo = array();
         foreach($vehiculeIdList as $vehiculeId) {
             $relatedVehiculeInfo[] = array('name' => Vtiger_Util_Helper::getRecordName($vehiculeId) ,'id' => $vehiculeId);
         }

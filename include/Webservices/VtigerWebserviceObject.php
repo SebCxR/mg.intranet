@@ -63,7 +63,7 @@ class VtigerWebserviceObject{
 			return new VtigerWebserviceObject($rowData['id'],$rowData['name'],
 						$rowData['handler_path'],$rowData['handler_class']);
 		}
-		throw new WebServiceException(WebServiceErrorCode::$ACCESSDENIED,"Permission to perform the operation is denied for name $entityName");
+		throw new WebServiceException(WebServiceErrorCode::$ACCESSDENIED,"Permission to perform the operation is denied for name");
 	}
 
 	// Cache variables to enable result re-use

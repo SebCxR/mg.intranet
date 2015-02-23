@@ -492,6 +492,19 @@ var app = {
 				var elem = jQuery(e.currentTarget);
 				//Using focus api of DOM instead of jQuery because show api of datePicker is calling e.preventDefault
 				//which is stopping from getting focus to input element
+				
+				/*ED150207 : I've added a d+1 <button class="add-on incr-1day">J+1</button>
+				 * vlayout\modules\Vtiger\uitypes\Date.tpl
+				 */
+				if (elem.is(".incr-1day, .decr-1day")) {
+					var incr = elem.is(".decr-1day") ? -1 : 1;
+					var datePicker = elem.closest('.date').find('input.dateField');
+					var curDate = datePicker.DatePickerGetDate(false);
+					curDate.setDate(curDate.getDate() + incr);	
+					datePicker.DatePickerSetDate(curDate);
+					datePicker.val(datePicker.DatePickerGetDate(true));
+					return false;
+				}
 				elem.closest('.date').find('input.dateField').get(0).focus();
 			});
 		}

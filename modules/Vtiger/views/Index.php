@@ -82,6 +82,7 @@ class Vtiger_Index_View extends Vtiger_Basic_View {
 	 */
 	function getHeaderScripts(Vtiger_Request $request) {
 		$headerScriptInstances = parent::getHeaderScripts($request);
+		
 		$moduleName = $request->getModule();
 
 		$jsFileNames = array(

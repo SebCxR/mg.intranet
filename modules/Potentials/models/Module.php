@@ -226,7 +226,8 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 	 * @return <String>
 	 */
 	public function getRelationQuery($recordId, $functionName, $relatedModule) {
-		if ($functionName === 'get_activities') {
+		switch($functionName){
+		case 'get_activities' :
 			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
@@ -248,7 +249,8 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 			if ($nonAdminQuery) {
 				$query = appendFromClauseToQuery($query, $nonAdminQuery);
 			}
-		} else {
+			break;
+		default:
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
 			if ($functionName === 'get_contacts') {
 				
@@ -263,6 +265,7 @@ class Potentials_Module_Model extends Vtiger_Module_Model {
 				var_dump($recordId, $functionName);
 				print_r("<pre>$query</pre>");*/
 			}
+			break;
 		}
 			
 		return $query;

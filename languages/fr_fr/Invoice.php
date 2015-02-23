@@ -11,27 +11,30 @@
  * December 2013   
  ************************************************************************************/
 $languageStrings = array(
+	'LBL_INVOICE'                   => 'Facture'             , 
+	'Invoice'                       => 'Factures'                     , 
 	'SINGLE_Invoice'               => 'Facture'                     , 
 	'LBL_EXPORT_TO_PDF'            => 'Export PDF'                  , 
 	'LBL_SEND_MAIL_PDF'            => 'Envoi PDF par Email'         , 
-	'LBL_ADD_RECORD'               => 'Ajouter Invoice'                 , 
+	'LBL_ADD_RECORD'               => 'Ajouter une facture'         , 
 	'LBL_RECORDS_LIST'             => 'Liste factures'              , 
 	'LBL_INVOICE_INFORMATION'      => 'Détail facture'             , 
 	'Sales Order'                  => 'Bon de commande'             , 
 	'Customer No'                  => 'Ref'                         , 
-	'Invoice Date'                 => 'Date facturation'            , 
+	'Invoice Date'                 => 'Date de la facture'            , 
 	'Purchase Order'               => 'Commande fournisseur'        , 
 	'Sales Commission'             => 'Commission'                  , 
-	'Invoice No'                   => 'N° facture'                 , 
+	'Invoice No'                   => 'N° de facture'                 , 
 	'LBL_RECEIVED'                 => 'Reçu'                    , 
 	'LBL_BALANCE'                  => 'Balance'                     , 
 	'Sent'                         => 'Envoyé'                     , 
 	'Credit Invoice'               => 'Avoir'                     , 
 	'Paid'                         => 'Soldé'                      , 
-	'AutoCreated'                  => 'Créé automatiquement'      , 
+	'AutoCreated'                  => 'Créée automatiquement'      , 
 	'Cancel'                       => 'Annuler'                     , 
 	'LBL_COPY_SHIPPING_ADDRESS'    => 'Copier l\'adresse de livraison'       , 
 	'LBL_COPY_BILLING_ADDRESS'     => 'Copier l\'adresse de facturation'        , 
+	
 	
 	//Translations used for Export to Pdf
 	'Valid Date' => 'Date de validité',
@@ -48,4 +51,11 @@ $languageStrings = array(
 	'Tax' => 'Taxe',
 	'Contact Name' => 'Nom contact',
 	'Grand Total:' => 'Total:',
+        
+        /* 140926 */
+        'LBL_PRODUCT_NAME' => 'Nom du produit',
+        'RsnReglements' => 'Règlements',
+        'individual' => 'Ligne à ligne',
+        'group' => 'Commune',
+	'LBL_RSNREGLEMENTS' => 'Règlements'
 );

@@ -217,6 +217,35 @@ function getEntityName($module, $ids_list, $compute=false) {
 	}
 }
 
+/* ED141128 */
+function getEntityFieldValue($module, $fieldName, $ids_list, $compute=false) {
+	if(is_object($fieldName))
+		$fieldModel = $fieldName;
+	else
+		$fieldModel = Vtiger_Field_Model::getInstance( $fieldName, $module);
+	if(is_string($module))
+		$module = Vtiger_Module_Model::getInstance($module);
+	
+	$moduleName = $module->get('name');
+	$focus = CRMEntity::getInstance($moduleName);
+	$idField = $focus->table_index;
+		
+	$sql = "SELECT " . $idField . ", " . $fieldModel->get('column') . "
+		FROM " . $focus->table_name . "
+		WHERE " . $idField . " IN (" . implode(',', $ids_list) . ")";
+	global $adb;
+	$values = array();
+	$result = $adb->pquery($sql);
+	if(!$result){
+		echo_callstack();
+		die('Erreur dans getEntityFieldValue : ' . $sql);
+	}
+	while ($row = $adb->fetch_array($result)) {
+		$values[$row[$idField]] = $row[1];
+	}
+	return $values;
+}
+
 /**
  * 	This function is used to decide the File Storage Path in where we will upload the file in the server.
  * 	return string $filepath  - filepath inwhere the file should be stored in the server will be return

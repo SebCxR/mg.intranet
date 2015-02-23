@@ -194,7 +194,11 @@ $languageStrings = array(
 	'LBL_USER_IP_ADDRESS'=> 'Adresse IP de l\'utilisateur', 
 	'LBL_LOGIN_TIME' => 'Heure de connexion',
 	'LBL_LOGGED_OUT_TIME' => 'Heure de déconnexion', 
-	'LBL_STATUS' => 'Statut'
+	'LBL_STATUS' => 'Statut',
+	
+	/* ED141226 */
+	'LBL_FOLDER' => 'Dossier',
+	'LBL_FOLDERS' => 'Dossiers',
 );
 $jsLanguageStrings = array(
 	'JS_PLEASE_SELECT_ATLEAST_ONE_MEMBER_FOR_A_GROUP' => 'Veuillez choisir au moins un collaborateur pour le groupe', 

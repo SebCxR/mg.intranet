@@ -154,7 +154,14 @@ class DateTimeField {
 	public static function __convertToUserFormat($date, $format) {
 		$date = self::convertToInternalFormat($date);
 		list($y, $m, $d) = explode('-', $date[0]);
-
+		
+		//ED141222 : Si le 3ème champ est en 4 caractères, c'est qu'on est déjà dans un format FR
+		if(strlen($d) == 4){
+			$tmp = $d;
+			$d = $y;
+			$y = $tmp;
+		}
+		
 		if ($format == 'dd-mm-yyyy') {
 			$date[0] = $d . '-' . $m . '-' . $y;
 		} elseif ($format == 'mm-dd-yyyy') {

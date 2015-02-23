@@ -96,9 +96,8 @@ Calendar_CalendarView_Js("SharedCalendar_SharedCalendarView_Js",{
             function(error){
                 //To send empty events if error occurs
                 callback([]);
+            });
 		}
-		);
-	}
 		this.getCalendarView().fullCalendar('addEventSource', this.calendarfeedDS[feedcheckbox.data('calendar-sourcekey')]);
 		
 	},

@@ -45,7 +45,8 @@ $languageStrings = array(
 	'MB'                           => 'Mo'                          , 
 	'LBL_ADD_NEW_FOLDER'           => 'Ajouter un dossier'          , 
 	'LBL_FOLDER_NAME'              => 'Répertoire'                 , 
-	'LBL_FOLDER_DESCRIPTION'       => 'Description du dossir'          , 
+	'LBL_FOLDER_DESCRIPTION'       => 'Description du dossier'          , 
+	'LBL_FOLDER_UICOLOR'            => 'Couleur d\'affichage'          , 
 	'LBL_FILE_AVAILABLE'           => 'Fichier disponible au téléchargement', 
 	'LBL_FILE_NOT_AVAILABLE'       => 'Fichier non disponible au téléchargement', 
 );

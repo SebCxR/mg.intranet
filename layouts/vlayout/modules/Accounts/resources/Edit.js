@@ -235,7 +235,8 @@ Vtiger_Edit_Js("Accounts_Edit_Js",{
 		if ($name_dest.length && !$name_dest.val())
 			$name_dest.val(name_src);
 	},
-
+	
+	
 	/**
 	 * Function which will register basic events which will be used in quick create as well
 	 *

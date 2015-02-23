@@ -165,9 +165,9 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 						$existingRelatedContacts[] = array('name' => Vtiger_Util_Helper::getRecordName($fromContactIdValue) ,'id' => $fromContactIdValue);
 						}	
 						break;
-				case 'Vehicules' :$fromVehiculeIdValue = $request->get('sourceRecord');
-						if(!empty($fromVehiculeIdValue)) {
-						$existingRelatedVehicules[] = array('name' => Vtiger_Util_Helper::getRecordName($fromVehiculeIdValue) ,'id' => $fromVehiculeIdValue);
+				case 'Vehicules' : $fromVehiculeIdValue = $request->get('sourceRecord');
+						if($fromVehiculeIdValue && $fromVehiculeIdValue != '0') {
+							$existingRelatedVehicules[] = array('name' => Vtiger_Util_Helper::getRecordName($fromVehiculeIdValue) ,'id' => $fromVehiculeIdValue);
 						}
 						break;
 				default : break;				
@@ -184,10 +184,9 @@ Class Calendar_Edit_View extends Vtiger_Edit_View {
 		
 		//SG1409 idem for vehicules
 		$requestVehiculeIdValue = $request->get('vehiculeid');
-		if(!empty($requestVehiculeIdValue)) {
+		if($requestVehiculeIdValue && $requestVehiculeIdValue != '0') {
 			$existingRelatedVehicules[] = array('name' => Vtiger_Util_Helper::getRecordName($requestVehiculeIdValue) ,'id' => $requestVehiculeIdValue);
 		}
-		
 		
 		$viewer->assign('RELATED_VEHICULES', $existingRelatedVehicules);
 		

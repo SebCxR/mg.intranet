@@ -135,14 +135,14 @@ class MGTransports_ListView_Model extends Vtiger_ListView_Model {
 				'label_field' => 'name',
 				'dest_field' => 'related_mgchauffeurs',
 				'uicolor_field' => 'uicolor',
-				),
+			),
 			'Vehicules'=> array(
 				'table' => 'vtiger_vehicules',
 				'id_field' => 'vehiculesid',
 				'label_field' => 'vehicule_name',
 				'dest_field' => 'related_vehicules',
 				'uicolor_field' => 'calcolor',
-				),
+			),
 		);
 		foreach($relatedTabs as $module => $infos){
 			if($sql) $sql .= "
