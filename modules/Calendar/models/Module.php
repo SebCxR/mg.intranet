@@ -371,7 +371,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			JOIN vtiger_crmentity
 				ON vtiger_mgchauffeurs.mgchauffeursid = vtiger_crmentity.crmid
 			WHERE vtiger_crmentity.deleted = 0
-			"./* AND vtiger_users.status = 'Active' */."
+			/* AND vtiger_users.status = 'Active' */
 			AND vtiger_mgchauffeurs.actif = 1
 			";
 		$result = $db->query($query);
