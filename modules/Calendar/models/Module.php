@@ -369,7 +369,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			INNER JOIN vtiger_mgchauffeurs
 			ON vtiger_mgchauffeurs.userid=vtiger_users.id
 			AND vtiger_users.status='Active'
-			GROUP BY userid
+			AND vtiger_mgchauffeurs.actif=1
 			";
 		$result = $db->query($query);
 		 $rows = $db->num_rows($result);
