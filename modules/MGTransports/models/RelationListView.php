@@ -19,14 +19,31 @@ class MGTransports_RelationListView_Model extends Vtiger_RelationListView_Model 
 		
 		$relationModel = $this->getRelationModel();
 		$relatedModuleModel = $relationModel->getRelationModuleModel();
-		
 		switch($relatedModuleModel->name){
 		  case "MGChauffeurs": 	    
 		      $headerFields = parent::getHeaders();	      
 			unset($headerFields['uicolor']);
 		    break;
 		  case "Vehicules":
-		      $headerFields = parent::getHeaders();
+			$summaryFieldsList = $relatedModuleModel->getSummaryViewFieldsList();
+			$headerFields = array();
+			
+			//SGNOW tout ce qui suit remplace parent::getHeaders();
+			if(count($summaryFieldsList) > 0) {
+				$vehicRelatedListHeaders = $relatedModuleModel->getRelatedListFields();
+				foreach($vehicRelatedListHeaders as $fieldName) {
+					if (array_key_exists($fieldName,$summaryFieldsList)||$fieldName=='full_vehicule_name')
+						$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
+					
+				}
+			} else {
+				$headerFieldNames = $relatedModuleModel->getRelatedListFields();
+				foreach($headerFieldNames as $fieldName) {
+					$headerFields[$fieldName] = $relatedModuleModel->getField($fieldName);
+			}
+			}		
+			
+		     // $headerFields = parent::getHeaders();
 		      
 			unset($headerFields['calcolor']);
 			unset($headerFields['isrented']);

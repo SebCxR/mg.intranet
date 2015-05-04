@@ -54,7 +54,7 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
 			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
-						vtiger_vendorvehiculerel.vendorid AS vehicule_owner,
+						vtiger_vendorvehiculerel.vendorid AS vendorid,
 						vtiger_crmentity.*, vtiger_vehicules.*, vtiger_vehiculescf.*
 						FROM vtiger_vehicules
 						INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_vehicules.vehiculesid
