@@ -100,7 +100,7 @@
 					<td class="listViewEntryValue {$WIDTHTYPE}">			
 						<div class="picklistvalue-uicolor colortag" style="background-color:{$LISTVIEW_ENTRY->get('calcolor')}" data-color="{$LISTVIEW_ENTRY->get('calcolor')}">&nbsp;</div>
 						{$LISTVIEW_ENTRY->get('vehicule_name')} 
-						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
+						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes' or $LISTVIEW_ENTRY->get('isrented') eq '1' or $LISTVIEW_ENTRY->get('isrented') eq vtranslate('yes', $MODULE)}
 							{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
 						{/if}						
 					</td>
