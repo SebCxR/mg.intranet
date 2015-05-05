@@ -207,6 +207,29 @@ class Vehicules_Module_Model extends Vtiger_Module_Model {
 		
         return $relatedListFields;
 	}
+/**SGNOW copie de vtiger
+	 * Function to get list of field for summary view
+	 * @return <Array> list of field models <Vtiger_Field_Model>
+	 */
+	public function getSummaryViewFieldsList() {
+		
+		if (!$this->summaryFields) {
+			$summaryFields = array();
+			$fields = $this->getFields();
+			
+			//SG1504 Ajout de calcolor et des parametres de full_vehivule_name dans les summary view fields
+			$fullnamefields = array('calcolor' /*,'vehicule_owner','isrented'*/);
+			
+			foreach ($fields as $fieldName => $fieldModel) {
+				if (($fieldModel->isSummaryField() && $fieldModel->isActiveField()) ||  in_array($fieldName,$fullnamefields) ) {
+					$summaryFields[$fieldName] = $fieldModel;
+				}
+			}
+			$this->summaryFields = $summaryFields;
+			
+		}
+		return $this->summaryFields;
+	}
 
 	public function getField($fieldName) {
 	if ($fieldName == 'full_vehicule_name') {

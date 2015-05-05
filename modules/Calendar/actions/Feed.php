@@ -544,7 +544,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 		}	
         $params = array_merge(array($eventUserId), $this->getGroupsIdsForUsers($eventUserId));
         $query.= " AND vtiger_crmentity.smownerid IN (".  generateQuestionMarks($params).")";
-		
+	$query.= " GROUP BY  vtiger_activity.activityid";
 	//SGNOW
 	//var_dump($params);
 	//echo $query;
@@ -633,6 +633,7 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 			}
 		
 		$result = $this->groupResultsById($result);
+		
 		return $result;
 	}
 	
@@ -1034,23 +1035,35 @@ class Calendar_Feed_Action extends Vtiger_BasicAjax_Action {
 	    $resulttodel = array();
 	    $changemap = array();
 	    $finalresult = array();
+	     
 	    foreach ($res as $i=>$activity) {   
 		$activityid = $activity['id'];
 		if ($i < count($res)-1) {
-		    for ($k=$i+1; $k<count($res);$k++) {          
+		    for ($k=$i+1; $k<count($res);$k++) {
+			
 			if ($activityid == $res[$k]['id']) {
+			
 			    if (is_array($resulttodel)&& in_array($k,$resulttodel)) {}
 				else {
+					
 				    $diff = array_diff_assoc($activity,$res[$k]);
-				    foreach ($diff as $key=>$value) {                         
-				      $resulttodel[] = $k;                                               
-				      $changemap[$i][$key][] = $res[$k][$key];          
+				    if (count($diff)>0) {
+					foreach ($diff as $key=>$value) {                         
+						$resulttodel[] = $k;                                               
+						$changemap[$i][$key][] = $res[$k][$key];          
+					}
 				    }
+				    else {
+					$resulttodel[] = $k;
+					}
 				}
-			    }       
+
+			}       
 		    }   
 		}
 	    };
+	   
+	    
 	    foreach ($changemap as $rsltindex=>$keystochange) {
 		foreach ($keystochange as $key=>$valuestoadd) {
 		    $changemap[$rsltindex][$key] = array_unique($changemap[$rsltindex][$key]);

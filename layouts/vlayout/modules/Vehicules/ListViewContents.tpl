@@ -106,7 +106,7 @@
 					{elseif $LISTVIEW_HEADERNAME eq 'full_vehicule_name'}
 						<div class="picklistvalue-uicolor" style="background-color:{$CALCOLOR}">&nbsp;</div>
 						{$LISTVIEW_ENTRY->get('vehicule_name')}
-						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes'}
+						{if $LISTVIEW_ENTRY->get('isrented') eq 'yes' or $LISTVIEW_ENTRY->get('isrented') eq vtranslate('yes',$MODULE) or $LISTVIEW_ENTRY->get('isrented') eq '1'}
 							{vtranslate('LBL_VEHIC_ISRENTED_TO', $MODULE)} {$LISTVIEW_ENTRY->get('vehicule_owner')}
 						{/if}		
 					{else}
