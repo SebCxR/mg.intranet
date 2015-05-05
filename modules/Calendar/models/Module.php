@@ -366,10 +366,13 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		$query = "SELECT vtiger_users.first_name,vtiger_users.last_name, vtiger_users.id as userid, vtiger_mgchauffeurs.uicolor
 			FROM vtiger_users
-			INNER JOIN vtiger_mgchauffeurs
-			ON vtiger_mgchauffeurs.userid=vtiger_users.id
-			AND vtiger_users.status='Active'
-			GROUP BY userid
+			JOIN vtiger_mgchauffeurs
+				ON vtiger_mgchauffeurs.userid=vtiger_users.id
+			JOIN vtiger_crmentity
+				ON vtiger_mgchauffeurs.mgchauffeursid = vtiger_crmentity.crmid
+			WHERE vtiger_crmentity.deleted = 0
+			/* AND vtiger_users.status = 'Active' */
+			AND vtiger_mgchauffeurs.actif = 1
 			";
 		$result = $db->query($query);
 		 $rows = $db->num_rows($result);
