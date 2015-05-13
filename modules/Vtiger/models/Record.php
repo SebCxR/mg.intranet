@@ -420,6 +420,7 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 			//related modules object filtred by name
 			$moduleName = $this->getModuleName();
 			$relationModels = Vtiger_Relation_Model::getAllRelations($moduleName);
+			
 			$relatedModuleNames = array_combine($relatedModules, $relatedModules);
 			$relatedModules = array();
 			foreach($relationModels as $relationModel)
@@ -482,7 +483,27 @@ class Vtiger_Record_Model extends Vtiger_Base_Model {
 						ON DUPLICATE KEY UPDATE vtiger_campaigncontrel.campaignid = vtiger_campaigncontrel.campaignid
 				";
 				break;
+			
+			
+			
 			default:
+				//SG1505 vtiger_crmentityrel
+			$sql[] = "INSERT INTO vtiger_crmentityrel (crmid, module, relcrmid, relmodule)
+					SELECT $destRecord, module, relcrmid, relmodule
+					FROM vtiger_crmentityrel src
+					WHERE src.crmid = $templateId
+					AND src.relmodule = '$relatedModuleName'
+					ON DUPLICATE KEY UPDATE vtiger_crmentityrel.crmid = vtiger_crmentityrel.crmid
+			";
+			$sql[] = "INSERT INTO vtiger_crmentityrel (crmid, module, relcrmid, relmodule)
+					SELECT crmid, module, $destRecord, relmodule
+					FROM vtiger_crmentityrel src
+					WHERE src.relcrmid = $templateId
+					AND src.module = '$relatedModuleName'
+					ON DUPLICATE KEY UPDATE vtiger_crmentityrel.crmid = vtiger_crmentityrel.crmid
+			";
+							
+				
 				break;
 			}
 			break;
