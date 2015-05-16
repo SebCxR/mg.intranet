@@ -55,11 +55,11 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 		$busyList = array();
 		$db = PearDatabase::getInstance();
 		
-		
 		$query = "SELECT vtiger_crmentity.crmid, vtiger_activity.subject,vtiger_activity.activitytype, vtiger_mgchauffeurs.mgchauffeursid as chauffeurid FROM vtiger_activity"
-					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid"
+					." INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_activity.activityid"					
 					." INNER JOIN vtiger_invitees ON vtiger_invitees.activityid = vtiger_activity.activityid"
 					." INNER JOIN vtiger_mgchauffeurs ON vtiger_mgchauffeurs.userid = vtiger_invitees.inviteeid"
+					." INNER JOIN vtiger_crmentity secure ON secure.crmid = vtiger_mgchauffeurs.mgchauffeursid"
 					;
 
 		$query .= " WHERE vtiger_crmentity.deleted=0"
@@ -167,7 +167,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 	function getBusyInActivityTypeArray($mgtid) {
 		$moduleName = $this->getName();
 		
-		$busylist = $this->getBusyListOnEvents($mgtid);
+		$busylist = $this->getBusylistOnEvents($mgtid);
 		
 		$activitytypes = Vtiger_Util_Helper::getPickListValues('activitytype');
 		
