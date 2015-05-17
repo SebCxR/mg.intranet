@@ -25,10 +25,28 @@
 					<tbody>
 					<input type="hidden" id="dragImagePath" value="{vimage_path('drag.png')}" />
 					{assign var=PICKLIST_VALUES value=$SELECTED_PICKLISTFIELD_ALL_VALUES}
+					{assign var=PICKLIST_DATA value=$SELECTED_PICKLISTFIELD_ALL_DATA}
+					{assign var=PICKLIST_INDEX value=0}
 					{foreach key=PICKLIST_KEY item=PICKLIST_VALUE from=$PICKLIST_VALUES}
+						{assign var=INPUT_ID value='picklistvalue-'|cat:$PICKLIST_INDEX|cat:'-uicolor'}
 						<tr class="pickListValue cursorPointer" data-key="{Vtiger_Util_Helper::toSafeHTML($PICKLIST_VALUE)}">
-							<td class="textOverflowEllipsis"><img class="alignMiddle" src="{vimage_path('drag.png')}"/>&nbsp;&nbsp;{vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}</td>
+							<td class="textOverflowEllipsis"><img class="alignMiddle" src="{vimage_path('drag.png')}"/>
+								&nbsp;&nbsp;
+								<div class="picklist-color">
+								{if $PICKLIST_DATA[$PICKLIST_VALUE]}
+									{assign var=UICOLOR value=$PICKLIST_DATA[$PICKLIST_VALUE]['uicolor']}
+								{else}
+									{assign var=UICOLOR value=''}
+								{/if}
+								<input type="hidden" class="colorField"
+								id="{$INPUT_ID}"
+								name="picklistvalue-uicolor" value="{$UICOLOR}"/>
+								<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder"><div style="background-color: {$UICOLOR}"></div></div>
+								</div>
+								&nbsp;&nbsp;{vtranslate($PICKLIST_VALUE,$SELECTED_MODULE_NAME)}
+							</td>
 						</tr>
+						{assign var=PICKLIST_INDEX value=$PICKLIST_INDEX + 1}
 					{/foreach}
 					</tbody>
 				</table>
@@ -49,8 +67,21 @@
 				<div><i class="icon-info-sign"></i>&nbsp;<span>{vtranslate('LBL_DRAG_ITEMS_TO_RESPOSITION',$QUALIFIED_MODULE)}</span></div>
 				<br><div>&nbsp;&nbsp;{vtranslate('LBL_SELECT_AN_ITEM_TO_RENAME_OR_DELETE',$QUALIFIED_MODULE)}</div> 
 				<br><div>&nbsp;&nbsp;{vtranslate('LBL_TO_DELETE_MULTIPLE_HOLD_CONTROL_KEY',$QUALIFIED_MODULE)}</div>
+					
+				<br><br>{* ED141129 champs uicolor et uiicon de vtiger_picklist *}
+				<form id="picklistproperties-ui"><fieldset>
+					<h3>Affichage</h3>
+					<table border=0>
+						<tr><td class="span2"><label for="picklistproperties-uicolor">Couleur</label>
+						<td><input type="checkbox" id="picklistproperties-uicolor" name="uicolor"
+						{if $PROPERTIES_UICOLOR} checked="checked"{/if}></td>
+						<tr style="opacity: 0.5"><td class="span2"><label for="picklistproperties-uiicon">Ic&ocirc;ne</label>
+						<td><input type="checkbox" id="picklistproperties-uiicon" name="uiicon"
+						{if $PROPERTIES_UIICON} checked="checked"{/if}></td>
+					</table>
+				</fieldset></form>
 			</div>	
-		</div>		
+		</div>	
 		<div id="createViewContents" class="hide">
 			{include file="CreateView.tpl"|@vtemplate_path:$QUALIFIED_MODULE}
 		</div>
@@ -71,5 +102,7 @@
 			</div>	
 		</div>
 	{/if}
+	<div id="pickListValeByRoleContainer">
+	</div>	
 </div>	
 {/strip}

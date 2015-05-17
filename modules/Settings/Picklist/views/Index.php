@@ -30,12 +30,22 @@ class Settings_Picklist_Index_View extends Settings_Vtiger_Index_View {
         if(count($pickListFields) > 0) {
             $selectedPickListFieldModel = reset($pickListFields);
 
-            $selectedFieldAllPickListValues = Vtiger_Util_Helper::getPickListValues($selectedPickListFieldModel->getName());
-            
-            
-            $viewer->assign('PICKLIST_FIELDS',$pickListFields);
+            /* ED141127
+	     * Ajout des données supplémentaires (uicolor, uiicon, ...)
+	     */
+	    $selectedFieldAllPickListData = array();
+            $selectedFieldAllPickListValues = Vtiger_Util_Helper::getPickListValues($selectedPickListFieldModel->getName(), $selectedFieldAllPickListData);
+	    $viewer->assign('PICKLIST_FIELDS',$pickListFields);
             $viewer->assign('SELECTED_PICKLIST_FIELDMODEL',$selectedPickListFieldModel);
             $viewer->assign('SELECTED_PICKLISTFIELD_ALL_VALUES',$selectedFieldAllPickListValues);
+            $viewer->assign('SELECTED_PICKLISTFIELD_ALL_DATA',$selectedFieldAllPickListData);
+	
+	    $properties = getPicklistProperties($selectedPickListFieldModel);
+	    if($properties){
+		$viewer->assign('PROPERTIES_UICOLOR', $properties["uicolor"]);
+		$viewer->assign('PROPERTIES_UIICON', $properties["uiicon"]);
+	    }
+	    
             $viewer->assign('ROLES_LIST', Settings_Roles_Record_Model::getAll());
         }else{
             $viewer->assign('NO_PICKLIST_FIELDS',true);

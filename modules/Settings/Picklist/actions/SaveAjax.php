@@ -123,11 +123,12 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
     public function saveOrder(Vtiger_Request $request) {
         $pickListFieldName = $request->get('picklistName');
         $picklistValues = $request->get('picklistValues');
-        
+        $picklistData = $request->get('picklistData'); /* ED141127 */
+        $picklistProperties = $request->get('picklistProperties'); /* ED141127 */
         $moduleModel = new Settings_Picklist_Module_Model();
         $response = new Vtiger_Response();
         try{
-            $moduleModel->updateSequence($pickListFieldName, $picklistValues);
+            $moduleModel->updateSequence($pickListFieldName, $picklistValues, $picklistData, $picklistProperties);
             $response->setResult(array('success',true));
         } catch (Exception $e) {
             $response->setError($e->getCode(), $e->getMessage());
@@ -142,8 +143,8 @@ class Settings_Picklist_SaveAjax_Action extends Settings_Vtiger_Basic_Action {
         $roleSelected = $request->get('rolesSelected');
         
         $moduleModel = new Settings_Picklist_Module_Model();
-		$response = new Vtiger_Response();
-        try{
+	$response = new Vtiger_Response();
+        try {
             $moduleModel->enableOrDisableValuesForRole($pickListFieldName, $enabledValues, $disabledValues,array($roleSelected));
             $response->setResult(array('success',true));
         } catch (Exception $e) {

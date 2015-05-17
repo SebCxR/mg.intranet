@@ -185,19 +185,19 @@ function getNonEditablePicklistValues($fieldName, $lang=array(), $adb){
  * @param string $tableName - the picklist tablename
  * @param integer $roleid - the roleid of the role for which you want data
  * @param object $adb - the peardatabase object
+ * @param &$picklistValuesData - returns more data : uicolor, uiicon (ED141128)
  * @return array $val - the assigned picklist values in array format
  */
-function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
+function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array(), &$picklistValuesData = FALSE){
 	$cache = Vtiger_Cache::getInstance();
 	if($cache->hasAssignedPicklistValues($tableName,$roleid)) {
 		return $cache->getAssignedPicklistValues($tableName,$roleid);
 	} else {
 	$arr = array();
 	
-	$sql = "select picklistid from vtiger_picklist where name = ?";
-	$result = $adb->pquery($sql, array($tableName));
-	if($adb->num_rows($result)){
-		$picklistid = $adb->query_result($result, 0, "picklistid");
+	$properties = getPicklistProperties($tableName, $roleid, $cache);
+	if($properties){
+		$picklistid = $properties["picklistid"];
 
 		$sub = getSubordinateRoleAndUsers($roleid);
 		$subRoles = array($roleid);
@@ -207,10 +207,18 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 		foreach($subRoles as $role){
 			$roleids[] = $role;
 		}
-
-		$sql = "SELECT distinct ".$adb->sql_escape_string($tableName)." FROM ". $adb->sql_escape_string("vtiger_$tableName")
-				. " inner join vtiger_role2picklist on ".$adb->sql_escape_string("vtiger_$tableName").".picklist_valueid=vtiger_role2picklist.picklistvalueid"
-				. " and roleid in (".generateQuestionMarks($roleids).") order by sortid";
+		
+		$uicolor = $properties["uicolor"];
+		$uiicon = $properties["uiicon"];
+		
+		$sql = "SELECT DISTINCT ".$adb->sql_escape_string($tableName)
+			. ($uicolor ? ', uicolor' : '')
+			. ($uiicon ? ', uiicon' : '')
+			." FROM ". $adb->sql_escape_string("vtiger_$tableName")
+			." INNER JOIN vtiger_role2picklist
+				ON ".$adb->sql_escape_string("vtiger_$tableName").".picklist_valueid=vtiger_role2picklist.picklistvalueid
+				AND roleid IN (".generateQuestionMarks($roleids).")
+			ORDER BY sortid";
 		$result = $adb->pquery($sql, $roleids);
 		$count = $adb->num_rows($result);
 
@@ -223,6 +231,15 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 				else {
 					$arr[$pick_val] = $pick_val;
 				}
+				if(is_array($picklistValuesData)){
+					$data = array();
+					if($uicolor)
+						$data['uicolor'] = $resultrow['uicolor'];
+					if($uiicon)
+						$data['uiicon'] = $resultrow['uiicon'];
+					$picklistValuesData[$resultrow[$tableName]] = $data; //Avé les accents
+				}
+
 			}
 		}
 	}
@@ -230,5 +247,28 @@ function getAssignedPicklistValues($tableName, $roleid, $adb, $lang=array()){
 		$cache->setAssignedPicklistValues($tableName,$roleid,$arr);
 	return $arr;
 	}
+}
+
+function getPicklistProperties($fiedName, $roleId = null, $cache = FALSE){
+	if(!$cache) $cache = Vtiger_Cache::getInstance();
+	if($cache->hasPicklistProperties($fiedName,$roleid)) {
+		return $cache->getPicklistProperties($fiedName,$roleid);
+	} 
+	global $adb;
+	if(is_object($fiedName)) //field_model
+		$fiedName = $fiedName->getName();
+	else
+		$fiedName = $fiedName;
+	// TODO toutes les picklists ne sont pas dans cette table !
+	$sql = "SELECT picklistid, name, uicolor, uiicon
+		FROM vtiger_picklist
+		WHERE name = ?";
+	$result = $adb->pquery($sql, array($fiedName));
+	if(!$result) return FALSE;
+	$row = $adb->fetch_array($result);
+	
+	$cache->setPicklistProperties($fiedName,$roleid, $row);
+	
+	return $row;
 }
 ?>

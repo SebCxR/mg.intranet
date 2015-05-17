@@ -74,6 +74,7 @@ var Settings_Picklist_Js = {
 				jQuery('[name="addItemForm"]',data).validationEngine();
 				Settings_Picklist_Js.registerAddItemSaveEvent(data);
 				Settings_Picklist_Js.regiserSelectRolesEvent(data);
+				//TODO uicolor ?
 			}
 			app.showModalWindow(clonedCreateView, function(data) {
 				if(typeof callBackFunction == 'function') {
@@ -556,6 +557,77 @@ var Settings_Picklist_Js = {
 		});
 	},
 	
+	/**
+	 * Function to register color fields
+	 * ED141127
+	 */
+	registerEventForColorPickerFields : function(parentElement,registerForAddon, customParams) {
+		if(typeof parentElement == 'undefined') {
+			parentElement = jQuery('body');
+		}
+
+		parentElement = jQuery(parentElement);
+
+		if(parentElement.is('.colorField')){
+			var element = parentElement;
+		}else{
+			var element = jQuery('.colorField', parentElement);
+		}
+		if(element.length == 0){
+			return;
+		}
+		element.each(function(){
+			var $this = $(this);
+			var id = this.id;
+			if (!id) {
+				id = this.id = Math.random();
+			}
+			var selectorId = '#' + id + '-colorSelector';
+			$(selectorId).ColorPicker({
+				color: $this.val(),
+				onShow: function (colpkr) {
+					$(colpkr).fadeIn(200);
+					return false;
+				},
+				onHide: function (colpkr) {
+					var $input = $this;
+					if ($input.parent().hasClass('edit')) { /*Detail view -> Edit on click*/
+						$input
+							.parent().prev().click() /* ne valide pas mais permet de declencher le submit en 1 seul clic ailleurs. Enfin, c'est bizarre
+							* TODO : 	gerer le reset a la couleur d'origine (clic en haut a droite du pickcolor)
+							* 		*/
+						;
+					}
+					$(colpkr).fadeOut(200);
+					return false;
+				},
+				onChange: function (hsb, hex, rgb) {
+					var $colorSelector = $(this.data('colorpicker').el);
+					$input = $('#' + $colorSelector.attr('id').replace(/\-colorSelector$/, ''));
+					$input.val('#' + hex);
+					$colorSelector.children('div').css('backgroundColor', '#' + hex);
+					jQuery('#saveSequence').removeAttr('disabled');
+				}
+			})
+		});
+	},
+	
+	/**
+	 * Function to register picklistproperties ui properties
+	 * ED141127
+	 */
+	registerEventForUIProperties : function() {
+		
+		var element = jQuery('#picklistproperties-uicolor, #picklistproperties-uiicon');
+		
+		if(element.length == 0){
+			return;
+		}
+		element.change(function(){
+			jQuery('#saveSequence').removeAttr('disabled');
+		});
+	},
+	
 	registerPickListValuesSortableEvent : function() {
 		var tbody = jQuery( "tbody",jQuery('#pickListValuesTable'));
 		tbody.sortable({
@@ -586,17 +658,30 @@ var Settings_Picklist_Js = {
 					'elementToBlock' : jQuery('.tab-content')
 				}
 			});
-			var pickListValuesSequenceArray = {}
+			var pickListValuesSequenceArray = {};
+			var pickListValuesDataArray = {}; /* ED141127 */
 			var pickListValues = jQuery('#pickListValuesTable').find('.pickListValue');
 			jQuery.each(pickListValues,function(i,element) {
 				pickListValuesSequenceArray[jQuery(element).data('key')] = ++i;
+				pickListValuesDataArray[jQuery(element).data('key')] = {
+					'uicolor': jQuery(element).find(".colorField").val(),
+					'uiicon': jQuery(element).find(".uiicon-selector").val()
+				};
 			});
+			
+			var picklistProperties = {};
+			jQuery('#picklistproperties-uicolor, #picklistproperties-uiicon').each(function(){
+				picklistProperties[this.name] = this.checked ? "1" : "0";
+			});
+		
 			var params = {
 				module : app.getModuleName(),
 				parent : app.getParentModuleName(),
 				action : 'SaveAjax',
 				mode : 'saveOrder',
 				picklistValues : pickListValuesSequenceArray,
+				picklistData : pickListValuesDataArray,
+				picklistProperties : picklistProperties,
 				picklistName : jQuery('[name="picklistName"]').val()
 			}
 			AppConnector.request(params).then(function(data) {
@@ -621,6 +706,10 @@ var Settings_Picklist_Js = {
 		Settings_Picklist_Js.registerRenameItemEvent();
 		Settings_Picklist_Js.registerDeleteItemEvent();
 		Settings_Picklist_Js.registerSelectPickListValueEvent();
+		/* ED141127 */
+		Settings_Picklist_Js.registerEventForColorPickerFields();
+		Settings_Picklist_Js.registerEventForUIProperties();
+		
 		Settings_Picklist_Js.registerAssingValueToRuleEvent();
 		Settings_Picklist_Js.registerChangeRoleEvent();
 		Settings_Picklist_Js.registerAssingValueToRoleTabClickEvent();
