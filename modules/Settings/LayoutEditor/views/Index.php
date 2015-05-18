@@ -44,7 +44,7 @@ class Settings_LayoutEditor_Index_View extends Settings_Vtiger_Index_View {
 		foreach($fieldModels as $fieldModel) {
 			$blockIdFieldMap[$fieldModel->getBlockId()][$fieldModel->getName()] = $fieldModel;
 			if(!$fieldModel->isActiveField()) {
-				$inactiveFields[$fieldModel->getBlockId()][$fieldModel->getId()] = vtranslate($fieldModel->get('label'), $sourceModule);
+				$inactiveFields[$fieldModel->getBlockId()][$fieldModel->getId()] = str_replace("'", " ", vtranslate($fieldModel->get('label'), $sourceModule));
 			}
 		}
 

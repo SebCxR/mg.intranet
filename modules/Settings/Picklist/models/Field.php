@@ -11,8 +11,6 @@
 
 class Settings_Picklist_Field_Model extends Vtiger_Field_Model {
 
-
-
     public function isEditable() {
         $nonEditablePickListValues = array( 'campaignrelstatus', 'duration_minutes','email_flag','hdnTaxType',
                         'payment_duration','recurringtype','recurring_frequency','visibility');

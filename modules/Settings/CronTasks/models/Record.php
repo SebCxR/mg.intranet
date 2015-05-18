@@ -112,6 +112,9 @@ class Settings_CronTasks_Record_Model extends Settings_Vtiger_Record_Model {
 	 * @return <String>
 	 */
 	public function getDisplayValue($fieldName) {
+		if(is_a($fieldName, "Vtiger_Field_Model"))
+			$fieldName = $fieldName->getName();
+		
 		$fieldValue = $this->get($fieldName);
 		switch ($fieldName) {
 			case 'frequency'	: $fieldValue = intval($fieldValue);

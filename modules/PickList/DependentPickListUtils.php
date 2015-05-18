@@ -15,7 +15,6 @@ class Vtiger_DependencyPicklist {
 
 	static function getDependentPicklistFields($module='') {
 		global $adb;
-
 		if(empty($module)) {
 			$result = $adb->pquery('SELECT DISTINCT sourcefield, targetfield, tabid FROM vtiger_picklist_dependency', array());
 		} else {
@@ -56,7 +55,7 @@ class Vtiger_DependencyPicklist {
 
 		$query="select vtiger_field.fieldlabel,vtiger_field.fieldname" .
 				" FROM vtiger_field inner join vtiger_picklist on vtiger_field.fieldname = vtiger_picklist.name" .
-				" where displaytype=1 and vtiger_field.tabid=? and vtiger_field.uitype in ('15','16') " .
+				" where displaytype=1 and vtiger_field.tabid=? and vtiger_field.uitype in ('15','16','33') " .
 				" and vtiger_field.presence in (0,2) ORDER BY vtiger_picklist.picklistid ASC";
 
 		$result = $adb->pquery($query, array($tabId));
@@ -123,7 +122,6 @@ class Vtiger_DependencyPicklist {
 
 	static function getPickListDependency($module, $sourceField, $targetField) {
 		global $adb;
-
 		$tabId = getTabid($module);
 		$dependencyMap = array();
 		$dependencyMap['sourcefield'] = $sourceField;

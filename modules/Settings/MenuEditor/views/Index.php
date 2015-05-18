@@ -11,7 +11,13 @@
 class Settings_MenuEditor_Index_View extends Settings_Vtiger_Index_View {
 
 	public function process(Vtiger_Request $request) {
-		$allModelsList = Vtiger_Menu_Model::getAll(true);
+		/* ED141226 */
+		$roleid = $request->get('roleid');
+		if(!$roleid) $roleid = null;
+		$duplicate_roleid = $request->get('duplicate-roleid');
+		if(!$duplicate_roleid) $duplicate_roleid = $roleid;
+		
+		$allModelsList = Vtiger_Menu_Model::getAll(true, $duplicate_roleid);
 		$menuModelStructure = Vtiger_MenuStructure_Model::getInstanceFromMenuList($allModelsList);
 		$moduleName = $request->getModule();
 		$qualifiedModuleName = $request->getModule(false);
@@ -20,6 +26,12 @@ class Settings_MenuEditor_Index_View extends Settings_Vtiger_Index_View {
 		$viewer->assign('ALL_MODULES', $menuModelStructure->getMore());
 		$viewer->assign('SELECTED_MODULES', $menuModelStructure->getTop());
 		$viewer->assign('MODULE_NAME', $moduleName);
+		
+		/* ED141226 */
+		$allRoles = Settings_Roles_Record_Model::getAll();
+		$viewer->assign('ALL_ROLES', $allRoles);
+		$viewer->assign('CURRENT_ROLE', $roleid);
+		$viewer->assign('DUPLICATE_ROLE', $duplicate_roleid);
 		
 		$viewer->view('Index.tpl', $qualifiedModuleName);
 	}

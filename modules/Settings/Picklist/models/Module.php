@@ -34,19 +34,43 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
         $id = $db->getUniqueID("vtiger_$pickListFieldName");
         vimport('~~/include/ComboUtil.php');
         $picklist_valueid = getUniquePicklistID();
-		$tableName = 'vtiger_'.$pickListFieldName;
-		$maxSeqQuery = 'SELECT max(sortorderid) as maxsequence FROM '.$tableName;
-		$result = $db->pquery($maxSeqQuery, array());
-		$sequence = $db->query_result($result,0,'maxsequence');
+	$tableName = 'vtiger_'.$pickListFieldName;
+	$maxSeqQuery = 'SELECT max(sortorderid) as maxsequence FROM '.$tableName;
+	$result = $db->pquery($maxSeqQuery, array());
+	$sequence = $db->query_result($result,0,'maxsequence');
 
-        if($fieldModel->isRoleBased()) {
-            $sql = 'INSERT INTO '.$tableName.' VALUES (?,?,?,?,?)';
-            $db->pquery($sql, array($id, $newValue, 1, $picklist_valueid,++$sequence));
+	/* ED141128
+	 * depuis l'ajout des colonnes uicolor et uiicon, il faut retrouver la liste des colonnes
+	*/
+	$columns = $db->getColumnNames($tableName);
+	
+        $params = array($id, $newValue);
+	foreach($columns as $column)
+	switch($column){
+	    case 'picklist_valueid':
+		$params[] = $picklist_valueid;
+		break;
+	    case 'sortorderid':
+		$params[] = ++$sequence;
+		break;
+	    case 'presence':
+		$params[] = 1;
+		break;
+	}
+	if($fieldModel->isRoleBased()) {
+	    $columns = implode(', ', array_slice($columns, 0, 5));
+            $sql = 'INSERT INTO '.$tableName.' ('.$columns . ') VALUES (?,?,?,?,?)';
+            $result = $db->pquery($sql, $params);//array($id, $newValue, 1, $picklist_valueid,++$sequence)
         }else{
-            $sql = 'INSERT INTO '.$tableName.' VALUES (?,?,?,?)';
-            $db->pquery($sql, array($id, $newValue, ++$sequence, 1));
+            $columns = implode(', ', array_slice($columns, 0, 4));
+            $sql = 'INSERT INTO '.$tableName.' ('.$columns . ') VALUES (?,?,?,?)';
+            $result = $db->pquery($sql, $params);//array($id, $newValue, ++$sequence, 1)
         }
-
+	if(!$result){
+	    echo("<br>ERREUR DANS addPickListValues (" . __FILE__ .")");
+	    var_dump( array($id, $newValue, $picklist_valueid, $sequence, 1), $result);
+	    die($sql);
+	}
         if($fieldModel->isRoleBased() && !empty($rolesSelected)) {
             $sql = "select picklistid from vtiger_picklist where name=?";
             $result = $db->pquery($sql, array($pickListFieldName));
@@ -72,7 +96,17 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
     public function renamePickListValues($pickListFieldName, $oldValue, $newValue, $moduleName) {
 		$db = PearDatabase::getInstance();
 
-		$query = 'SELECT tablename,columnname FROM vtiger_field WHERE fieldname=? and presence IN (0,2)';
+		/* ED141205
+		* récupère aussi la colonne primary key des tables contenant le champ
+		*/
+	       $query = '
+		    SELECT vtiger_field.tablename, vtiger_field.columnname, vtiger_entityname.entityidcolumn
+		    FROM vtiger_field
+		    JOIN vtiger_entityname
+			ON vtiger_entityname.tabid = vtiger_field.tabid
+		    WHERE vtiger_field.fieldname = ?
+		    AND vtiger_field.presence IN (0,2)
+		';
 		$result = $db->pquery($query, array($pickListFieldName));
 		$num_rows = $db->num_rows($result);
 
@@ -85,8 +119,34 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 			$row = $db->query_result_rowdata($result, $i);
 			$tableName = $row['tablename'];
 			$columnName = $row['columnname'];
+			$entityidcolumn = $row['entityidcolumn'];
 			$query = 'UPDATE ' . $tableName . ' SET ' . $columnName . '=? WHERE ' . $columnName . '=?';
 			$db->pquery($query, array($newValue, $oldValue));
+			
+			/* ED141205
+			 * traite aussi les éléments des picklist multiples
+			 */
+			$query = 'SELECT ' . $entityidcolumn . ' AS id, ' . $columnName . ' AS value FROM ' . $tableName
+			    . ' WHERE ' . $columnName . ' LIKE CONCAT(\'% |##| \', ?)
+				OR ' . $columnName . ' LIKE CONCAT(?, \' |##| %\')
+			    ';
+			$result2 = $db->pquery($query, array($oldValue, $oldValue));
+			$num_rows2 = $db->num_rows($result2);
+			for ($j = 0; $j < $num_rows2; $j++) {
+			    $row = $db->raw_query_result_rowdata($result2, $j);
+			    $multi_value = $row['value'];
+			    
+			    $row['value'] = preg_replace('/' . preg_quote(' |##| ' . $oldValue) . '$/', ' |##| ' . $newValue, $row['value']);
+			    $row['value'] = preg_replace('/^' . preg_quote($oldValue . ' |##| ') . '/', $newValue . ' |##| ', $row['value']);
+			    $row['value'] = preg_replace('/' . preg_quote(' |##| ' . $oldValue . ' |##| ') . '/', ' |##| ' . $newValue . ' |##| ', $row['value']);
+			    
+			    if($multi_value == $row['value'])
+				print_r("Aucun changement dans $multi_value -> preg_quote = " . preg_quote(' |##| ' . $oldValue . ' |##| ') );
+			    else {
+				$query = 'UPDATE ' . $tableName . ' SET ' . $columnName . '=? WHERE ' . $entityidcolumn . '=?';
+				$db->pquery($query, array($row['value'], $row['id']));
+			    }
+			}
 		}
 
 		$query = "UPDATE vtiger_field SET defaultvalue=? WHERE defaultvalue=? AND columnname=?";
@@ -188,9 +248,9 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 
 		$sql = "select picklistid from vtiger_picklist where name=?";
 		$result = $db->pquery($sql, array($picklistFieldName));
-		$picklistid = $db->query_result($result,0,"picklistid");
+		$picklistid = $db->query_result($result, 0, "picklistid");
 
-        $pickListValueList = array_merge($valuesToEnables,$valuesToDisable);
+		$pickListValueList = array_merge($valuesToEnables,$valuesToDisable);
 		
 		//As older look utf8 characters are pushed as html-entities,and in new utf8 characters are pushed to database
 		//so we are checking for both the values
@@ -214,7 +274,7 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
             $pickListValueDetails[decode_html($row[$picklistFieldName])] =array('picklistvalueid'=>$row['picklist_valueid'],
 																	'picklistid'=>$picklistid);
         }
-		$insertValueList = array();
+	$insertValueList = array();
         $deleteValueList = array();
         foreach($roleIdList as $roleId) {
             foreach($valuesToEnables  as $picklistValue) {
@@ -237,27 +297,96 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
                 $deleteValueList[] = ' ( roleid = "'.$roleId.'" AND '.'picklistvalueid = "'.$pickListValueId.'") ';
             }
         }
-		$query = 'INSERT IGNORE INTO vtiger_role2picklist (roleid,picklistvalueid,picklistid) VALUES '.implode(',',$insertValueList);
-        $result = $db->pquery($query,array());
+	
+	$query = 'INSERT IGNORE INTO vtiger_role2picklist (roleid,picklistvalueid,picklistid) VALUES '.implode(',',$insertValueList);
+	$result = $db->pquery($query,array());
+	var_dump($result, $query);
 
-		$deleteQuery = 'DELETE FROM vtiger_role2picklist WHERE '.implode(' OR ',$deleteValueList);
+	$deleteQuery = 'DELETE FROM vtiger_role2picklist WHERE '.implode(' OR ',$deleteValueList);
 
-		$result = $db->pquery($deleteQuery,array());
+	$result = $db->pquery($deleteQuery,array());
 
         //retaining to older value
         $db->dieOnError = $dieOnErrorOldValue;
 
     }
 
-    public function updateSequence($pickListFieldName , $picklistValues) {
+    /*
+     * ED141127 : ajout de colonnes uicolor et uiicon
+     */
+    public function updateSequence($pickListFieldName , $picklistValues, $picklistData, $picklistProperties) {
         $db = PearDatabase::getInstance();
+	
+	/* table have uicolor and uiicon columns ? */
+	$ui = array();
+	if(is_array($picklistData)){
+	    $query = 'SHOW COLUMNS FROM '.$this->getPickListTableName($pickListFieldName).'  LIKE \'ui%\' ';
+	    $columns = $db->pquery($query, array());
+	    $num_rows = $db->num_rows($columns);
 
-        $query = 'UPDATE '.$this->getPickListTableName($pickListFieldName).' SET sortorderid = CASE ';
+	    for($i=0; $i<$num_rows; $i++) {
+		$row = $db->query_result_rowdata($columns,$i);
+		$ui[$row['field']] = TRUE;
+	    }
+	    /*var_dump( $ui );
+	    unset($ui['uicolor']);*/
+	    /* add missing columns */
+	    $uiproperties = array();
+	    $params = array();
+	    $properties_sql = "";
+	    foreach($picklistProperties as $property => $enabled){
+		if($enabled) $uiproperties[] = $property;
+		if(strlen($properties_sql))
+		    $properties_sql .= ', ';
+		else
+		    $properties_sql = ' SET ';
+		$properties_sql .= $property . ' = ?';
+		$params[] = $enabled;
+	    }
+	    $properties_sql = "UPDATE vtiger_picklist "
+		. $properties_sql
+		. " WHERE name = ?";
+	    $params[] = $pickListFieldName;
+	    //var_dump( $properties_sql, $params );
+	    $result = $db->pquery($properties_sql, $params);
+	    //ED150517
+	    if(!$result){
+		die("Error in modules\Settings\Picklist\models\Module.php : updateSequence()"
+		+ " - " + print_r($properties_sql, true) + ", "
+		+ " - " + print_r($params, true) + ", "
+		+ " - Try : <code>ALTER TABLE `vtiger_picklist` ADD `uicolor` BOOLEAN NULL DEFAULT FALSE , ADD `uiicon` BOOLEAN NULL DEFAULT FALSE ;</code>
+		");
+	    }
+	    // TODO toutes les picklists ne sont pas dans cette table !
+	    
+	    foreach($uiproperties as $uicolumn){
+		if(!isset($ui[$uicolumn])){
+		    $query = 'ALTER TABLE `'.$this->getPickListTableName($pickListFieldName).'` ADD `'.$uicolumn.'` VARCHAR(128) NULL';
+		    //var_dump( $query );
+		    $result = $db->pquery($query, array());
+		    $ui[$uicolumn] = $result;
+		}
+	    }
+	}
+    
+        $query = 'UPDATE '.$this->getPickListTableName($pickListFieldName)
+	.' SET sortorderid = CASE ';
         foreach($picklistValues as $values => $sequence) {
             $query .= ' WHEN '.$pickListFieldName.'="'.$db->sql_escape_string($values).'" OR '.$pickListFieldName.'="'.$db->sql_escape_string(Vtiger_Util_Helper::toSafeHTML($values)).'" THEN "'.$sequence.'"';
         }
+	$query .= ' END';
+        
+	/* ui columns */
+	foreach($ui as $uicolumn => $enabled)
+	    if($enabled){
+		$query .= ', '.$uicolumn.' = CASE ';
+		foreach($picklistData as $values => $data) {
+		    $query .= ' WHEN '.$pickListFieldName.'="'.$db->sql_escape_string($values).'" OR '.$pickListFieldName.'="'.$db->sql_escape_string(Vtiger_Util_Helper::toSafeHTML($values)).'" THEN "'.$data[$uicolumn].'"';
+		}
 		$query .= ' END';
-        $result = $db->pquery($query, array());
+	    }
+	
+	$result = $db->pquery($query, array());
     }
 
 

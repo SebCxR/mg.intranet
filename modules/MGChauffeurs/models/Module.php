@@ -197,7 +197,7 @@ class MGChauffeurs_Module_Model extends Vtiger_Module_Model {
 				    }	    				    
 			}			
 	    }
-	    //var_dump($output);
+	    
 	    return $output;
 	}
 
