@@ -56,6 +56,10 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 	    case 'presence':
 		$params[] = 1;
 		break;
+	    case 'uicolor':
+	    case 'uiicon':
+		$params[] = null;
+		break;
 	}
 	if($fieldModel->isRoleBased()) {
 	    $columns = implode(', ', array_slice($columns, 0, 5));
@@ -67,7 +71,12 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
             $result = $db->pquery($sql, $params);//array($id, $newValue, ++$sequence, 1)
         }
 	if(!$result){
-	    echo("<br>ERREUR DANS addPickListValues (" . __FILE__ .")");
+	    echo("<br>ERROR IN addPickListValues() @ " . __FILE__ ."");
+	    var_dump( array($id, $newValue, $picklist_valueid, $sequence, 1), $result);
+	    die($sql);
+	}
+        if(!is_object($result)){
+	    echo("<br>'Result is not an object' ERROR IN addPickListValues() @ " . __FILE__ ."");
 	    var_dump( array($id, $newValue, $picklist_valueid, $sequence, 1), $result);
 	    die($sql);
 	}
