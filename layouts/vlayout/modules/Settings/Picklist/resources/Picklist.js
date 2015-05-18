@@ -624,6 +624,12 @@ var Settings_Picklist_Js = {
 			return;
 		}
 		element.change(function(){
+			var className = this.id.replace('picklist', '')
+			, $layout = $(this).parents('.layoutContent:first');
+			if (this.checked)
+				$layout.addClass(className);
+			else
+				$layout.removeClass(className);
 			jQuery('#saveSequence').removeAttr('disabled');
 		});
 	},
