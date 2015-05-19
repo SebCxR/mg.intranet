@@ -56,19 +56,24 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 	    case 'presence':
 		$params[] = 1;
 		break;
+	    case 'uicolor':
+	    case 'uiicon':
+		$params[] = null;
+		break;
 	}
 	if($fieldModel->isRoleBased()) {
 	    $columns = implode(', ', array_slice($columns, 0, 5));
             $sql = 'INSERT INTO '.$tableName.' ('.$columns . ') VALUES (?,?,?,?,?)';
-            $result = $db->pquery($sql, $params);//array($id, $newValue, 1, $picklist_valueid,++$sequence)
+            $result = $db->pquery($sql, array_slice($params, 0, 5));//array($id, $newValue, 1, $picklist_valueid,++$sequence)
         }else{
             $columns = implode(', ', array_slice($columns, 0, 4));
             $sql = 'INSERT INTO '.$tableName.' ('.$columns . ') VALUES (?,?,?,?)';
-            $result = $db->pquery($sql, $params);//array($id, $newValue, ++$sequence, 1)
+            $result = $db->pquery($sql, array_slice($params, 0, 4));//array($id, $newValue, ++$sequence, 1)
         }
 	if(!$result){
 	    echo("<br>ERREUR DANS addPickListValues (" . __FILE__ .")");
-	    var_dump( array($id, $newValue, $picklist_valueid, $sequence, 1), $result);
+	    $db->echoError();
+	    var_dump(array($id, $newValue, $picklist_valueid, $sequence, 1), $result);
 	    die($sql);
 	}
         if($fieldModel->isRoleBased() && !empty($rolesSelected)) {
@@ -348,15 +353,8 @@ class Settings_Picklist_Module_Model extends Vtiger_Module_Model {
 		. " WHERE name = ?";
 	    $params[] = $pickListFieldName;
 	    //var_dump( $properties_sql, $params );
-	    $result = $db->pquery($properties_sql, $params);
-	    //ED150517
-	    if(!$result){
-		die("Error in modules\Settings\Picklist\models\Module.php : updateSequence()"
-		+ " - " + print_r($properties_sql, true) + ", "
-		+ " - " + print_r($params, true) + ", "
-		+ " - Try : <code>ALTER TABLE `vtiger_picklist` ADD `uicolor` BOOLEAN NULL DEFAULT FALSE , ADD `uiicon` BOOLEAN NULL DEFAULT FALSE ;</code>
-		");
-	    }
+	    $db->pquery($properties_sql, $params) ;
+	    
 	    // TODO toutes les picklists ne sont pas dans cette table !
 	    
 	    foreach($uiproperties as $uicolumn){
