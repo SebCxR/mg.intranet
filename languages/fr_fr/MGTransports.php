@@ -45,6 +45,7 @@ $languageStrings = array(
         'LBL_BUSY_MGCHAUFFEURS_ARRAY' => 'Tableau d\'occupation des chauffeurs du ',
         'LBL_ADD_RECORD'               => 'Nouveau Transport',
         'LBL_QUICK_PRINT'               => 'Imprimer',
+        'LBL_PRINTED_ON'               => 'Imprimé le ',
 );
 
 ?>

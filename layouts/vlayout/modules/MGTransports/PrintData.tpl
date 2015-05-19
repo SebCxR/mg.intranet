@@ -26,7 +26,7 @@
 			<span class="record-count">{$ROW} {'LBL_RECORDS'|@vtranslate:$MODULE}</span>
 		</td>
 		<td align="right" valign="top">
-			<span class="report-name">{$REPORT_NAME} le {date('d/m/Y à G:i')}</span>
+			<span class="report-name">{$REPORT_NAME} - {'LBL_PRINTED_ON'|@vtranslate:$MODULE} {$NOW_FOR_USER[0]} {'LBL_AT'|@vtranslate:$MODULE} {$NOW_FOR_USER[1]}</span>
 		</td>
 	</tr>
 	<tr>

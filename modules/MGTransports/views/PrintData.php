@@ -140,6 +140,14 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	 //Function displays the report in printable format	 
 	function GetPrintList(Vtiger_Request $request, $headers, $entries) {
 		$printData = $this->getPrintListDataArrayInHTML($request, $headers, $entries);	//utilisé si PRINTLIST_MODE !== 'LBL_PRINT_MODE_0'
+		//SGNOW1505
+		$currentUser = Users_Record_Model::getCurrentUserModel();
+		$nowforuser = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i'),$currentUser);
+		
+		$nowdatetimestring = $nowforuser->format('Y-m-d H:i');
+		$nowfinal = DateTimeField::convertToUserFormat($nowdatetimestring,$currentUser);
+		$nowexploded = explode(" ",$nowfinal);
+		
 		$viewer = $this->getViewer($request);
 
 		$listName = $this->getPrintListName($request);
@@ -152,6 +160,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 		$viewer->assign('PRINTLIST_MODE', $printMode);
 		$viewer->assign('BUSY_MGCHAUFFEURS_ARRAYS',$busyArrays);
 		$viewer->assign('REPORT_NAME', $listName);
+		$viewer->assign('NOW_FOR_USER', $nowexploded);
 		$viewer->assign('PRINTLIST_HEADERS', $headers);
 		$viewer->assign('PRINTLIST_ENTRIES', $entries);
 		$viewer->assign('PRINT_DATA', $printData[0]);
