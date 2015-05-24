@@ -171,7 +171,8 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 
 	public function getEntries($pagingModel) {
 		$db = PearDatabase::getInstance();
-		$parentModule = $this->getParentRecordModel()->getModule();
+		$parentRecordModel = $this->getParentRecordModel();
+		$parentModule = $parentRecordModel->getModule();
 		$relationModel = $this->getRelationModel();
 		if($relationModel == null) return null; /*ED141016*/
 		$relationModule = $relationModel->getRelationModuleModel();
@@ -243,6 +244,18 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 			$pagingModel->set('nextPageExists', true);
 		}else{
 			$pagingModel->set('nextPageExists', false);
+		}
+		
+		/*ED150524
+		 * set('_DELETABLE_', false), managed in RelatedList.tpl
+		 */
+		if($parentModule->getName() == 'Potentials' && $relationModule->getName() == 'Contacts'){
+			$mainContactId = $parentRecordModel->get('contact_id');
+			foreach($relatedRecordList as $id => $record) {
+				if($record->getId() == $mainContactId)
+					$record->set('_DELETABLE_', false);
+					break;
+			}
 		}
 		
 		return $relatedRecordList;

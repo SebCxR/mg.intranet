@@ -48,6 +48,10 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		}
 		$picklistDependencyDatasource = Vtiger_DependencyPicklist::getPicklistDependencyDatasource($moduleName);
 
+		/*ED150522*/
+		$recordModel = Vtiger_Record_Model::getCleanInstance($moduleName);
+		$viewer->assign('RECORD_MODEL',$recordModel); 
+			
 		$viewer->assign('PICKIST_DEPENDENCY_DATASOURCE',Zend_Json::encode($picklistDependencyDatasource));
 		$viewer->assign('CURRENTDATE', date('Y-n-j'));
 		$viewer->assign('MODE', 'massedit');
@@ -60,14 +64,14 @@ class Vtiger_MassActionAjax_View extends Vtiger_IndexAjax_View {
 		$viewer->assign('MASS_EDIT_FIELD_DETAILS',$fieldInfo); 
 		$viewer->assign('RECORD_STRUCTURE', $recordStructureInstance->getStructure());
 		$viewer->assign('USER_MODEL', Users_Record_Model::getCurrentUserModel());
-        $viewer->assign('MODULE_MODEL', $moduleModel);
-        $searchKey = $request->get('search_key');
-        $searchValue = $request->get('search_value');
+		$viewer->assign('MODULE_MODEL', $moduleModel);
+		$searchKey = $request->get('search_key');
+		$searchValue = $request->get('search_value');
 		$operator = $request->get('operator');
-        if(!empty($operator)) {
+		if(!empty($operator)) {
 			$viewer->assign('OPERATOR',$operator);
 			$viewer->assign('ALPHABET_VALUE',$searchValue);
-            $viewer->assign('SEARCH_KEY',$searchKey);
+			$viewer->assign('SEARCH_KEY',$searchKey);
 		}
 
 		echo $viewer->view('MassEditForm.tpl',$moduleName,true);

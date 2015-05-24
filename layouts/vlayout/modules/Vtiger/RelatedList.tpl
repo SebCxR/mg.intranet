@@ -22,7 +22,6 @@
         <div class="relatedHeader ">
             <div class="btn-toolbar row-fluid">
                 <div class="span8">
-
                     {foreach item=RELATED_LINK from=$RELATED_LIST_LINKS['LISTVIEWBASIC']}
                         <div class="btn-group">
                             {assign var=IS_SELECT_BUTTON value={$RELATED_LINK->get('_selectRelation')}}
@@ -166,7 +165,7 @@
                                         {if $IS_EDITABLE}
                                             <a href='{$RELATED_RECORD->getEditViewUrl()}'><i title="{vtranslate('LBL_EDIT', $MODULE)}" class="icon-pencil alignMiddle"></i></a>
                                         {/if}
-                                        {if $IS_DELETABLE}
+                                        {if $IS_DELETABLE && ($RELATED_RECORD->get('_DELETABLE_') !== false)}
                                             <a class="relationDelete"><i title="{vtranslate('LBL_DELETE', $MODULE)}" class="icon-trash alignMiddle"></i></a>
                                         {/if}
                                     </span>
