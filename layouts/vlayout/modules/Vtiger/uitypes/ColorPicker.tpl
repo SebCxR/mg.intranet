@@ -27,7 +27,7 @@
 		readonly 
 	{/if} 
 data-fieldinfo='{$FIELD_INFO}' {if !empty($SPECIAL_VALIDATOR)}data-validator={Zend_Json::encode($SPECIAL_VALIDATOR)}{/if} />
-<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder colorField"><div style="background-color: {$VALUE}"></div></div>
+<div id="{$INPUT_ID}-colorSelector" class="colorpicker-holder"><div style="background-color: {$VALUE}"></div></div>
 {if !$FIELD_MODEL->isReadOnly()}
 <script>if ($('#{$INPUT_ID}-colorSelector').length == 0){* that happens with quick create modal form *}
 	$(document).ready(function(){
