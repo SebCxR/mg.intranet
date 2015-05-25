@@ -164,6 +164,9 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 	 * @return <String>
 	 */
 	public function getRelationQuery($recordId, $functionName, $relatedModule) {
+		
+		$relatedModuleName = $relatedModule->getName();
+		
 		if ($functionName === 'get_activities') {
 			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');
 
@@ -187,7 +190,39 @@ class Contacts_Module_Model extends Vtiger_Module_Model {
 			if ($nonAdminQuery) {
 				$query = appendFromClauseToQuery($query, $nonAdminQuery);
 			}
-		} else {
+		}
+		else if ($functionName === 'get_related_list' && $relatedModuleName === 'MGTransports') {
+			$focus = CRMEntity::getInstance($this->getName());
+			$focus->id = $recordId;
+			//$entityIds = $focus->getRelatedContactsIds();
+			//$entityIds = implode(',', $entityIds);
+
+			$userNameSql = getSqlForNameInDisplayFormat(array('first_name' => 'vtiger_users.first_name', 'last_name' => 'vtiger_users.last_name'), 'Users');	
+							
+			$query = "SELECT CASE WHEN (vtiger_users.user_name not like '') THEN $userNameSql ELSE vtiger_groups.groupname END AS user_name,
+						vtiger_crmentity.*, vtiger_mgtransports.*
+						FROM vtiger_mgtransports
+						INNER JOIN vtiger_crmentity ON vtiger_crmentity.crmid = vtiger_mgtransports.mgtransportsid
+						LEFT JOIN vtiger_crmentityrel ON ( vtiger_crmentityrel.relcrmid = vtiger_crmentity.crmid
+							OR vtiger_crmentityrel.crmid = vtiger_crmentity.crmid )
+						LEFT JOIN vtiger_users ON vtiger_users.id = vtiger_crmentity.smownerid
+						LEFT JOIN vtiger_groups ON vtiger_groups.groupid = vtiger_crmentity.smownerid
+						WHERE vtiger_crmentity.deleted = 0
+						AND (vtiger_mgtransports.contactid = $recordId
+							OR (vtiger_crmentityrel.crmid = ".$recordId." OR vtiger_crmentityrel.relcrmid = ".$recordId."))";	
+			$query .= $this->getSpecificRelationQuery($relatedModuleName);
+			$nonAdminQuery = $this->getNonAdminAccessControlQueryForRelation($relatedModuleName);
+			if ($nonAdminQuery) {
+				$query = appendFromClauseToQuery($query, $nonAdminQuery);
+			}
+
+			$query .= ' GROUP BY vtiger_mgtransports.mgtransportsid';
+			
+		}
+		
+		
+		else
+		{
 			$query = parent::getRelationQuery($recordId, $functionName, $relatedModule);
 		}
 
