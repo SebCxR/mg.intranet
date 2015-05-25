@@ -326,6 +326,8 @@ var app = {
 			app.registerEventForDatePickerFields(container);
 			//SG1411 register colorPicker Events
 			app.registerEventForColorPickerFields(container.find('div.colorpicker-holder.colorField'));
+			//ED150524
+			app.registerEventForButtonSetFields(container);
 			
 			cb(container);
 		}
@@ -466,8 +468,8 @@ var app = {
 		/* ED141010
 		 * TODO ailleurs
 		 * */
-		//SG1411 appel fait dans showModalData
-		//this.registerEventForColorPickerFields(parentElement,registerForAddon,customParams);
+		this.registerEventForColorPickerFields(parentElement,registerForAddon,customParams);
+		this.registerEventForButtonSetFields(parentElement,registerForAddon,customParams);
 		
 		if(typeof parentElement == 'undefined') {
 			parentElement = jQuery('body');
@@ -676,16 +678,15 @@ var app = {
 		element.each(function(){
 			var $this = $(this);
 			var id = this.id;
-			//var selectorId = '#' + id + '-colorSelector';
-			
-			$this.ColorPicker({
+			var selectorId = '#' + id + '-colorSelector';
+			$(selectorId).ColorPicker({
 				color: $this.val(),
 				onShow: function (colpkr) {
 					$(colpkr).fadeIn(200);
 					return false;
 				},
 				onHide: function (colpkr) {
-					var $input = $this.siblings('input');
+					var $input = $this;
 					if ($input.parent().hasClass('edit')) { /*Detail view -> Edit on click*/
 						$input
 							.parent().prev().click() /* ne valide pas mais permet de declencher le submit en 1 seul clic ailleurs. Enfin, c'est bizarre
@@ -699,10 +700,32 @@ var app = {
 				},
 				onChange: function (hsb, hex, rgb) {
 					$this.val('#' + hex);
-					$this.find('div').css('backgroundColor', '#' + hex);
+					$(selectorId + ' div').css('backgroundColor', '#' + hex);
 				}
 			})
 		});
+	},
+	
+	/**
+	 * Function to register color fields
+	 * ED141010
+	 */
+	registerEventForButtonSetFields : function(parentElement,registerForAddon, customParams) {
+		if(typeof parentElement == 'undefined') {
+			parentElement = jQuery('body');
+		}
+
+		parentElement = jQuery(parentElement);
+
+		if(parentElement.is('.buttonset')){
+			var element = parentElement;
+		}else{
+			var element = jQuery('.buttonset', parentElement);
+		}
+		if(element.length == 0){
+			return;
+		}
+		element.buttonset();
 	},
 	
 	/**

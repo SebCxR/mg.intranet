@@ -822,7 +822,7 @@ $jsLanguageStrings = array(
 	'JS_NO_ITEM_SELECTED'          => 'Aucun item sélectionné'            , 
 	'JS_MORE_THAN_ONE_ITEM_SELECTED' => 'Plus d\'un item sélectionné' , 
 	'JS_ITEMS_DELETED_SUCCESSFULLY' => 'Item(s) supprimé(s)'  , 
-	'JS_ARE_YOU_SURE_TO_DELETE_WIDGET' => 'Confirmer la suppression du widget',	
+	'JS_ARE_YOU_SURE_TO_DELETE_WIDGET' => 'Confirmez la suppression du widget',	
 	'JS_DUPLICATE_ENTRIES_FOUND_FOR_THE_VALUE' => 'Valeurs dupliquées trouvées', 
 	'JS_TOTAL_RECORDS' => 'Nbre total d\'enregistrements : ',
 	'JS_PAGE_NOT_EXIST' => 'La Page n\'existe pas',
@@ -830,5 +830,9 @@ $jsLanguageStrings = array(
 	'JS_USER_EXISTS' => 'Il y a déjà un compte utilisateur à ce nom',
 	'JS_REENTER_PASSWORDS' => 'Mot de passe et Confirmation différents : saisir à nouveau ',
 	'to' => 'à',
+	//Delete Records message
+	'JS_RECORDS_ARE_GETTING_DELETED' => 'Enregistrements en cours de suppression',
+	'JS_RECORD_GETTING_DELETED' => 'Enregistrement en cours de suppression',
+	'JS_NO_RESULTS_FOUND' => 'Aucun resultat trouvé',
         
 );
