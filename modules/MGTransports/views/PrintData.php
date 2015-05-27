@@ -54,8 +54,18 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 			$listViewInstance->set('orderby', $orderBy);
 			$listViewInstance->set('sortorder',$sortOrder);
 		}
-				
-		$headers = $listViewInstance->getListViewHeaders();
+		
+		$toPrintHeaders = array('datetransport','subject','account','related_vehicules','related_mgchauffeurs');		
+		$listViewHeaders = $listViewInstance->getListViewHeaders();
+		
+		$headers = array();
+
+		foreach ($listViewHeaders as $fieldname=>$fieldmodel) {		
+			if ( in_array($fieldname,$toPrintHeaders)) {
+				$headers[$fieldname]=$fieldmodel;
+			}
+		}
+		
 		$allEntries = $listViewInstance->getListViewEntries($pagingModel);
 		
 		$selectedEntries = $this->getFilteredEntries($request, $allEntries);
