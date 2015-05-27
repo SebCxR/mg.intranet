@@ -35,7 +35,7 @@ class MGTransports_Module_Model extends Vtiger_Module_Model {
 	 * @return <String> - url
 	 */
 	public function getQuickPrintListUrl() {
-		return 'index.php?module='.$this->get('name').'&view=PrintData&source_module='.$this->get('name').'&mode=ExportAllData&printmode=LBL_PRINT_MODE_0';
+		return 'index.php?module='.$this->get('name').'&view=PrintData&source_module='.$this->get('name').'&printmode=LBL_PRINT_MODE_0';
 	}
 	
 		

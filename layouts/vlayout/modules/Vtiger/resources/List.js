@@ -436,7 +436,6 @@ jQuery.Class("Vtiger_List_Js",{
 	
 	     /*
 	 * function to trigger quick print action.
-	 * Identical with triggerPrintList here but can be customised (maybe to change cvId ?)
 	 * returns UI
 	 */
 	triggerQuickPrintList :function(printListUrl){
@@ -444,6 +443,13 @@ jQuery.Class("Vtiger_List_Js",{
 		// Compute selected ids, excluded ids values, along with cvid value and pass as url parameters
 		var selectedIds = listInstance.readSelectedIds(true);
 		var excludedIds = listInstance.readExcludedIds(true);
+		
+		if (selectedIds == "[]") {			  
+			   printListUrl += '&mode=ExportAllData';
+		}
+		else {
+			printListUrl += '&mode=ExportSelectedRecords';  
+		}		
 		var cvId = listInstance.getCurrentCvId();
 		var orderBy = jQuery('#orderBy').val();
 		var sortOrder = jQuery("#sortOrder").val();
