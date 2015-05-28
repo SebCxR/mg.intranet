@@ -7,7 +7,6 @@
 <div class="relatedContainer">
     <input type="hidden" name="relatedModuleName" class="relatedModuleName" value="{$RELATED_MODULE}" />
 </div>
-{*var_dump($BUSYLIST)*}
 <table class="table table-bordered listViewEntriesTable unstyled">
 	{foreach item=RELATED_RECORD from=$RELATED_RECORDS}
 		{assign var=CHAUFFEURID value={$RELATED_RECORD->getId()}}

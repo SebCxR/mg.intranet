@@ -14,7 +14,12 @@
 <div  class="summaryWidgetContainer">
 	<div class="widget_header row-fluid">
 		<span class="span8"><h4 class="textOverflowEllipsis">{vtranslate('LBL_ACTIVITIES',$MODULE_NAME)}</h4></span>
-		<span class="span4"><button class="btn pull-right addButton createActivity" data-url="sourceModule={$RECORD->getModuleName()}&sourceRecord={$RECORD->getId()}&relationOperation=true" type="button"><strong>{vtranslate('LBL_ADD',$MODULE_NAME)}</strong></button></span>
+		<span class="span4">
+			<button class="btn pull-right addButton createActivity" data-url="sourceModule={$RECORD->getModuleName()}&sourceRecord={$RECORD->getId()}&relationOperation=true" type="button">
+			<i class="icon-plus icon-white"></i>&nbsp;
+			<strong>{vtranslate('LBL_ADD',$MODULE_NAME)}</strong>
+			</button>
+		</span>
 	</div>
 	<div class="widget_contents">
 		{if count($ACTIVITIES) neq '0'}
