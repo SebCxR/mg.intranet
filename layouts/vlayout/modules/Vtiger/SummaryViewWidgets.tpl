@@ -31,7 +31,9 @@
 									{foreach item=RECORD_ACTION from=$RECORD_ACTIONS}
 										{assign var=IS_SELECT_BUTTON value={$RECORD_ACTION eq "Select"}}
 										<button type="button" class="btn addButton
-										{if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
+										{if $IS_SELECT_BUTTON eq true} selectRelation {/if}
+										{if $IS_SELECT_BUTTON eq false} pull-right {/if}
+										"
 										{if $IS_SELECT_BUTTON eq true} data-moduleName={$DETAIL_VIEW_WIDGET->get('linkName')} {/if}
 										data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}"
 										{if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
@@ -39,7 +41,7 @@
 											{if $RECORD_ACTION_LABELS}{assign var=RECORD_ACTION_LABEL value=$RECORD_ACTION_LABELS[$RECORD_ACTION_IDX]}
 											{else}{assign var=RECORD_ACTION_LABEL value=vtranslate('LBL_'|cat:strtoupper($RECORD_ACTION),$MODULE_NAME)}
 											{/if}
-											&nbsp;<strong>{$RECORD_ACTION_LABEL}</strong>
+											&nbsp;<strong>{vtranslate($RECORD_ACTION_LABEL,$MODULE_NAME)}</strong>
 										</button>
 										{assign var=RECORD_ACTION_IDX value=$RECORD_ACTION_IDX+1}
 									{/foreach}
@@ -72,7 +74,9 @@
 									{foreach item=RECORD_ACTION from=$RECORD_ACTIONS}
 										{assign var=IS_SELECT_BUTTON value={$RECORD_ACTION eq "Select"}}
 										<button type="button" class="btn addButton
-										{if $IS_SELECT_BUTTON eq true} selectRelation {/if} "
+										{if $IS_SELECT_BUTTON eq true} selectRelation {/if}
+										{if $IS_SELECT_BUTTON eq false} pull-right {/if}
+										"
 										{if $IS_SELECT_BUTTON eq true} data-moduleName={$DETAIL_VIEW_WIDGET->get('linkName')} {/if}
 										data-url="{$DETAIL_VIEW_WIDGET->get('actionURL')}"
 										{if $IS_SELECT_BUTTON neq true}name="addButton"{/if}>
@@ -80,7 +84,7 @@
 											{if $RECORD_ACTION_LABELS}{assign var=RECORD_ACTION_LABEL value=$RECORD_ACTION_LABELS[$RECORD_ACTION_IDX]}
 											{else}{assign var=RECORD_ACTION_LABEL value=vtranslate('LBL_'|cat:strtoupper($RECORD_ACTION),$MODULE_NAME)}
 											{/if}
-											&nbsp;<strong>{$RECORD_ACTION_LABEL}</strong>
+											&nbsp;<strong>{vtranslate($RECORD_ACTION_LABEL,$MODULE_NAME)}</strong>
 										</button>
 										{assign var=RECORD_ACTION_IDX value=$RECORD_ACTION_IDX+1}
 									{/foreach}

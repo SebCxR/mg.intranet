@@ -462,6 +462,8 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		$parentId = $request->get('record');
 		$pageNumber = $request->get('page');
 		$limit = $request->get('limit');
+		$orderby = $request->get('orderby');
+		$sortorder = $request->get('sortorder');
 		$relatedModuleName = $request->get('relatedModule');
 		$moduleName = $request->getModule();
 		if(empty($pageNumber)) {
@@ -473,7 +475,12 @@ class Vtiger_Detail_View extends Vtiger_Index_View {
 		if(!empty($limit)) {
 			$pagingModel->set('limit', $limit);
 		}
-
+		if(!empty($orderby)) {
+			$pagingModel->set('orderby', $orderby);
+		}
+		if(!empty($sortorder)) {
+			$pagingModel->set('sortorder', $sortorder);
+		}
 		$parentRecordModel = Vtiger_Record_Model::getInstanceById($parentId, $moduleName);
 		$relationListView = Vtiger_RelationListView_Model::getInstance($parentRecordModel, $relatedModuleName);
 		$models = $relationListView->getEntries($pagingModel);

@@ -66,8 +66,13 @@ class Vtiger_Relation_Model extends Vtiger_Base_Model{
     }
 
 	public function getListUrl($parentRecordModel) {
-		return 'module='.$this->getParentModuleModel()->get('name').'&relatedModule='.$this->get('modulename').
+		//SG1505 Ajout du tri par date pour les listes de transports
+		$listUrl = 'module='.$this->getParentModuleModel()->get('name').'&relatedModule='.$this->get('modulename').
 				'&view=Detail&record='.$parentRecordModel->getId().'&mode=showRelatedList';
+		if ($this->get('modulename') == 'MGTransports') {
+			$listUrl .= '&sortorder=DESC&orderby=datetransport';
+		}
+		return $listUrl;
 	}
 
 	public function setRelationModuleModel($relationModel){

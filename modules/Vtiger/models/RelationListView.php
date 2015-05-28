@@ -189,8 +189,16 @@ class Vtiger_RelationListView_Model extends Vtiger_Base_Model {
 		$startIndex = $pagingModel->getStartIndex();
 		$pageLimit = $pagingModel->getPageLimit();
 
+		
 		$orderBy = $this->getForSql('orderby');
 		$sortOrder = $this->getForSql('sortorder');
+		
+		//SG1505
+		if (!$orderBy) {
+			$orderBy = $pagingModel->getForSql('orderby');
+			$sortOrder = $pagingModel->getForSql('sortorder');
+		}
+		
 		if($orderBy) {
 
 			$orderByFieldModuleModel = $relationModule->getFieldByColumn($orderBy);

@@ -10,6 +10,52 @@
 
 class Accounts_DetailView_Model extends Vtiger_DetailView_Model {
 
+	
+	/**
+	 * Function to get the detail view widgets
+	 * @return <Array> - List of widgets , where each widget is an Vtiger_Link_Model
+	 *
+	 * Ajout des blocks Widgets
+	 * La table _Links ne semble pas être utilisée pour initialiser le tableau
+	 * nécessite l'existence des fichiers Vtiger/%RelatedModule%SummaryWidgetContents.tpl (tout attaché)
+	 */
+	public function getWidgets() {
+		$userPrivilegesModel = Users_Privileges_Model::getCurrentUserPrivilegesModel();
+		$widgetLinks = parent::getWidgets();
+		$widgets = array();
+		
+		$mgtransportsInstance = Vtiger_Module_Model::getInstance('MGTransports');
+		if($userPrivilegesModel->hasModuleActionPermission($mgtransportsInstance->getId(), 'DetailView')) {
+			if ($this->getModuleName() == 'Accounts') {
+				$actionUrlSuffix = '&account='.$this->getRecord()->getId();
+			}
+			else if ($this->getModuleName() == 'Contacts') {
+				$actionUrlSuffix = '&contact='.$this->getRecord()->getId();
+			}
+			else $actionUrlSuffix = '';
+			$widgets[] = array(
+					'linktype' => 'DETAILVIEWWIDGET',
+					'linklabel' => 'Transports',
+					'linkName'	=> $mgtransportsInstance->getName(),
+					'linkurl' => 'module='.$this->getModuleName().'&view=Detail&record='.$this->getRecord()->getId().
+							'&relatedModule=MGTransports&mode=showRelatedRecords&page=1&limit=25&orderby=datetransport&sortorder=DESC',
+					'action'	=>	array('ADD'),
+					'actionlabel'	=>	array('LBL_ADD'),
+					'actionURL' =>	$mgtransportsInstance->getCreateRecordUrl().$actionUrlSuffix
+			);
+		}
+
+		foreach ($widgets as $widgetDetails) {
+			$widgetLinks[] = Vtiger_Link_Model::getInstanceFromValues($widgetDetails);
+		}
+
+		return $widgetLinks;
+	}
+	
+	
+	
+	
+	
 	/**
 	 * Function to get the detail view links (links and widgets)
 	 * @param <array> $linkParams - parameters which will be used to calicaulate the params
