@@ -150,7 +150,7 @@ class MGTransports_PrintData_View extends Vtiger_View_Controller {
 	 //Function displays the report in printable format	 
 	function GetPrintList(Vtiger_Request $request, $headers, $entries) {
 		$printData = $this->getPrintListDataArrayInHTML($request, $headers, $entries);	//utilisé si PRINTLIST_MODE !== 'LBL_PRINT_MODE_0'
-		//SGNOW1505
+		
 		$currentUser = Users_Record_Model::getCurrentUserModel();
 		$nowforuser = DateTimeField::convertToUserTimeZone(date('Y-m-d H:i'),$currentUser);
 		

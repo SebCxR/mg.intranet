@@ -124,7 +124,7 @@ referenceCreateHandler : function(container) {
 		}
 		quickCreateNode.trigger('click',{'callbackFunction':postQuickCreateSave});
 	},
-//SGNOW
+
 registerEditUserLinkEvent : function(container){
 		var thisInstance = this;
 		var $userEditButton = container.find('.editUserLink');
