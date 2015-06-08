@@ -11,10 +11,11 @@
  * December 2013   
  ******************************************************************/
 $languageStrings = array(
-	'SINGLE_Calendar'              => 'Tâche'                      , 
+	'SINGLE_Calendar'              => 'Tâche'                      ,
+        'SINGLE_Events'              => 'Activité'                      ,
 	'LBL_ADD_TASK'                 => 'Nouvelle tâche'                    , 
 	'LBL_ADD_EVENT'                => 'Nouvelle activité'           , 
-	'LBL_RECORDS_LIST'             => 'Liste'                       , 
+	'LBL_RECORDS_LIST'             => 'Liste des activités'                       , 
 	'LBL_EVENTS'                   => 'Activités'                 , 
 	'LBL_TODOS'                    => 'Tâches'                     , 
 	'LBL_CALENDAR_SETTINGS'        => 'Configuration du calendrier'           ,
@@ -49,7 +50,9 @@ $languageStrings = array(
 	'Medium'                       => 'Normale'                     , 
 	'LBL_CHANGE_OWNER'             => 'Changer assignation'         , 
 	'LBL_EVENT'                    => 'Activité'                   , 
-	'LBL_TASK'                     => 'Tâche'                      , 
+	'LBL_TASK'                     => 'Tâche'                      ,
+        'LBL_EVENTS_LIST'            => 'Liste des activités'               , 
+	'LBL_MGTRANSPORTS_LIST'          => 'Liste des transports'             ,  
 	'LBL_CALENDAR_VIEW'            => 'Vue Calendrier'               , 
 	'LBL_SHARED_CALENDAR'          => 'Calendrier partagé'             ,
 	'LBL_VEHICULES_CALENDAR_VIEW'  => 'Planning par véhicule'             ,
@@ -73,6 +76,9 @@ $languageStrings = array(
 	'Yearly'                       => ' année'                        ,
 	
 	// Traductions manquantes
+        'LBL_UNKNOWN'                       => 'non renseigné'                        ,
+        
+        
 	// Copie de Users.php
 	'Reminder Interval'            => 'Délai de rappel'            , 
 	'Starting Day of the week' => 'Jour de début de semaine' ,
@@ -89,8 +95,9 @@ $languageStrings = array(
 	// Copie de Events.php
 	'Held'                         => 'A eu lieu'                   , 
 	'Not Held'                     => 'N\'a pas eu lieu'            ,
-        
-        
+        'LBL_CONTACTS' => 'Contacts',
+        'LBL_INVITEES' => 'Personnel concerné',
+        'INVITEES' => 'Personnel concerné',
         'LBL_VEHICULE_ACTIVITIES_RELLIST' => 'Activités',
 
 );

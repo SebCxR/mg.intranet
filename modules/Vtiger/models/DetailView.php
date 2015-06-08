@@ -176,7 +176,7 @@ class Vtiger_DetailView_Model extends Vtiger_Base_Model {
 		if($parentModuleModel->isTrackingEnabled()) {
 			$relatedLinks[] = array(
 					'linktype' => 'DETAILVIEWTAB',
-					'linklabel' => 'LBL_UPDATES',
+					'linklabel' => 'LBL_UPDATE',
 					'linkurl' => $recordModel->getDetailViewUrl().'&mode=showRecentActivities&page=1',
 					'linkicon' => ''
 			);

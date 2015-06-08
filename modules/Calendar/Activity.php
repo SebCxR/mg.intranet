@@ -181,17 +181,17 @@ class Activity extends CRMEntity {
 		
 		//Insert into vehiculeactivityrel
 		 if(isset($this->column_fields['vehiculeid']) && $this->column_fields['vehiculeid'] != '') 
-		{
-	//SGNOW1
+			{
+	
 			//$this->insertIntoEntityTable('vtiger_vehiculetactivityrel', $module);	
-		$sql = 'INSERT INTO vtiger_vehiculeactivityrel (vehiculeid,activityid) VALUES (?,?)';
-		$params = array($this->column_fields['vehiculeid'], $this->id);
+			$sql = 'INSERT INTO vtiger_vehiculeactivityrel (vehiculeid,activityid) VALUES (?,?)';
+			$params = array($this->column_fields['vehiculeid'], $this->id);
 			$adb->pquery($sql, $params);	
-		 } 
+			} 
 		 elseif($this->column_fields['vehiculeid'] =='' && $insertion_mode=="edit") 
-		{ 
-                $this->deleteRelation('vtiger_vehiculeactivityrel');
-		} 
+			{ 
+			$this->deleteRelation('vtiger_vehiculeactivityrel');
+			} 
 		
 		$recordId = $this->id;
 				
@@ -200,7 +200,7 @@ class Activity extends CRMEntity {
 		
 			$contactIdsList = explode (';', $_REQUEST['contactidlist']);
 			$count = count($contactIdsList);
-//SG1409 debug : ajout de la specification des noms de colonnes dans le SQL de INSERT	
+			//SG1409 debug : ajout de la specification des noms de colonnes dans le SQL de INSERT	
 			$sql = 'INSERT INTO vtiger_cntactivityrel (contactid,activityid) VALUES ';
 			for($i=0; $i<$count; $i++) {
 				$sql .= " (" . $contactIdsList[$i] .", ".$recordId.")";
@@ -210,7 +210,7 @@ class Activity extends CRMEntity {
 			}
 			$adb->pquery($sql);
 		}
-	//SG1409 NOW 
+		//SG1409 NOW 
 		if(isset($_REQUEST['vehiculeidlist']) && $_REQUEST['vehiculeidlist'] != '') {
 			$adb->pquery( 'DELETE from vtiger_vehiculeactivityrel WHERE activityid = ?', array($recordId));
 		
@@ -236,12 +236,12 @@ class Activity extends CRMEntity {
 		//Handling for recurring type
 		//Insert into vtiger_recurring event table
 		if(isset($this->column_fields['recurringtype']) && $this->column_fields['recurringtype']!='' && $this->column_fields['recurringtype']!='--None--')
-		{
+			{
 			$recur_type = trim($this->column_fields['recurringtype']);
 			$recur_data = getrecurringObjValue();
 			if(is_object($recur_data))
 	      			$this->insertIntoRecurringTable($recur_data);
-		}	
+			}	
 	
 		//Insert into vtiger_activity_remainder table
 
@@ -258,6 +258,51 @@ class Activity extends CRMEntity {
 		$this->insertIntoActivityReminderPopup($module);
 	}	
 	
+	/**
+	 * Save the related module record information. Triggered from CRMEntity->saveentity method or updateRelations.php
+	 * @param String This module name
+	 * @param Integer This module record number
+	 * @param String Related module name
+	 * @param mixed Integer or Array of related module record number
+	 */
+	function save_related_module($module, $crmid, $with_module, $with_crmid) {
+		global $adb;
+		if (!is_array($with_crmid))
+			$with_crmid = Array($with_crmid);
+		foreach ($with_crmid as $relcrmid) {
+
+			if ($with_module == 'Vehicules') {
+				$checkpresence = $adb->pquery("SELECT activityid FROM vtiger_vehiculeactivityrel WHERE activityid = ? AND vehiculeid = ?", Array($crmid, $relcrmid));
+				// Relation already exists? No need to add again
+				if ($checkpresence && $adb->num_rows($checkpresence))
+					continue;
+				$adb->pquery("INSERT INTO vtiger_vehiculeactivityrel(activityid, vehiculeid) VALUES(?,?)", array($crmid, $relcrmid));
+			}
+			elseif ($with_module == 'Contacts') {
+				$checkpresence = $adb->pquery("SELECT activityid FROM vtiger_cntactivityrel WHERE activityid = ? AND contactid = ?", Array($crmid, $relcrmid));
+				// Relation already exists? No need to add again
+				if ($checkpresence && $adb->num_rows($checkpresence))
+					continue;
+				$adb->pquery("INSERT INTO vtiger_cntactivityrel(activityid, contactid) VALUES(?,?)", array($crmid, $relcrmid));
+			}
+			elseif ($with_module == 'Users') {
+				$checkpresence = $adb->pquery("SELECT activityid FROM vtiger_invitees WHERE activityid = ? AND inviteeid = ?", Array($crmid, $relcrmid));
+				// Relation already exists? No need to add again
+				if ($checkpresence && $adb->num_rows($checkpresence))
+					continue;
+				$adb->pquery("INSERT INTO vtiger_invitees (activityid, inviteeid) VALUES(?,?)", array($crmid, $relcrmid));
+			}
+			else {
+				$checkpresence = $adb->pquery("SELECT crmid FROM vtiger_crmentityrel WHERE
+					crmid = ? AND module = ? AND relcrmid = ? AND relmodule = ?", Array($crmid, $module, $relcrmid, $with_module));
+				// Relation already exists? No need to add again
+				if ($checkpresence && $adb->num_rows($checkpresence))
+					continue;
+
+				$adb->pquery("INSERT INTO vtiger_crmentityrel(crmid, module, relcrmid, relmodule) VALUES(?,?,?,?)", Array($crmid, $module, $relcrmid, $with_module));
+			}
+		}
+	}
 	
 	/** Function to insert values in vtiger_activity_reminder_popup table for the specified module
   	  * @param $cbmodule -- module:: Type varchar
@@ -974,10 +1019,13 @@ function insertIntoRecurringTable(& $recurObj)
 			
 		} elseif($return_module == 'Vehicules') {
 			$sql = 'DELETE FROM vtiger_vehiculeactivityrel WHERE vehiculeid = ? AND activityid = ?';
-			$this->db->pquery($sql, array($return_id, $id));	
-						
-			
-		} else {
+			$this->db->pquery($sql, array($return_id, $id));				
+		}
+		elseif($return_module == 'Users') {
+			$sql = 'DELETE FROM vtiger_invitees WHERE inviteeid = ? AND activityid = ?';
+			$this->db->pquery($sql, array($return_id, $id));				
+		}
+		else {
 			$sql='DELETE FROM vtiger_seactivityrel WHERE activityid=?';
 			$this->db->pquery($sql, array($id));
 		

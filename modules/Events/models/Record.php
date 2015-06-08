@@ -109,6 +109,23 @@ class Events_Record_Model extends Calendar_Record_Model {
          return $invitiesId;
      }
 
+     //SG1506
+     public function getInviteesInfo() {
+	$invitiesIdList = $this->getInvities();
+	$inviteesInfo = array();
+        foreach($invitiesIdList as $userId) {
+            $inviteesInfo[] = array('name' => getUserName($userId) ,'id' => $userId);
+        }
+        return $inviteesInfo;
+	
+     }
+     
+     
+     
+     
+     
+     
+     
      public function getInviteUserMailData() {
             $adb = PearDatabase::getInstance();
 

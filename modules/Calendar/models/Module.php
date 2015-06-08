@@ -44,7 +44,7 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	 * @return <Boolean> - true/false
 	 */
 	public function isSummaryViewSupported() {
-		return false;
+		return true;
 	}
 
 	/**
@@ -93,13 +93,6 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	}
 
 	/**
-	 * Function to get list of field for summary view
-	 * @return <Array> empty array
-	 */
-	public function getSummaryViewFieldsList() {
-		return array();
-	}
-	/**
 	 * Function to get the Quick Links for the module
 	 * @param <Array> $linkParams
 	 * @return <Array> List of Vtiger_Link_Model instances
@@ -114,13 +107,15 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 				'linklabel' => 'LBL_CALENDAR_VIEW',
 				'linkurl' => $this->getCalendarViewUrl(),
 				'linkicon' => '',
-			),			
+			),
+			/*
 			array(
 				'linktype' => 'SIDEBARLINK',
 				'linklabel' => 'LBL_SHARED_CALENDAR',
 				'linkurl' => $this->getSharedCalendarViewUrl(),
 				'linkicon' => '',
 			),
+			*/
 			array(
 				'linktype' => 'SIDEBARLINK',
 				'linklabel' => 'LBL_VEHICULES_CALENDAR_VIEW',
@@ -136,8 +131,14 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 			),
 			array(
 				'linktype' => 'SIDEBARLINK',
-				'linklabel' => 'LBL_RECORDS_LIST',
+				'linklabel' => 'LBL_EVENTS_LIST',
 				'linkurl' => $this->getListViewUrl(),
+				'linkicon' => '',
+			),
+			array(
+				'linktype' => 'SIDEBARLINK',
+				'linklabel' => 'LBL_MGTRANSPORTS_LIST',
+				'linkurl' => $this->getMGTransportsListViewUrl(),
 				'linkicon' => '',
 			),
 		);
@@ -206,6 +207,13 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 	
 	}
 
+	/**
+	 * Function to get the url for list view of the module
+	 * @return <string> - url
+	 */
+	public function getMGTransportsListViewUrl() {
+		return 'index.php?module=MGTransports&view=List';
+	}
 	/**
 	 * Function returns the url that shows Calendar Import result
 	 * @return <String> url
@@ -366,13 +374,10 @@ class Calendar_Module_Model extends Vtiger_Module_Model {
 		$db = PearDatabase::getInstance();
 		$query = "SELECT vtiger_users.first_name,vtiger_users.last_name, vtiger_users.id as userid, vtiger_mgchauffeurs.uicolor
 			FROM vtiger_users
-			JOIN vtiger_mgchauffeurs
-				ON vtiger_mgchauffeurs.userid=vtiger_users.id
-			JOIN vtiger_crmentity
-				ON vtiger_mgchauffeurs.mgchauffeursid = vtiger_crmentity.crmid
-			WHERE vtiger_crmentity.deleted = 0
-			/* AND vtiger_users.status = 'Active' */
-			AND vtiger_mgchauffeurs.actif = 1
+			INNER JOIN vtiger_mgchauffeurs
+			ON vtiger_mgchauffeurs.userid=vtiger_users.id
+			AND vtiger_users.status='Active'
+			GROUP BY userid
 			";
 		$result = $db->query($query);
 		 $rows = $db->num_rows($result);
