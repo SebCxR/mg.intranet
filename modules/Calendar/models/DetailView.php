@@ -40,7 +40,7 @@ class Calendar_DetailView_Model extends Vtiger_DetailView_Model {
 		foreach($relationModels as $relation) {
 			$link = array(
 					'linktype' => 'DETAILVIEWRELATED',
-					'linklabel' => vtranslate($relation->get('label'),$moduleName),
+					'linklabel' => $relation->get('label'),
 					'linkurl' => $relation->getListUrl($recordModel),
 					'linkicon' => ''
 			);

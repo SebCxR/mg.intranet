@@ -113,7 +113,8 @@ $languageStrings = array(
 	'LBL_ADVANCE_SEARCH'           => 'Avancée'                    , 
 	'LBL_LOADING_PLEASE_WAIT'      => 'Chargement, Veuillez patienter.'       , 
 	'LBL_PLEASE_SELECT_MODULE' 	   => 'Choisir un module',	
-	'LBL_USERS'                    => 'Collaborateurs'              , 
+	'LBL_USERS'                    => 'Collaborateurs'              ,
+        'Users'                     => 'Utilisateurs',
 	'LBL_GROUPS'                   => 'Groups'                      , 
 	'LBL_FULL_FORM'                => 'Formulaire complet'                   , 
 	'LBL_SIMPLE_FORM'              => 'Formulaire simple'                 , 
@@ -700,6 +701,7 @@ $languageStrings = array(
 	//ED141025 MGTransports
 	'CONTACTS' => 'Contacts',
 	'VEHICULES' => 'Véhicules',
+        'Vehicules' => 'Véhicules',
 	'LBL_VEHICULES' => 'Véhicules',
 	'CHAUFFEURS' => 'Chauffeurs',
 	'PRODUCTS' => 'Articles',

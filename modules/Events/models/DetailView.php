@@ -54,7 +54,7 @@ class Events_DetailView_Model extends Calendar_DetailView_Model {
 			//TODO : Way to get limited information than getting all the information
 			$link = array(
 					'linktype' => 'DETAILVIEWRELATED',
-					'linklabel' => vtranslate($relation->get('label'),$moduleName),
+					'linklabel' => $relation->get('label'),
 					'linkurl' => $relation->getListUrl($recordModel),
 					'linkicon' => ''
 			);
